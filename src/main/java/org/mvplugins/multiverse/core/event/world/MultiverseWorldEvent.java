@@ -11,11 +11,6 @@ abstract class MultiverseWorldEvent<W extends MultiverseWorld> extends Event {
         this.world = world;
     }
 
-    /**
-     * Gets the world that's about to be deleted.
-     *
-     * @return That {@link LoadedMultiverseWorld}.
-     */
     public W getWorld() {
         return world;
     }

@@ -60,7 +60,6 @@ public final class SpawnCategoryConfig {
 
     void applyConfigToWorld() {
         if (spawnCategory == SpawnCategory.MISC) {
-            // Cannot control misc spawn with setTicksPerSpawns
             return;
         }
         if (!(world instanceof LoadedMultiverseWorld loadedWorld)) {

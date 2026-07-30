@@ -16,9 +16,6 @@ import java.util.function.Predicate;
 
 import static org.mvplugins.multiverse.core.permissions.CorePermissionsChecker.*;
 
-/**
- * Maps permission checking to custom logic for commands, to allow more complex permission checking.
- */
 @Service
 public class MVCommandPermissions {
     private final Map<String, Predicate<CommandIssuer>> permissionsCheckMap;
@@ -33,13 +30,6 @@ public class MVCommandPermissions {
         registerPermissionChecker("mvspawnother", issuer -> permissionsChecker.hasAnySpawnPermission(issuer.getIssuer(), Scope.OTHER));
     }
 
-    /**
-     * Registers a custom permission checker callback. Use `@id-name` in {@link CommandPermission} decorator to use
-     * the callback instead of the default permission string checking.
-     *
-     * @param id         The permission id
-     * @param checker    The permission checker callback
-     */
     public void registerPermissionChecker(String id, Predicate<CommandIssuer> checker) {
         permissionsCheckMap.put(prepareId(id), checker);
     }
@@ -48,12 +38,6 @@ public class MVCommandPermissions {
         return (id.startsWith("@") ? "" : "@") + id.toLowerCase(Locale.ENGLISH);
     }
 
-    /**
-     * Check if the issuer has the given permission.
-     * @param issuer        The issuer
-     * @param permission    The permission to check
-     * @return True if the issuer has the permission
-     */
     boolean hasPermission(CommandIssuer issuer, String permission) {
         return Option.of(permissionsCheckMap.get(permission))
                 .map(checker -> checker.test(issuer))

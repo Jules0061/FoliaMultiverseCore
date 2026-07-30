@@ -18,9 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Uses reflection into nms to map entity types to spawn categories.
- */
 @ApiStatus.Internal
 public final class SpawnCategoryMapper {
 
@@ -38,10 +35,8 @@ public final class SpawnCategoryMapper {
             Logging.warning("Failed to find EntityType class. SpawnCategoryMapper will not work.");
             return;
         }
-        // In 26.2, the list of static fields has been moved from EntityType to EntityTypes class.
         Class<?> entityTypesListClass = ReflectHelper.tryGetClass("net.minecraft.world.entity.EntityTypes").getOrNull();
         if (entityTypesListClass == null) {
-            // Assume it's the older mc versions that has list of static fields in EntityType class instead.
             Logging.finer("Failed to find EntityTypes class. falling back to EntityType.");
             entityTypesListClass = entityTypeClass;
         }
@@ -93,22 +88,10 @@ public final class SpawnCategoryMapper {
         Logging.finer("Mapped " + entityTypeToSpawnCategoryMap.size() + " entities to its spawn category.");
     }
 
-    /**
-     * Gets the spawn category that the given entity type is in.
-     *
-     * @param entityType The entity type
-     * @return The spawn category that the given entity type is in, or null if it cannot be determined
-     */
     static @NotNull Option<SpawnCategory> getSpawnCategory(@Nullable EntityType entityType) {
         return Option.of(entityTypeToSpawnCategoryMap.get(entityType));
     }
 
-    /**
-     * Gets the entity types for a spawn category
-     *
-     * @param spawnCategory The spawn category
-     * @return The entity types associated with the spawn category
-     */
     static @NotNull List<EntityType> getEntityTypes(@Nullable SpawnCategory spawnCategory) {
         return spawnCategoryMap.getOrDefault(spawnCategory, Collections.emptyList());
     }

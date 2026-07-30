@@ -20,9 +20,6 @@ import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * {@link Destination} implementation for anchors.
- */
 @Service
 public final class AnchorDestination implements Destination<AnchorDestination, AnchorDestinationInstance, AnchorDestination.InstanceFailureReason> {
 
@@ -33,17 +30,11 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
         this.anchorManager = anchorManager;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String getIdentifier() {
         return "a";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Attempt<AnchorDestinationInstance, InstanceFailureReason> getDestinationInstance(
             @NotNull CommandSender sender,
@@ -57,9 +48,6 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
                 );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
@@ -79,9 +67,6 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
             this.messageKey = message;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public MessageKey getMessageKey() {
             return messageKey.getMessageKey();

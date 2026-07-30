@@ -13,12 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A factory class for creating BiomeProvider objects.
- * <br/>
- * This class provides methods for parsing biome provider strings and registering custom biome provider parsers.
- * It also provides a method for generating a list of suggested biome provider strings based on the user's current input.
- */
 @Service
 public final class BiomeProviderFactory {
 
@@ -30,23 +24,10 @@ public final class BiomeProviderFactory {
         registerBiomeProviderParser("single", new SingleBiomeProviderParser());
     }
 
-    /**
-     * Registers a custom biome provider parser. Key will be prepended with "@".
-     *
-     * @param key                   the key to associate with the biome provider parser
-     * @param biomeProviderParser   the biome provider parser to register
-     */
     public void registerBiomeProviderParser(@NotNull String key, @NotNull BiomeProviderParser biomeProviderParser) {
         biomeProviderParsers.put("@" + key, biomeProviderParser);
     }
 
-    /**
-     * Parses a biome provider string and returns a corresponding BiomeProvider object.
-     *
-     * @param worldName the name of the world
-     * @param biomeProviderString the string to parse, which can be a biome provider name or a custom provider string
-     * @return the parsed BiomeProvider object, or null if the input string is empty
-     */
     public BiomeProvider parseBiomeProvider(@NotNull String worldName, @NotNull String biomeProviderString) {
         if (biomeProviderString.isEmpty()) {
             return null;
@@ -61,21 +42,6 @@ public final class BiomeProviderFactory {
         return WorldCreator.getBiomeProviderForName(worldName, biomeProviderString, Bukkit.getConsoleSender());
     }
 
-    /**
-     * Generates a list of suggested biome provider strings based on the user's current input.
-     * <br/>
-     * If the input doesn't contain a colon (:), it returns a list of all available biome provider keys,
-     * with a colon appended to the end of each key if the input doesn't exactly match the key.
-     * <br/>
-     * If the input contains a colon, it splits the input into two parts: the biome provider key and the parameters.
-     * It then uses the biome provider parser associated with the key to suggest possible parameters
-     * and returns a list of complete biome provider strings by combining the key and suggested parameters.
-     * <br/>
-     * If no matching biome provider parser is found, it returns an empty list.
-     *
-     * @param currentInput the user's current input
-     * @return a collection of suggested biome provider strings
-     */
     public Collection<String> suggestBiomeString(@NotNull String currentInput) {
         String[] split = REPatterns.COLON.split(currentInput, 2);
         if (split.length < 2) {

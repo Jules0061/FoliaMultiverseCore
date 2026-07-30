@@ -13,33 +13,16 @@ import org.mvplugins.multiverse.core.locale.message.Message;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * Provides default string parsers for common types.
- */
 public final class DefaultStringParserProvider {
 
     private static final Map<Class<?>, NodeStringParser<?>> PARSERS = new HashMap<>();
 
-    /**
-     * Adds a default string parser for the given type.
-     *
-     * @param clazz     The type.
-     * @param parser    The string parser.
-     */
     public static void addDefaultStringParser(Class<?> clazz, NodeStringParser<?> parser) {
         PARSERS.put(clazz, parser);
     }
 
-    /**
-     * Gets the default string parser for the given type.
-     *
-     * @param clazz The type.
-     * @param <T>   The type.
-     * @return The default string parser for the given type, or null if no default string parser exists.
-     */
     public static <T> NodeStringParser<T> getDefaultStringParser(Class<T> clazz) {
         if (clazz.isEnum()) {
-            // Special case for enums
             return (NodeStringParser<T>) ENUM_STRING_PARSER;
         }
         return (NodeStringParser<T>) PARSERS.get(clazz);
@@ -93,6 +76,5 @@ public final class DefaultStringParserProvider {
     }
 
     private DefaultStringParserProvider() {
-        // Prevent instantiation as this is a static utility class
     }
 }

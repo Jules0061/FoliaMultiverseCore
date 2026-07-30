@@ -10,14 +10,9 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
 import java.util.Locale;
 
-/**
- * All the translation keys for the core plugin
- */
 @ApiStatus.Internal
 public enum MVCorei18n implements MessageKeyProvider {
-    // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
 
-    // configuration
     CONFIG_SAVE_FAILED,
     CONFIG_NODE_NOTFOUND,
     CONFIG_NODE_INVALIDYAMLKEY,
@@ -27,12 +22,10 @@ public enum MVCorei18n implements MessageKeyProvider {
     CONFIG_STRING_PARSER_INVALIDFLOAT,
     CONFIG_STRING_PARSER_INVALIDLONG,
 
-    // core config
     CORE_CONFIG_CUSTOMPORTALSEARCHRADIUS_NONNEGATIVE,
     CORE_CONFIG_CONFIRMTIMEOUT_POSITIVE,
     CORE_CONFIG_DEBUGLEVEL_RANGE,
 
-    // /mv anchor
     ANCHOR_DELETE_SUCCESS,
     ANCHOR_DELETE_FAILURE,
     ANCHOR_LIST_HEADER,
@@ -40,7 +33,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     ANCHOR_SET_SUCCESS,
     ANCHOR_SET_FAILURE,
 
-    // /mv check
     CHECK_DESCRIPTION,
     CHECK_PLAYER_DESCRIPTION,
     CHECK_DESTINATION_DESCRIPTION,
@@ -48,14 +40,12 @@ public enum MVCorei18n implements MessageKeyProvider {
     CHECK_NOPERMISSION,
     CHECK_LOCATION,
 
-    // /mv clone
     CLONE_DESCRIPTION,
     CLONE_WORLD_DESCRIPTION,
     CLONE_NEWWORLD_DESCRIPTION,
     CLONE_CLONING,
     CLONE_SUCCESS,
 
-    // /mv config
     CONFIG_DESCRIPTION,
     CONFIG_NAME_DESCRIPTION,
     CONFIG_VALUE_DESCRIPTION,
@@ -64,10 +54,8 @@ public enum MVCorei18n implements MessageKeyProvider {
     CONFIG_SET_SUCCESS,
     CONFIG_SET_ERROR,
 
-    // /mv confirm
     CONFIRM_DESCRIPTION,
 
-    // /mv coordinates
     COORDINATES_DESCRIPTION,
     COORDINATES_INFO_TITLE,
     COORDINATES_INFO_WORLD,
@@ -76,7 +64,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     COORDINATES_INFO_COORDINATES,
     COORDINATES_INFO_DIRECTION,
 
-    // /mv create
     CREATE_DESCRIPTION,
     CREATE_NAME_DESCRIPTION,
     CREATE_ENVIRONMENT_DESCRIPTION,
@@ -94,7 +81,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     CREATE_LOADING,
     CREATE_SUCCESS,
 
-    // /mv debug
     DEBUG_INFO_DESCRIPTION,
     DEBUG_INFO_OFF,
     DEBUG_INFO_ON,
@@ -102,18 +88,15 @@ public enum MVCorei18n implements MessageKeyProvider {
     DEBUG_CHANGE_SYNTAX,
     DEBUG_CHANGE_LEVEL_DESCRIPTION,
 
-    // /mv delete
     DELETE_DESCRIPTION,
     DELETE_DELETING,
     DELETE_PROMPT,
     DELETE_SUCCESS,
 
-    // /mv dumps
     DUMPS_DESCRIPTION,
     DUMPS_STARTING,
     DUMPS_URL_LIST,
 
-    // /mv entity-spawn-config
     ENTITYSPAWNCONFIG_INFO_HEADER,
     ENTITYSPAWNCONFIG_INFO_CATEGORY,
     ENTITYSPAWNCONFIG_INFO_SPAWN,
@@ -122,7 +105,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     ENTITYSPAWNCONFIG_MODIFY_SUCCESS,
     ENTITYSPAWNCONFIG_MODIFY_FAILURE,
 
-    // /mv gamerule set
     GAMERULE_SET_DESCRIPTION,
     GAMERULE_SET_GAMERULE_DESCRIPTION,
     GAMERULE_SET_VALUE_DESCRIPTION,
@@ -131,7 +113,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     GAMERULE_SET_SUCCESS_SINGLE,
     GAMERULE_SET_SUCCESS_MULTIPLE,
 
-    // /mv gamerule reset
     GAMERULE_RESET_DESCRIPTION,
     GAMERULE_RESET_GAMERULE_DESCRIPTION,
     GAMERULE_RESET_WORLD_DESCRIPTION,
@@ -139,13 +120,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     GAMERULE_RESET_SUCCESS_SINGLE,
     GAMERULE_RESET_SUCCESS_MULTIPLE,
 
-    // /mv gamerule list
     GAMERULE_LIST_DESCRIPTION,
     GAMERULE_LIST_DESCRIPTION_PAGE,
     GAMERULE_LIST_DESCRIPTION_WORLD,
     GAMERULE_LIST_TITLE,
 
-    // /mv generators
     GENERATORS_DESCRIPTION,
     GENERATORS_DESCRIPTION_FLAGS,
     GENERATORS_HEADER,
@@ -155,7 +134,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     GENERATORS_INFO_USAGES,
     GENERATORS_INFO_INFOLINK,
 
-    // /mv import
     IMPORT_DESCRIPTION,
     IMPORT_NAME_DESCRIPTION,
     IMPORT_ENV_DESCRIPTION,
@@ -163,37 +141,31 @@ public enum MVCorei18n implements MessageKeyProvider {
     IMPORT_IMPORTING,
     IMPORT_SUCCESS,
 
-    // /mv info
     INFO_DESCRIPTION,
     INFO_DESCRIPTION_WORLD,
     INFO_HEADER,
     INFO_NOCONTENT,
 
-    // /mv list
     LIST_DESCRIPTION,
     LIST_HEADER,
     LIST_NOCONTENT,
 
-    // /mv load
     LOAD_DESCRIPTION,
     LOAD_WORLD_DESCRIPTION,
     LOAD_LOADING,
     LOAD_SUCCESS,
 
-    // /mv meta info
     META_INFO_DESCRIPTION,
     META_INFO_WORLD,
     META_INFO_HEADER,
     META_INFO_NOCONTENT,
 
-    // /mv meta modify
     META_MODIFY_SET_SUCCESS,
     META_MODIFY_SET_FAILURE,
     META_MODIFY_REMOVE_SUCCESS,
     META_MODIFY_REMOVE_FAILURE,
     META_MODIFY_INVALIDACTION,
 
-    // /mv modify
     MODIFY_DESCRIPTION,
     MODIFY_WORLD_DESCRIPTION,
     MODIFY_PROPERTY_DESCRIPTION,
@@ -205,14 +177,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     MODIFY_FAILURE,
     MODIFY_FAILURE_NOVALUE,
 
-    // /mv purge-all-entities
     PURGEALLENTITIES_SUCCESS,
     PURGEALLENTITIES_SUCCESS_CATEGORIES,
 
-    // /mv purge-entities
     PURGEENTITIES_SUCCESS,
 
-    // /mv regen
     REGEN_DESCRIPTION,
     REGEN_WORLD_DESCRIPTION,
     REGEN_OTHER_DESCRIPTION,
@@ -220,21 +189,17 @@ public enum MVCorei18n implements MessageKeyProvider {
     REGEN_PROMPT,
     REGEN_SUCCESS,
 
-    // /mv reload
     RELOAD_DESCRIPTION,
     RELOAD_RELOADING,
     RELOAD_SUCCESS,
 
-    // /mv remove
     REMOVE_DESCRIPTION,
     REMOVE_WORLD_DESCRIPTION,
     REMOVE_SUCCESS,
 
-    // /mv
     ROOT_TITLE,
     ROOT_HELP,
 
-    // /mv setspawn
     SETSPAWN_DESCRIPTION,
     SETSPAWN_LOCATION_DESCRIPTION,
     SETSPAWN_WORLD_DESCRIPTION,
@@ -243,7 +208,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     SETSPAWN_FAILED,
     SETSPAWN_NOTMVWORLD,
 
-    // /mv spawn
     SPAWN_DESCRIPTION,
     SPAWN_PLAYER_DESCRIPTION,
     SPAWN_NOTMVWORLD,
@@ -251,7 +215,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     SPAWN_SUCCESS,
     SPAWN_FAILED,
 
-    // /mv tp
     TELEPORT_DESCRIPTION,
     TELEPORT_PLAYER_DESCRIPTION,
     TELEPORT_DESTINATION_DESCRIPTION,
@@ -262,23 +225,18 @@ public enum MVCorei18n implements MessageKeyProvider {
     TELEPORT_SUCCESS,
     TELEPORT_FAILED,
 
-    // /mv unload
     UNLOAD_DESCRIPTION,
     UNLOAD_WORLD_DESCRIPTION,
     UNLOAD_UNLOADING,
     UNLOAD_SUCCESS,
 
-    // /mv usage
     USAGE_DESCRIPTION,
 
-    // /mv version
     VERSION_DESCRIPTION,
     VERSION_MV,
     VERSION_AUTHORS,
     VERSION_SECRETCODE,
 
-    // /mv who
-    // /mv whoall
     WHO_DESCRIPTION,
     WHO_ALL_DESCRIPTION,
     WHO_WORLD_DESCRIPTION,
@@ -286,7 +244,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     WHO_EMPTY,
     WHO_HEADER,
 
-    // /mv worldborder
     WORLDBORDER_CENTER_NOTHINGCHANGED,
     WORLDBORDER_CENTER_SUCCESS,
 
@@ -311,7 +268,6 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     WORLDBORDER_ROUNDOFF_WARNING,
 
-    // commands error
     COMMANDS_ERROR_PLAYERSONLY,
     COMMANDS_ERROR_MULTIVERSEWORLDONLY,
     COMMANDS_ERROR_LOADEDMULTIVERSEWORLD_PLAYERSONLY,
@@ -330,20 +286,17 @@ public enum MVCorei18n implements MessageKeyProvider {
     COMMANDS_ERROR_RESOLVE_INPUT,
     COMMANDS_ERROR_REMOVEPLAYERS_NODEFAULT,
 
-    // entry check
     ENTRYCHECK_BLACKLISTED,
     ENTRYCHECK_NOTENOUGHMONEY,
     ENTRYCHECK_CANNOTPAYENTRYFEE,
     ENTRYCHECK_EXCEEDPLAYERLIMIT,
     ENTRYCHECK_NOWORLDACCESS,
 
-    // economy
     ECONOMY_ITEM_DEPOSIT,
     ECONOMY_ITEM_WITHDRAW,
     ECONOMY_VAULT_DEPOSIT,
     ECONOMY_VAULT_WITHDRAW,
 
-    // multiverse parse destination failure reason
     DESTINATION_ANCHOR_FAILUREREASON_ANCHORNOTFOUND,
     DESTINATION_ANCHOR_DISPLAY,
     DESTINATION_BED_FAILUREREASON_PLAYERNOTFOUND,
@@ -357,11 +310,9 @@ public enum MVCorei18n implements MessageKeyProvider {
     DESTINATION_SHARED_FAILUREREASON_WORLDNOTFOUND,
     DESTINATION_PARSE_FAILUREREASON_INVALIDDESTINATIONID,
 
-    // portal form disabled
     PORTALFORM_DISABLED_END,
     PORTALFORM_DISABLED_NETHER,
 
-    // teleport failure reason
     TELEPORTFAILUREREASON_NULL_DESTINATION,
     TELEPORTFAILUREREASON_NULL_LOCATION,
     TELEPORTFAILUREREASON_NULL_WORLD,
@@ -370,7 +321,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     TELEPORTFAILUREREASON_TELEPORT_FAILED_EXCEPTION,
     TELEPORTFAILUREREASON_EVENT_CANCELLED,
 
-    // world manager result
     CLONEWORLD_INVALIDWORLDNAME,
     CLONEWORLD_WORLDEXISTFOLDER,
     CLONEWORLD_WORLDEXISTUNLOADED,
@@ -413,7 +363,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     WORLDCREATOR_INVALIDCHUNKGENERATOR,
     WORLDCREATOR_BUKKITCREATIONFAILED,
 
-    // queue command result
     QUEUECOMMAND_DEFAULTPROMPT,
     QUEUECOMMAND_PROMPT,
     QUEUECOMMAND_EXPIRED,
@@ -421,7 +370,6 @@ public enum MVCorei18n implements MessageKeyProvider {
     QUEUECOMMAND_INVALIDOTP,
     QUEUECOMMAND_COMMANDEXECUTIONERROR,
 
-    // content display messages
     CONTENTDISPLAY_NOCONTENT,
     CONTENTDISPLAY_FILTER,
     CONTENTDISPLAY_PAGE,
@@ -430,24 +378,20 @@ public enum MVCorei18n implements MessageKeyProvider {
     CONTENTDISPLAY_NULL,
     CONTENTDISPLAY_EMPTY,
 
-    // multiverse world exception
     EXCEPTION_MULTIVERSEWORLD_CREATENULL,
     EXCEPTION_MULTIVERSEWORLD_UNLOADDEFAULTWORLD,
     EXCEPTION_MULTIVERSEWORLD_UNLOADPLAYERSINWORLD,
     EXCEPTION_MULTIVERSEWORLD_UNLOADERROR,
 
-    // multiverse position parse exception
     EXCEPTION_POSITIONPARSE_INVALIDDIRECTION,
     EXCEPTION_POSITIONPARSE_INVALIDCOORDINATES,
     EXCEPTION_POSITIONPARSE_INVALIDNUMBER,
 
-    // world key parse failures
     WORLDKEYPARSE_EMPTY,
     WORLDKEYPARSE_INVALIDWORLDNAME,
     WORLDKEYPARSE_INVALIDNAMESPACEDKEY,
     WORLDKEYPARSE_NAMESPACEDKEYUNSUPPORTED,
 
-    // generic
     GENERIC_SUCCESS,
     GENERIC_FAILURE,
     GENERIC_ERROR,
@@ -458,26 +402,14 @@ public enum MVCorei18n implements MessageKeyProvider {
     GENERIC_TELEPORTPLAYERS_FAILED,
     ;
 
-    // END CHECKSTYLE-SUPPRESSION: Javadoc
-
     private final MessageKey key = MessageKey.of("mv-core." + this.name().replace('_', '.')
             .toLowerCase(Locale.ENGLISH));
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageKey getMessageKey() {
         return this.key;
     }
 
-    /**
-     * Creates a message with non-localized message fallback and replacements
-     * @param nonLocalizedMessage   The non-localized message
-     * @param replacements          The replacements
-     *
-     * @return A new localizable Message
-     */
     @NotNull
     public Message bundle(@NotNull String nonLocalizedMessage, @NotNull MessageReplacement... replacements) {
         return Message.of(this, nonLocalizedMessage, replacements);

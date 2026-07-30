@@ -22,9 +22,6 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * Checks if a player can enter a world.
- */
 public final class WorldEntryChecker {
     private final @NotNull CoreConfig config;
     private final @NotNull MVEconomist economist;
@@ -43,12 +40,6 @@ public final class WorldEntryChecker {
         this.sender = sender;
     }
 
-    /**
-     * Checks if the sender have access to be in the world.
-     *
-     * @param world The world to check.
-     * @return The result of the check.
-     */
     public ResultChain canStayInWorld(@NotNull LoadedMultiverseWorld world) {
         return ResultChain.builder()
                 .then(() -> canAccessWorld(world))
@@ -56,13 +47,6 @@ public final class WorldEntryChecker {
                 .build();
     }
 
-    /**
-     * Checks if the sender can enter the given world.
-     *
-     * @param fromWorld The world the sender is coming from.
-     * @param toWorld   The world the sender is going to.
-     * @return The result of the check.
-     */
     public ResultChain canEnterWorld(
             @Nullable MultiverseWorld fromWorld, @NotNull LoadedMultiverseWorld toWorld) {
         return ResultChain.builder()
@@ -73,12 +57,6 @@ public final class WorldEntryChecker {
                 .build();
     }
 
-    /**
-     * Checks if the sender can access the given world.
-     *
-     * @param world The world to check.
-     * @return The result of the check.
-     */
     public Result<WorldAccessResult.Success, WorldAccessResult.Failure> canAccessWorld(@NotNull MultiverseWorld world) {
         if (!config.getEnforceAccess()) {
             return Result.success(WorldAccessResult.Success.NO_ENFORCE_WORLD_ACCESS);
@@ -88,12 +66,6 @@ public final class WorldEntryChecker {
                 : Result.failure(WorldAccessResult.Failure.NO_WORLD_ACCESS);
     }
 
-    /**
-     * Checks if the sender is within the player limit of the given world.
-     *
-     * @param world The world to check.
-     * @return The result of the check.
-     */
     public Result<PlayerLimitResult.Success, PlayerLimitResult.Failure> isWithinPlayerLimit(
             @NotNull LoadedMultiverseWorld world) {
         final int playerLimit = world.getPlayerLimit();
@@ -111,13 +83,6 @@ public final class WorldEntryChecker {
                 : Result.failure(PlayerLimitResult.Failure.EXCEED_PLAYERLIMIT);
     }
 
-    /**
-     * Checks if the sender is not blacklisted from the given world.
-     *
-     * @param fromWorld The world the sender is coming from.
-     * @param toWorld   The world the sender is going to.
-     * @return The result of the check.
-     */
     public Result<BlacklistResult.Success, BlacklistResult.Failure> isNotBlacklisted(
             @Nullable MultiverseWorld fromWorld, @NotNull MultiverseWorld toWorld) {
         if (fromWorld == null) {
@@ -128,12 +93,6 @@ public final class WorldEntryChecker {
                 : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 
-    /**
-     * Checks if the sender can pay the entry fee for the given world.
-     *
-     * @param world The world to check.
-     * @return The result of the check.
-     */
     public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(MultiverseWorld world) {
         double price = world.getPrice();
         if (!world.isEntryFeeEnabled() || price == 0D) {

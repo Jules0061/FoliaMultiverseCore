@@ -7,11 +7,6 @@ import org.mvplugins.multiverse.core.utils.ReflectHelper;
 
 import java.lang.reflect.Method;
 
-/**
- * Compatibility class used to handle API changes in {@link World} class.
- *
- * @since 5.7
- */
 @ApiStatus.AvailableSince("5.7")
 public final class WorldCompatibility {
 
@@ -25,18 +20,6 @@ public final class WorldCompatibility {
         HAS_HAS_BONUS_CHEST_METHOD = ReflectHelper.hasMethod(World.class, "hasBonusChest");
     }
 
-    /**
-     * Saves the world, with an option to wait for chunk writers to finish if the method is available. Saving with
-     * flush is only supported on PaperMC 1.21+.
-     * <br />
-     * If the method is not available, it will fall back to the normal save method, which may not wait for chunk writers
-     * to finish, but is the best we can do for older versions of Minecraft.
-     *
-     * @param world The world to save
-     * @param flush Waits for chunk writers to finish
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     public static void saveWithFlush(World world, boolean flush) {
         SAVE_WITH_FLUSH_METHOD
@@ -44,16 +27,6 @@ public final class WorldCompatibility {
                 .orElseRun(ignore -> world.save());
     }
 
-    /**
-     * Gets the coordinate scale for the world, which is used to convert between overworld and nether coordinates.
-     * On PaperMC, this can be obtained directly from the API. On older versions, it is manually determined based on the
-     * world environment (overworld = 1, nether = 8, end = 1).
-     *
-     * @param world The world to get the coordinate scale for
-     * @return The scale
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     public static double getCoordinateScale(World world) {
         if (HAS_GET_COORDINATE_SCALE_METHOD) {
@@ -66,17 +39,6 @@ public final class WorldCompatibility {
         };
     }
 
-    /**
-     * Checks if the world has a bonus chest.
-     * <br />
-     * On PaperMC 1.21.5+, this can be obtained directly from the API. On older versions, it always returns false as
-     * bonus chest is not supported.
-     *
-     * @param world The world to check
-     * @return True if the world has a bonus chest, false otherwise
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     public static boolean hasBonusChest(World world) {
         if (HAS_HAS_BONUS_CHEST_METHOD) {

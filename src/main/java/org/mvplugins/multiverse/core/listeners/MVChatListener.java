@@ -18,9 +18,6 @@ import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.ConcurrentPlayerWorldTracker;
 
-/**
- * Multiverse's Listener for players.
- */
 @Service
 final class MVChatListener implements CoreListener {
     private final CoreConfig config;
@@ -69,17 +66,10 @@ final class MVChatListener implements CoreListener {
         };
     }
 
-    /**
-     * This handles a {@link AsyncPlayerChatEvent}.
-     *
-     * @param event The {@link AsyncPlayerChatEvent}.
-     */
     @EventMethod
     @SkipIfEventExist("io.papermc.paper.event.player.AsyncChatEvent")
     @IgnoreIfCancelled
     void asyncPlayerChat(AsyncPlayerChatEvent event) {
-        // Check whether the Server is set to prefix the chat with the World name.
-        // If not we do nothing, if so we need to check if the World has an Alias.
         if (!config.isEnablePrefixChat()) {
             return;
         }

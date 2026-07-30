@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core;
 
 import java.util.logging.Logger;
@@ -35,9 +28,6 @@ import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
-/**
- * The start of the Multiverse-Core plugin
- */
 @Service
 public class MultiverseCore extends MultiverseModule {
 
@@ -54,40 +44,30 @@ public class MultiverseCore extends MultiverseModule {
     @Inject
     private Provider<MVEconomist> economistProvider;
 
-    /**
-     * This is the constructor for the MultiverseCore.
-     */
     public MultiverseCore() {
         super();
     }
 
     @Override
     public void onLoad() {
-        // Setup our Logging
         Logging.init(this);
 
-        // Create our DataFolder
         if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
             Logging.severe("Failed to create data folder!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        // Register our config classes
         ConfigurationSerialization.registerClass(NullSpawnLocation.class);
         ConfigurationSerialization.registerClass(SpawnLocation.class);
         ConfigurationSerialization.registerClass(UnloadedWorldLocation.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onEnable() {
         super.onEnable();
         initializeDependencyInjection(new MultiverseCorePluginBinder(this));
 
-        // Load our configs first as we need them for everything else.
         var config = configProvider.get();
         var loadSuccess = config.load().andThenTry(config::save).isSuccess();
         if (!loadSuccess || !config.isLoaded()) {
@@ -98,12 +78,10 @@ public class MultiverseCore extends MultiverseModule {
         }
         Logging.setShowingConfig(shouldShowConfig());
 
-        // Build it here so our logger can work, and failure messages will be logged
         SpawnCategoryMapper.buildSpawnCategoryMap();
 
-        // Initialize the worlds
         worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
-            loadEconomist(); // Setup economy here so vault is loaded
+            loadEconomist();
             loadAnchors();
             registerDynamicListeners(CoreListener.class);
             setUpLocales();
@@ -121,9 +99,6 @@ public class MultiverseCore extends MultiverseModule {
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onDisable() {
         super.onDisable();
@@ -155,9 +130,6 @@ public class MultiverseCore extends MultiverseModule {
                 });
     }
 
-    /**
-     * Register all the destinations.
-     */
     private void registerDestinations() {
         Try.of(() -> destinationsProviderProvider.get())
                 .andThenTry(destinationsProvider -> {
@@ -170,12 +142,8 @@ public class MultiverseCore extends MultiverseModule {
                 });
     }
 
-    /**
-     * Setup bstats Metrics.
-     */
     private void setupMetrics() {
         if (TestingMode.isDisabled()) {
-            // Load metrics
             Try.of(() -> metricsConfiguratorProvider.get())
                     .onFailure(e -> {
                         Logging.severe("Failed to setup metrics");
@@ -186,9 +154,6 @@ public class MultiverseCore extends MultiverseModule {
         }
     }
 
-    /**
-     * Setup placeholder api hook
-     */
     private void loadPlaceholderApiIntegration() {
         if (configProvider.get().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -200,9 +165,6 @@ public class MultiverseCore extends MultiverseModule {
         }
     }
 
-    /**
-     * Setup the api service for {@link MultiverseCoreApi}
-     */
     private void loadApiService() {
         Try.run(() -> MultiverseCoreApi.init(this))
                 .onSuccess(ignore -> Logging.info("API service loaded!"))
@@ -212,11 +174,6 @@ public class MultiverseCore extends MultiverseModule {
                 });
     }
 
-    /**
-     * Save config.yml, worlds.yml, and anchors.yml.
-     *
-     * @return {@link Try#isSuccess()} true if all configs were successfully saved
-     */
     private Try<Void> saveAllConfigs() {
         return configProvider.get().save()
                 .andThenTry(() -> worldManagerProvider.get().saveWorldsConfig())
@@ -226,9 +183,6 @@ public class MultiverseCore extends MultiverseModule {
                                 e.getLocalizedMessage()));
     }
 
-    /**
-     * Logs the enable message.
-     */
     private void logEnableMessage() {
         Logging.config("\u001B[32mVersion %s (API v%s) Enabled - By %s\u001B[0m",
                 this.getDescription().getVersion(), getVersionAsNumber(), StringFormatter.joinAnd(getDescription().getAuthors()));
@@ -239,39 +193,23 @@ public class MultiverseCore extends MultiverseModule {
         }
     }
 
-    /**
-     * Gets the MultiverseCoreApi
-     *
-     * @return The MultiverseCoreApi
-     *
-     * @deprecated Use {@link MultiverseCoreApi#get()} directly.
-     */
     @Deprecated(since = "5.1", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public MultiverseCoreApi getApi() {
         return MultiverseCoreApi.get();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public double getTargetCoreVersion() {
         return getVersionAsNumber();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @NotNull
     @Override
     public Logger getLogger() {
         return Logging.getLogger();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull FileConfiguration getConfig() {
         CoreConfig coreConfig = this.configProvider.get();
@@ -287,17 +225,11 @@ public class MultiverseCore extends MultiverseModule {
         return coreConfig.getConfig();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void reloadConfig() {
         this.configProvider.get().load();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveConfig() {
         this.configProvider.get().save();

@@ -2,9 +2,6 @@ package org.mvplugins.multiverse.core.command.flag;
 
 import co.aikar.commands.InvalidCommandArgument;
 
-/**
- * Parses flags from a string array. Each parser should only be used once.
- */
 public class CommandFlagsParser {
     private final CommandFlagGroup flagGroup;
     private final String[] flags;
@@ -14,26 +11,14 @@ public class CommandFlagsParser {
     private boolean nextArgMayBeValue;
     private CommandFlag currentFlag;
 
-    /**
-     * Creates a new CommandFlagsParser.
-     *
-     * @param flagGroup The flag group to parse flags for.
-     * @param flags The flags to parse.
-     */
     public CommandFlagsParser(CommandFlagGroup flagGroup, String[] flags) {
         this.flagGroup = flagGroup;
         this.flags = flags;
     }
 
-    /**
-     * Parses the flags.
-     *
-     * @return The parsed flags.
-     */
     public ParsedCommandFlags parse() {
         parsedFlags = new ParsedCommandFlags();
 
-        // First argument is always a key
         this.nextArgMayBeKey = true;
         this.nextArgMayBeValue = false;
 
@@ -54,12 +39,6 @@ public class CommandFlagsParser {
         return parsedFlags;
     }
 
-    /**
-     * Parses a key.
-     *
-     * @param flag The flag to parse.
-     * @return True if the flag was parsed as a key, false otherwise.
-     */
     private boolean parseKey(String flag) {
         CommandFlag potentialFlag = flagGroup.getFlagByKey(flag);
         if (potentialFlag == null) {
@@ -88,12 +67,6 @@ public class CommandFlagsParser {
         return true;
     }
 
-    /**
-     * Parses a value.
-     *
-     * @param flag The flag to parse.
-     * @return True if the flag was parsed as a value, false otherwise.
-     */
     private boolean parseValue(String flag) {
         if (this.currentFlag == null) {
             throw new InvalidCommandArgument("Some flag logic error occurred at '" + flag + "'!");
@@ -107,7 +80,6 @@ public class CommandFlagsParser {
         flagValue = valueFlag.getContext() != null ? valueFlag.getContext().apply(flag) : flag;
         parsedFlags.addFlagResult(valueFlag.getKey(), flagValue);
 
-        // After a value, the next argument must be a key
         this.nextArgMayBeKey = true;
         this.nextArgMayBeValue = false;
         this.currentFlag = null;

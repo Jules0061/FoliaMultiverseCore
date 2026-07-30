@@ -30,7 +30,6 @@ class VersionCommand extends CoreCommand {
         issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_MV, "{version}", plugin.getDescription().getVersion());
         issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_AUTHORS,
                 "{authors}", String.join(", ", plugin.getDescription().getAuthors()));
-        // An in joke I don't get...
         issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_SECRETCODE);
     }
 

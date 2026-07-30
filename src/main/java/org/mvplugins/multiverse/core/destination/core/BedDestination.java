@@ -22,9 +22,6 @@ import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.world.helpers.ConcurrentPlayerWorldTracker;
 
-/**
- * {@link Destination} implementation for beds.
- */
 @Service
 public final class BedDestination implements Destination<BedDestination, BedDestinationInstance, BedDestination.InstanceFailureReason> {
     static final String OWN_BED_STRING = "playerbed";
@@ -36,17 +33,11 @@ public final class BedDestination implements Destination<BedDestination, BedDest
         this.worldTracker = worldTracker;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String getIdentifier() {
         return "b";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Attempt<BedDestinationInstance, InstanceFailureReason> getDestinationInstance(
             @NotNull CommandSender sender,
@@ -59,9 +50,6 @@ public final class BedDestination implements Destination<BedDestination, BedDest
         return Attempt.success(new BedDestinationInstance(this, player));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
@@ -84,9 +72,6 @@ public final class BedDestination implements Destination<BedDestination, BedDest
             this.messageKey = message;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public MessageKey getMessageKey() {
             return messageKey.getMessageKey();

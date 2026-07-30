@@ -8,18 +8,10 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Null-location.
- */
 @SerializableAs("MVNullLocation (It's a bug if you see this in your config file)")
 public final class NullSpawnLocation extends SpawnLocation {
     private static final NullSpawnLocation INSTANCE = new NullSpawnLocation();
 
-    /**
-     * Get the default null location instance.
-     *
-     * @return The instance.
-     */
     public static NullSpawnLocation get() {
         return INSTANCE;
     }
@@ -38,12 +30,6 @@ public final class NullSpawnLocation extends SpawnLocation {
         return Collections.emptyMap();
     }
 
-    /**
-     * Let Bukkit be able to deserialize this.
-     *
-     * @param args The map.
-     * @return The deserialized object.
-     */
     public static NullSpawnLocation deserialize(Map<String, Object> args) {
         return new NullSpawnLocation();
     }

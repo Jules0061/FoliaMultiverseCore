@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2020.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core.command.queue;
 
 import java.util.Map;
@@ -31,12 +24,6 @@ import org.mvplugins.multiverse.core.utils.result.Attempt;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
 
-/**
- * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>
- *
- * <p>Each sender can only have one command in queue at any given time. When a queued command is added
- * for a sender that already has a command in queue, it will replace the old queued command.</p>
- */
 @Service
 public class CommandQueueManager {
 
@@ -55,11 +42,6 @@ public class CommandQueueManager {
         this.queuedCommandMap = new ConcurrentHashMap<>();
     }
 
-    /**
-     * Adds a {@link CommandQueuePayload} into queue.
-     *
-     * @param payload The command queue payload to add.
-     */
     public void addToQueue(CommandQueuePayload payload) {
         String senderName = parseSenderName(payload.issuer());
         if (canRunImmediately(senderName)) {
@@ -83,12 +65,6 @@ public class CommandQueueManager {
                 replace("{timeout}").with(config.getConfirmTimeout()));
     }
 
-    /**
-     * Check if sender does not need to queue before running.
-     *
-     * @param senderName    The name of sender.
-     * @return True if sender does not need to queue before running.
-     */
     private boolean canRunImmediately(@NotNull String senderName) {
         return switch (config.getConfirmMode()) {
             case ENABLE -> false;
@@ -99,12 +75,6 @@ public class CommandQueueManager {
         };
     }
 
-    /**
-     * Expire task that removes a {@link CommandQueuePayload} from queue after valid duration defined.
-     *
-     * @param senderName    The name of the sender.
-     * @return The expire {@link ScheduledTask}.
-     */
     @Nullable
     private ScheduledTask runExpireLater(@NotNull String senderName, int validDuration) {
         return scheduler.runGlobalLater(
@@ -112,30 +82,17 @@ public class CommandQueueManager {
                 validDuration * TICKS_PER_SECOND);
     }
 
-    /**
-     * Runnable responsible for expiring the queued command.
-     *
-     * @param senderName    The name of the sender.
-     * @return The expire runnable.
-     */
     @NotNull
     private Runnable expireRunnable(@NotNull String senderName) {
         return () -> {
             CommandQueuePayload payload = this.queuedCommandMap.remove(senderName);
             if (payload == null) {
-                // Payload already removed
                 return;
             }
             payload.issuer().sendMessage(MVCorei18n.QUEUECOMMAND_EXPIRED);
         };
     }
 
-    /**
-     * Runs the command in queue for the given sender, if any.
-     *
-     * @param issuer    Sender that confirmed the command.
-     * @return True if queued command ran successfully, else false.
-     */
     public Attempt<Void, RunQueuedFailedReason> runQueuedCommand(@NotNull MVCommandIssuer issuer, String otpInput) {
         String senderName = parseSenderName(issuer);
         return Option.of(this.queuedCommandMap.get(senderName)).fold(
@@ -153,11 +110,6 @@ public class CommandQueueManager {
         return Attempt.success(null);
     }
 
-    /**
-     * Since only one command is stored in queue per sender, we remove the old one.
-     *
-     * @param senderName    The sender that executed the command.
-     */
     public void removeFromQueue(@NotNull String senderName) {
         CommandQueuePayload payload = this.queuedCommandMap.remove(senderName);
         if (payload == null) {
@@ -178,12 +130,6 @@ public class CommandQueueManager {
         return sender.getName();
     }
 
-    /**
-     * Checks if the sender is a command block.
-     *
-     * @param sender    The sender to check.
-     * @return True if sender is a command block, else false.
-     */
     private boolean isCommandBlock(@NotNull CommandSender sender) {
         return sender instanceof BlockCommandSender
                 && ((BlockCommandSender) sender).getBlock().getBlockData() instanceof CommandBlock;

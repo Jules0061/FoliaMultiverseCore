@@ -4,9 +4,6 @@ import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-/**
- * Single migrator action that converts a string value to an integer.
- */
 public final class IntegerMigratorAction implements MigratorAction {
 
     public static IntegerMigratorAction of(String path) {

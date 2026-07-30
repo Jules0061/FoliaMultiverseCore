@@ -16,11 +16,6 @@ import java.util.function.Function;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * Reusable logic of issuer only and issuer aware context resolvers
- *
- * @since 5.1
- */
 @ApiStatus.AvailableSince("5.1")
 public final class IssuerAwareContextBuilder<T> {
 
@@ -41,112 +36,48 @@ public final class IssuerAwareContextBuilder<T> {
     public IssuerAwareContextBuilder() {
     }
 
-    /**
-     * Parse value from player itself.
-     *
-     * @param fromInput the parsing function
-     * @return The same builder for chaining
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextBuilder<T> fromPlayer(BiFunction<BukkitCommandExecutionContext, Player, T> fromInput) {
         this.fromPlayer = fromInput;
         return this;
     }
 
-    /**
-     * Parse value from command input string.
-     *
-     * @param fromInput the parsing function
-     * @return The same builder for chaining
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextBuilder<T> fromInput(BiFunction<BukkitCommandExecutionContext, String, T> fromInput) {
         this.fromInput = fromInput;
         return this;
     }
 
-    /**
-     * When getting value fails as issuer is not a player.
-     *
-     * @param issuerOnlyFailMessage The message
-     * @return The same builder for chaining
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextBuilder<T> issuerOnlyFailMessage(Function<BukkitCommandExecutionContext, Message> issuerOnlyFailMessage) {
         this.issuerOnlyFailMessage = issuerOnlyFailMessage;
         return this;
     }
 
-    /**
-     * When getting value fails as player cannot parse the value.
-     *
-     * @param issuerAwarePlayerFailMessage The message
-     * @return The same builder for chaining
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextBuilder<T> issuerAwarePlayerFailMessage(BiFunction<BukkitCommandExecutionContext, Player, Message> issuerAwarePlayerFailMessage) {
         this.issuerAwarePlayerFailMessage = issuerAwarePlayerFailMessage;
         return this;
     }
 
-    /**
-     * When getting value fails as input cannot parse the value.
-     *
-     * @param issuerAwareInputFailMessage The message
-     * @return The same builder for chaining
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextBuilder<T> issuerAwareInputFailMessage(BiFunction<BukkitCommandExecutionContext, String, Message> issuerAwareInputFailMessage) {
         this.issuerAwareInputFailMessage = issuerAwareInputFailMessage;
         return this;
     }
 
-    /**
-     * When getting value fails as input cannot parse the value.
-     *
-     * @param inputOnlyFailMessage The message
-     * @return The same builder for chaining
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextBuilder<T> inputOnlyFailMessage(BiFunction<BukkitCommandExecutionContext, String, Message> inputOnlyFailMessage) {
         this.inputOnlyFailMessage = inputOnlyFailMessage;
         return this;
     }
 
-    /**
-     * Creates the issuer aware context resolver logic.
-     *
-     * @return The generated context resolver
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextResolver<T, BukkitCommandExecutionContext> generateContext() {
         validateRequiredVariables();
         return context -> resolveValue(context, GenericIssuerAwareValue::new).value;
     }
 
-    /**
-     * Creates the issuer aware context resolver logic, with marking of whether the value was resolved from player or input.
-     *
-     * @param createValue The function to create the {@link IssuerAwareValue} value
-     * @param <I> The type of the value
-     * @return The generated context resolver
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public <I extends IssuerAwareValue> IssuerAwareContextResolver<I, BukkitCommandExecutionContext> generateContext(BiFunction<Boolean, T, I> createValue) {
         validateRequiredVariables();
@@ -185,7 +116,7 @@ public final class IssuerAwareContextBuilder<T> {
 
         int maxArgForAware = context.getFlagValue("maxArgForAware", Integer.MAX_VALUE);
         long argLengthWithoutFlags = context.getArgs().stream()
-                .takeWhile(value -> !value.startsWith("-") && !value.isEmpty()) // ignore the flags
+                .takeWhile(value -> !value.startsWith("-") && !value.isEmpty())
                 .count();
 
         if (resolve.equals("issuerAware") && argLengthWithoutFlags <= maxArgForAware) {

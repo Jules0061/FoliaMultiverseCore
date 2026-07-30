@@ -27,21 +27,8 @@ import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 
-/**
- * A node that contains a value.
- *
- * @param <T>   The type of the value.
- */
 public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
 
-    /**
-     * Creates a new builder for a {@link ConfigNode}.
-     *
-     * @param path  The path of the node.
-     * @param type  The type of the value.
-     * @param <T>   The type of the value.
-     * @return The new builder.
-     */
     public static @NotNull <T> ConfigNode.Builder<T, ? extends ConfigNode.Builder<T, ?>> builder(
             @NotNull String path,
             @NotNull Class<T> type) {
@@ -94,33 +81,21 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         this.onChange = onChange;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<String> getName() {
         return Option.of(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Class<T> getType() {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String[] getAliases() {
         return aliases;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @Nullable T getDefaultValue() {
         if (defaultValue != null) {
@@ -129,9 +104,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<String> suggest(@Nullable String input) {
         if (suggester != null) {
@@ -140,9 +112,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         return Collections.emptyList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<String> suggest(@NotNull CommandSender sender, @Nullable String input) {
         if (suggester != null && suggester instanceof SenderNodeSuggester senderSuggester) {
@@ -151,9 +120,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         return suggest(input);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Try<T> parseFromString(@Nullable String input) {
         if (stringParser != null) {
@@ -162,9 +128,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         return Try.failure(new UnsupportedOperationException("No string parser for type " + type.getName()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Try<T> parseFromString(@NotNull CommandSender sender, @Nullable String input) {
         if (stringParser != null && stringParser instanceof SenderNodeStringParser<T> senderStringParser) {
@@ -173,11 +136,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         return parseFromString(input);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated Use {@link #serialize(Object)} and {@link #deserialize(Object)} instead.
-     */
     @Override
     @Deprecated(forRemoval = true, since = "5.7")
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
@@ -186,9 +144,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         return serializer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T deserialize(@Nullable Object object) {
         return serializer == null
@@ -196,17 +151,11 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
                 : serializer.deserialize(object, type);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object serialize(T value) {
         return serializer ==  null ? value : serializer.serialize(value, type);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Try<Void> validate(@Nullable T value) {
         if (validator != null) {
@@ -215,9 +164,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         return Try.success(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onLoad(@Nullable T value) {
         if (onLoad != null) {
@@ -225,9 +171,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onLoadAndChange(@NotNull CommandSender sender, @Nullable T oldValue, @Nullable T newValue) {
         if (onLoadAndChange != null) {
@@ -235,9 +178,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onChange(@NotNull CommandSender sender, @Nullable T oldValue, @Nullable T newValue) {
         if (onChange != null) {
@@ -245,12 +185,6 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         }
     }
 
-    /**
-     * Builder for {@link ConfigNode}.
-     *
-     * @param <T>   The type of the value.
-     * @param <B>   The type of the builder.
-     */
     public static class Builder<T, B extends ConfigNode.Builder<T, B>> extends ConfigHeaderNode.Builder<B> {
 
         protected @Nullable String name;
@@ -265,246 +199,110 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         protected @Nullable NodeChangeCallback<T> onLoadAndChange;
         protected @Nullable NodeChangeCallback<T> onChange;
 
-        /**
-         * Creates a new builder.
-         *
-         * @param path  The path of the node.
-         * @param type  The type of the value.
-         */
         protected Builder(@NotNull String path, @NotNull Class<T> type) {
             super(path);
             this.name = path;
             this.type = type;
         }
 
-        /**
-         * Gets the path of this node.
-         *
-         * @return The path of this node.
-         */
         public @NotNull String path() {
             return path;
         }
 
-        /**
-         * Sets the default value for this node.
-         *
-         * @param defaultValue The default value.
-         * @return This builder.
-         */
         public @NotNull B defaultValue(@NotNull T defaultValue) {
             this.defaultValue = () -> defaultValue;
             return self();
         }
 
-        /**
-         * Sets the default value for this node.
-         *
-         * @param defaultValue The default value supplier.
-         * @return This builder.
-         */
         public @NotNull B defaultValue(@NotNull Supplier<T> defaultValue) {
             this.defaultValue = defaultValue;
             return self();
         }
 
-        /**
-         * Sets the name of this node. Used for identifying the node from user input.
-         *
-         * @param name The name of this node.
-         * @return This builder.
-         */
         public @NotNull B name(@Nullable String name) {
             this.name = name;
             return self();
         }
 
-        /**
-         * Gets the name of this node. Used for identifying the node from user input.
-         *
-         * @return The name of this node, or {@code null} if the node has no name.
-         */
         public @Nullable String name() {
             return name;
         }
 
-        /**
-         * Sets the name as null, and will not be shown in {@link StringPropertyHandle} as a property.
-         *
-         * @return This builder.
-         */
         public @NotNull B hidden() {
             return name(null);
         }
 
-        /**
-         * Sets the aliases for this node. Aliases are alternative identifiers for referencing the node.
-         *
-         * @param aliases The aliases to set for this node.
-         * @return This builder.
-         *
-         * @since 5.1
-         */
         @ApiStatus.AvailableSince("5.1")
         public @NotNull B aliases(@NotNull String... aliases) {
             this.aliases = aliases;
             return self();
         }
 
-        /**
-         * Sets the suggester for this node.
-         *
-         * @param suggester The suggester for this node.
-         * @return This builder.
-         */
         public @NotNull B suggester(@NotNull NodeSuggester suggester) {
             this.suggester = suggester;
             return self();
         }
 
-        /**
-         * Sets the suggester for this node with sender context.
-         *
-         * @param suggester The suggester for this node.
-         * @return This builder.
-         *
-         * @since 5.1
-         */
         @ApiStatus.AvailableSince("5.1")
         public @NotNull B suggester(@NotNull SenderNodeSuggester suggester) {
             this.suggester = suggester;
             return self();
         }
 
-        /**
-         * Sets the string parser for this node.
-         *
-         * @param stringParser  The string parser for this node.
-         * @return This builder.
-         */
         public @NotNull B stringParser(@NotNull NodeStringParser<T> stringParser) {
             this.stringParser = stringParser;
             return self();
         }
 
-        /**
-         * Sets the string parser for this node with sender context.
-         *
-         * @param stringParser  The string parser for this node.
-         * @return This builder.
-         *
-         * @since 5.1
-         */
         @ApiStatus.AvailableSince("5.1")
         public @NotNull B stringParser(@NotNull SenderNodeStringParser<T> stringParser) {
             this.stringParser = stringParser;
             return self();
         }
 
-        /**
-         * Sets the serializer for this node.
-         *
-         * @param serializer    The serializer for this node.
-         * @return This builder.
-         */
         public @NotNull B serializer(@NotNull NodeSerializer<T> serializer) {
             this.serializer = serializer;
             return self();
         }
 
-        /**
-         * Sets the validator for this node.
-         *
-         * @param validator The validator for this node.
-         * @return This builder.
-         */
         public @NotNull B validator(@NotNull Function<T, Try<Void>> validator) {
             this.validator = validator;
             return self();
         }
 
-        /**
-         * Sets the action to be performed when the value is loaded.
-         *
-         * @param onLoad    The action to be performed.
-         * @return This builder.
-         */
         @ApiStatus.AvailableSince("5.4")
         public @NotNull B onLoad(@NotNull NodeValueCallback<T> onLoad) {
             this.onLoad = this.onLoad == null ? onLoad : this.onLoad.then(onLoad);
             return self();
         }
 
-        /**
-         * Sets the action to be performed when the value is loaded and changed.
-         *
-         * @param onLoadAndChange    The action to be performed.
-         * @return This builder.
-         *
-         * @since 5.4
-         */
         @ApiStatus.AvailableSince("5.4")
         public @NotNull B onLoadAndChange(@NotNull NodeChangeCallback<T> onLoadAndChange) {
             this.onLoadAndChange = this.onLoadAndChange == null ? onLoadAndChange : this.onLoadAndChange.then(onLoadAndChange);
             return self();
         }
 
-        /**
-         * Sets the action to be performed when the value is loaded and changed.
-         *
-         * @param onLoadAndChange    The action to be performed.
-         * @return This builder.
-         *
-         * @since 5.4
-         */
         @ApiStatus.AvailableSince("5.4")
         public @NotNull B onLoadAndChange(@NotNull SenderNodeChangeCallback<T> onLoadAndChange) {
             return onLoadAndChange((NodeChangeCallback<T>) onLoadAndChange);
         }
 
-        /**
-         * Sets the action to be performed when the value is changed.
-         *
-         * @param onChange    The action to be performed.
-         * @return This builder.
-         *
-         * @since 5.4
-         */
         @ApiStatus.AvailableSince("5.4")
         public @NotNull B onChange(@NotNull NodeChangeCallback<T> onChange) {
             this.onChange = this.onChange == null ? onChange : this.onChange.then(onChange);
             return self();
         }
 
-        /**
-         * Sets the action to be performed when the value is changed.
-         *
-         * @param onChange    The action to be performed.
-         * @return This builder.
-         *
-         * @since 5.4
-         */
         @ApiStatus.AvailableSince("5.4")
         public @NotNull B onChange(@NotNull SenderNodeChangeCallback<T> onChange) {
             return onChange((NodeChangeCallback<T>) onChange);
         }
 
-        /**
-         * Sets the action to be performed when the value is set.
-         *
-         * @param onSetValue    The action to be performed.
-         * @return This builder.
-         *
-         * @deprecated Use {@link #onLoadAndChange(NodeChangeCallback)} instead.
-         */
         @Deprecated(since = "5.4", forRemoval = true)
         public @NotNull B onSetValue(@NotNull BiConsumer<T, T> onSetValue) {
             return onLoadAndChange(onSetValue::accept);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public @NotNull ConfigNode<T> build() {
             return new ConfigNode<>(path, comments.toArray(new String[0]),

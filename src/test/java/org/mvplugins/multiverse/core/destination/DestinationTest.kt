@@ -55,7 +55,6 @@ class DestinationTest : TestWithMockBukkit() {
         assertTrue(destination is CannonDestinationInstance)
         val expectedLocation = Location(world.bukkitWorld.orNull, 1.2, 2.0, 3.0, 9.5F, 10.5F)
         assertLocationEquals(expectedLocation, destination.getLocation(player).orNull)
-        // todo: assert the Vector
         assertEquals("ca:world:1.2,2.0,3.0:10.5:9.5:5.0", destination.toString())
     }
 
@@ -142,7 +141,5 @@ class DestinationTest : TestWithMockBukkit() {
         assertTrue(destinationsProvider.parseDestination("e:world:1,2,3:").isFailure)
         assertTrue(destinationsProvider.parseDestination("pl:invalid-player").isFailure)
         assertTrue(destinationsProvider.parseDestination("w:invalid-world").isFailure)
-        // todo: should we make invalid yaw for WorldDestination fail?
-        // assertTrue(destinationsProvider.parseDestination("w:world:f").isEmpty)
     }
 }

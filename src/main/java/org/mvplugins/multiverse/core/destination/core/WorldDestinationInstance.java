@@ -11,22 +11,11 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
-/**
- * Destination instance implementation for the {@link WorldDestination}.
- */
 public final class WorldDestinationInstance extends DestinationInstance<WorldDestinationInstance, WorldDestination> {
     private final MultiverseWorld world;
     private final String direction;
     private final float yaw;
 
-    /**
-     * Constructor.
-     *
-     * @param destination   The destination.
-     * @param world         The world to teleport to.
-     * @param direction     The direction to face.
-     * @param yaw           The yaw to face.
-     */
     WorldDestinationInstance(
             @NotNull WorldDestination destination,
             @NotNull MultiverseWorld world,
@@ -39,9 +28,6 @@ public final class WorldDestinationInstance extends DestinationInstance<WorldDes
         this.yaw = yaw;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
         if (!world.isLoaded()) {
@@ -54,47 +40,31 @@ public final class WorldDestinationInstance extends DestinationInstance<WorldDes
         }
 
         if (this.yaw >= 0) {
-            // Only modify the yaw if its set.
             worldLoc.setYaw(this.yaw);
         }
         return Option.of(worldLoc);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<Vector> getVelocity(@NotNull Entity teleportee) {
         return Option.none();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean checkTeleportSafety() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
         return Option.of(world.getName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Message getDisplayMessage() {
         return Message.of(world.getAliasOrName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String serialise() {
         if (this.direction != null) {

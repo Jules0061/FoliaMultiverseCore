@@ -21,11 +21,6 @@ import org.mvplugins.multiverse.core.config.node.MapValueNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.ValueNode;
 
-/**
- * Generic configuration handle for all ConfigurationSection types.
- *
- * @param <C>   The configuration type.
- */
 @SuppressWarnings("rawtypes,unchecked")
 public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
 
@@ -46,11 +41,6 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         this.nodeValueMap = new HashMap<>(nodes.size());
     }
 
-    /**
-     * Loads the configuration.
-     *
-     * @return Whether the configuration was loaded or its given error.
-     */
     public Try<Void> load() {
         return Try.run(() -> {
             migrateConfig();
@@ -60,18 +50,12 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         });
     }
 
-    /**
-     * Migrates the configuration.
-     */
     protected void migrateConfig() {
         if (migrator != null) {
             migrator.migrate(config);
         }
     }
 
-    /**
-     * Sets up the nodes.
-     */
     protected void setUpNodes() {
         if (nodes.isEmpty()) {
             nodeValueMap = new HashMap<>();
@@ -104,9 +88,6 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
                 .getOrElse(node::getDefaultValue);
     }
 
-    /**
-     * Saves the configuration.
-     */
     public Try<Void> save() {
         return Try.run(() -> nodes.forEach(node -> {
             if (!(node instanceof ValueNode valueNode)) {
@@ -124,33 +105,14 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         config.set(node.getPath(), node.serialize(value));
     }
 
-    /**
-     * Gets whether the configuration is loaded. i.e. {@link #load()} is called.
-     *
-     * @return Whether the configuration is loaded.
-     */
     public boolean isLoaded() {
         return !nodeValueMap.isEmpty();
     }
 
-    /**
-     * Gets the value of a node, if the node has a default value, it will be returned if the node is not found.
-     *
-     * @param node The node to get the value of.
-     * @return The value of the node.
-     */
     public <T> T get(@NotNull ValueNode<T> node) {
         return (T) nodeValueMap.get(node);
     }
 
-    /**
-     * Sets the value of a node, if the validator is not null, it will be tested first.
-     *
-     * @param node  The node to set the value of.
-     * @param value The value to set.
-     * @param <T>   The type of the node value.
-     * @return Empty try if the value was set, try containing an error otherwise.
-     */
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
         return set(Bukkit.getConsoleSender(), node, value);
     }
@@ -159,22 +121,10 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         return node.validateEntry(key, value).map(ignore -> {
             Map<K,V> map = get(node);
             map.put(key, value);
-            // node.onSetEntryValue(null, key, null, value);
             return null;
         });
     }
 
-    /**
-     * Sets the value of a node, if the validator is not null, it will be tested first.
-     *
-     * @param sender The sender who triggered the change.
-     * @param node   The node to set the value of.
-     * @param value  The value to set.
-     * @param <T>    The type of the node value.
-     * @return Empty try if the value was set, try containing an error otherwise.
-     *
-     * @since 5.4
-     */
     @ApiStatus.AvailableSince("5.4")
     public <T> Try<Void> set(@NotNull CommandSender sender, @NotNull ValueNode<T> node, T value) {
         return node.validate(value).map(ignore -> {
@@ -188,14 +138,6 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         });
     }
 
-    /**
-     * Adds an item to a list node.
-     *
-     * @param node      The list node to add the item to.
-     * @param itemValue The value of the item to add.
-     * @param <I>       The type of the list item.
-     * @return Empty try if the item was added, try containing an error otherwise.
-     */
     public <I> Try<Void> add(@NotNull ListValueNode<I> node, I itemValue) {
         return node.validateItem(itemValue).map(ignore -> {
             List<I> list = get(node);
@@ -205,14 +147,6 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         });
     }
 
-    /**
-     * Removes an item from a list node.
-     *
-     * @param node      The list node to remove the item from.
-     * @param itemValue The value of the item to remove.
-     * @param <I>       The type of the list item.
-     * @return Empty try if the item was removed, try containing an error otherwise.
-     */
     public <I> Try<Void> remove(@NotNull ListValueNode<I> node, I itemValue) {
         return node.validateItem(itemValue).map(ignore -> {
             List<I> list = get(node);
@@ -231,46 +165,22 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
             if (value == null) {
                 throw new IllegalArgumentException("Cannot remove entry as it is already not in the map!");
             }
-            // node.onSetEntryValue(key, value, null);
             return null;
         });
     }
 
-    /**
-     * Sets the default value of a node.
-     *
-     * @param node  The node to set the default value of.
-     * @param <T>   The type of the node value.
-     * @return Empty try if the value was set, try containing an error otherwise.
-     */
     public <T> Try<Void> reset(@NotNull ValueNode<T> node) {
         return set(node, node.getDefaultValue());
     }
 
-    /**
-     * Gets the configuration.
-     *
-     * @return The configuration.
-     */
     public C getConfig() {
         return config;
     }
 
-    /**
-     * Gets the configuration. Mainly used for {@link StringPropertyHandle}.
-     *
-     * @return The configuration.
-     */
     @NotNull NodeGroup getNodes() {
         return nodes;
     }
 
-    /**
-     * Abstract builder for {@link BaseConfigurationHandle}.
-     *
-     * @param <C>   The configuration type.
-     * @param <B>   The builder type.
-     */
     public abstract static class Builder<C extends ConfigurationSection, B extends BaseConfigurationHandle.Builder<C, B>> {
 
         protected final @NotNull NodeGroup nodes;
@@ -281,44 +191,21 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
             this.nodes = nodes;
         }
 
-        /**
-         * Sets the logger.
-         *
-         * @param logger The logger.
-         * @return The builder.
-         */
         public B logger(@Nullable Logger logger) {
             this.logger = logger;
             return self();
         }
 
-        /**
-         * Sets the logger.
-         *
-         * @param plugin    The plugin to get the logger from.
-         * @return The builder.
-         */
         public B logger(Plugin plugin) {
             this.logger = plugin.getLogger();
             return self();
         }
 
-        /**
-         * Sets the migrator.
-         *
-         * @param migrator The migrator.
-         * @return The builder.
-         */
         public B migrator(@Nullable ConfigMigrator migrator) {
             this.migrator = migrator;
             return self();
         }
 
-        /**
-         * Builds the configuration handle.
-         *
-         * @return The configuration handle.
-         */
         public abstract @NotNull BaseConfigurationHandle<C> build();
 
         @SuppressWarnings("unchecked")

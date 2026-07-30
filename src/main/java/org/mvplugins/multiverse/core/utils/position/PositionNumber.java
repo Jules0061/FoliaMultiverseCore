@@ -8,54 +8,19 @@ import org.mvplugins.multiverse.core.locale.message.Message;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * Represents a number that can be either absolute or relative (prefixed with '~').
- *
- * @since 5.3
- */
 @ApiStatus.AvailableSince("5.3")
 public sealed interface PositionNumber permits PositionNumber.Relative, PositionNumber.Absolute {
 
-    /**
-     * Creates an absolute PositionNumber. Absolute numbers represent fixed coordinates that will not be adjusted
-     * based on any base value.
-     *
-     * @param value the absolute value
-     * @return a PositionNumber representing the absolute value
-     *
-     * @since 5.3
-     */
     @ApiStatus.AvailableSince("5.3")
     static PositionNumber ofAbsolute(double value) {
         return new Absolute(value);
     }
 
-    /**
-     *  Creates a relative PositionNumber. Relative numbers are prefixed with '~' and represent an offset
-     *  from a base value. For example, a relative PositionNumber of '~5' means 5 units more than the base value,
-     *  while '~ -3' means 3 units less than the base value.
-     *
-     * @param value the relative offset value
-     * @return a PositionNumber representing the relative offset
-     *
-     * @since 5.3
-     */
     @ApiStatus.AvailableSince("5.3")
     static PositionNumber ofRelative(double value) {
         return new Relative(value);
     }
 
-    /**
-     * Parses a PositionNumber from a string. The string can represent either an absolute number (e.g., "10.5")
-     * or a relative number prefixed with '~' (e.g., "~5" or "~ -3"). If the string is "~" with no number,
-     * it is treated as a relative value of 0.
-     *
-     * @param string the string to parse
-     * @return a PositionNumber representing the parsed value.
-     * @throws PositionParseException If the string format is invalid.
-     *
-     * @since 5.3
-     */
     @ApiStatus.AvailableSince("5.3")
     static PositionNumber fromString(String string) throws PositionParseException {
         if (string.startsWith("~")) {
@@ -74,46 +39,15 @@ public sealed interface PositionNumber permits PositionNumber.Relative, Position
                                 replace("{number}").with(str))));
     }
 
-    /**
-     * Calculates the effective value based on the base value.
-     * For absolute PositionNumbers, this returns the stored value.
-     * For relative PositionNumbers, this returns base + stored value.
-     *
-     * @param base the base value to use for relative calculations
-     * @return the calculated effective value
-     *
-     * @since 5.3
-     */
     @ApiStatus.AvailableSince("5.3")
     double getValue(double base);
 
-    /**
-     * Checks if this PositionNumber is relative.
-     *
-     * @return true if this is a relative PositionNumber, false if absolute
-     *
-     * @since 5.3
-     */
     @ApiStatus.AvailableSince("5.3")
     boolean isRelative();
 
-    /**
-     * Checks if this PositionNumber is absolute.
-     *
-     * @return true if this is an absolute PositionNumber, false if relative
-     *
-     * @since 5.3
-     */
     @ApiStatus.AvailableSince("5.3")
     boolean isAbsolute();
 
-    /**
-     * Gets the raw stored value without any base adjustment.
-     *
-     * @return the raw value (for relative, this is the offset; for absolute, this is the fixed value)
-     *
-     * @since 5.3
-     */
     @ApiStatus.AvailableSince("5.3")
     double getRawValue();
 

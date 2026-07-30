@@ -22,9 +22,6 @@ final class McloGsPasteService extends PasteService {
         return "content=" + URLEncoder.encode(data, StandardCharsets.UTF_8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(Map<String, String> data) {
         throw new UnsupportedOperationException();
@@ -33,7 +30,7 @@ final class McloGsPasteService extends PasteService {
     @Override
     public String postData(String data) throws PasteFailedException {
         try {
-            String stringJSON = this.exec(encodeData(data), ContentType.URLENCODED); // Execute request
+            String stringJSON = this.exec(encodeData(data), ContentType.URLENCODED);
             return DUMPS_VIEWER_URL +
                     ((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("id") +
                     "?service=mclogs";
@@ -45,7 +42,7 @@ final class McloGsPasteService extends PasteService {
     @Override
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
-            String stringJSON = this.exec(encodeData(data), ContentType.JSON); // Execute request
+            String stringJSON = this.exec(encodeData(data), ContentType.JSON);
             return DUMPS_VIEWER_URL +
                     ((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("id") +
                     "?service=mclogs";

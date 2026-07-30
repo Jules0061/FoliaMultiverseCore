@@ -25,9 +25,6 @@ import org.mvplugins.multiverse.core.world.key.WorldKeyParseFailReason;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-/**
- * Manages the worlds.yml file.
- */
 @Service
 final class WorldsConfigManager {
     private static final String CONFIG_FILENAME = "worlds.yml";
@@ -46,11 +43,6 @@ final class WorldsConfigManager {
         this.multiverseCore = multiverseCore;
     }
 
-    /**
-     * Loads the worlds.yml file and creates a WorldConfig for each world in the file if it doesn't already exist.
-     *
-     * @return A {@link NewAndRemovedWorlds} record.
-     */
     Try<NewAndRemovedWorlds> load() {
         return Try.of(() -> {
             loadWorldYmlFile();
@@ -60,12 +52,6 @@ final class WorldsConfigManager {
         });
     }
 
-    /**
-     * Loads the worlds.yml file.
-     *
-     * @throws IOException                      If an error occurs while loading the file.
-     * @throws InvalidConfigurationException    If the file is not a valid YAML file.
-     */
     private void loadWorldYmlFile() throws IOException, InvalidConfigurationException {
         boolean exists = worldConfigFile.exists();
         if (!exists && !worldConfigFile.createNewFile()) {
@@ -85,7 +71,6 @@ final class WorldsConfigManager {
                         throw new ConfigMigratedException();
                     }
 
-                    // Copy old config file to `worlds.yml.old`
                     Path oldWorldConfig = worldConfigFile.toPath().getParent()
                             .resolve(CONFIG_FILENAME + ".old." + System.currentTimeMillis());
                     Files.copy(worldConfigFile.toPath(), oldWorldConfig, COPY_ATTRIBUTES, REPLACE_EXISTING);
@@ -140,12 +125,10 @@ final class WorldsConfigManager {
     private void recursiveGetOldConfigWorldNames(ConfigurationSection section, List<String> worldNames) {
         Set<String> keys = section.getKeys(false);
         if (keys.isEmpty()) {
-            // No keys in this section, nothing to do
             return;
         }
 
         if (keys.contains("w@")) {
-            // this is the world data section already, get path without the "worlds." prefix
             worldNames.add(section.getCurrentPath().substring(7));
             return;
         }
@@ -153,18 +136,12 @@ final class WorldsConfigManager {
         for (String key : keys) {
             ConfigurationSection dataSection = section.getConfigurationSection(key);
             if (dataSection == null) {
-                // Something is wrong with the config, skip this key
                 continue;
             }
             recursiveGetOldConfigWorldNames(dataSection, worldNames);
         }
     }
 
-    /**
-     * Parses the worlds.yml file and creates a WorldConfig for each world in the file if it doesn't already exist.
-     *
-     * @return A tuple containing a list of the new WorldConfigs added and a list of the worlds removed from the config.
-     */
     private NewAndRemovedWorlds parseNewAndRemovedWorlds() {
         List<WorldKeyOrName> allWorldsInConfig = worldsConfig.getKeys(false)
                 .stream()
@@ -205,20 +182,10 @@ final class WorldsConfigManager {
         return new NewAndRemovedWorlds(newWorldsAdded, worldsRemoved);
     }
 
-    /**
-     * Whether the worlds.yml file has been loaded.
-     *
-     * @return Whether the worlds.yml file has been loaded.
-     */
     boolean isLoaded() {
         return worldsConfig != null;
     }
 
-    /**
-     * Saves the worlds.yml file.
-     *
-     * @return Whether the save was successful or the error that occurred.
-     */
     Try<Void> save() {
         return Try.run(() -> {
             if (!isLoaded()) {
@@ -237,12 +204,6 @@ final class WorldsConfigManager {
         });
     }
 
-    /**
-     * Gets the {@link WorldConfig} instance of a world in the worlds.yml file.
-     *
-     * @param keyOrName The target key to get
-     * @return The {@link WorldConfig} instance of the world, or empty option if it doesn't exist.
-     */
     @NotNull Option<WorldConfig> getWorldConfig(@NotNull WorldKeyOrName keyOrName) {
         return Option.of(worldConfigMap.get(keyOrName));
     }
@@ -260,12 +221,6 @@ final class WorldsConfigManager {
         return migratedWorldConfig;
     }
 
-    /**
-     * Add a new world to the worlds.yml file. If a world with the given name already exists, an exception is thrown.
-     *
-     * @param namespacedKey The target key to add
-     * @return The newly created {@link WorldConfig} instance.
-     */
     @NotNull WorldConfig addWorldConfig(@NotNull NamespacedKey namespacedKey) {
         WorldKeyOrName keyOrName = WorldKeyOrName.parseKey(namespacedKey);
         if (worldConfigMap.containsKey(keyOrName)) {
@@ -276,23 +231,11 @@ final class WorldsConfigManager {
         return worldConfig;
     }
 
-    /**
-     * Deletes the world config for the given world.
-     *
-     * @param worldConfig The target world config to delete
-     */
     void deleteWorldConfig(@NotNull WorldConfig worldConfig) {
         worldConfigMap.remove(worldConfig.getWorldKeyOrName());
         worldsConfig.set(encodeConfigKey(worldConfig.getWorldKeyOrName()), null);
     }
 
-    /**
-     * Gets the {@link ConfigurationSection} for the given world in the worlds.yml file. If the section doesn't exist,
-     * it is created.
-     *
-     * @param keyOrName the config key of the world to get the configuration section for.
-     * @return The {@link ConfigurationSection} for the given world.
-     */
     @NotNull
     private ConfigurationSection getWorldConfigSection(@NotNull WorldKeyOrName keyOrName) {
         String encodeWorldKey = encodeConfigKey(keyOrName);
@@ -304,9 +247,6 @@ final class WorldsConfigManager {
         return encodeConfigKey(worldKeyOrName.serialise());
     }
 
-    /**
-     * Remove dot . with [dot] as it is a special character in YAML that causes sub-path issues.
-     */
     private String encodeConfigKey(@NotNull String worldName) {
         return worldName.replace(".", "[dot]");
     }

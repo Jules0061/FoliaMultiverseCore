@@ -31,29 +31,9 @@ import java.util.function.Supplier;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * A config node that contains key-value mappings.
- *
- * @param <K> The key type.
- * @param <V> The value type.
- *
- * @since 5.7
- */
 @ApiStatus.AvailableSince("5.7")
 public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapValueNode<K, V> {
 
-    /**
-     * Creates a new builder for a {@link MapConfigNode}.
-     *
-     * @param path      The path of the node.
-     * @param keyType   The map key type.
-     * @param valueType The map value type.
-     * @param <K>       The key type.
-     * @param <V>       The value type.
-     * @return The new builder.
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     public static @NotNull <K, V> Builder<K, V> mapBuilder(
             @NotNull String path,
@@ -280,33 +260,21 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Try<Void> validateKey(@Nullable K key) {
         return keyValidator == null ? Try.success(null) : keyValidator.apply(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Try<Void> validateValue(@Nullable V value) {
         return valueValidator == null ? Try.success(null) : valueValidator.apply(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Try<Void> validateEntry(@Nullable K key, @Nullable V value) {
         return validateKey(key).flatMap(ignored -> validateValue(value));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Map.Entry<K, V> deserializeEntry(@Nullable Object key, @Nullable Object value) {
         K deserializedKey = keySerializer == null
@@ -318,9 +286,6 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
         return new SimpleEntry<>(deserializedKey, deserializedValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Map.Entry<Object, Object> serializeEntry(@Nullable K key, @Nullable V value) {
         return new SimpleEntry<>(serializeKey(key), serializeValue(value));
@@ -351,19 +316,6 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
         }
     }
 
-    /**
-     * Builder for {@link MapConfigNode} instances.
-     *
-     * <p>This builder extends {@link ConfigNode.Builder} with additional configuration specific to map entries:
-     * entry-level suggesters, string parsers, serializers and validators for both keys and values. When any
-     * entry-level component is omitted the builder provides a sensible default (for example default parsers,
-     * suggesters, serializers or an empty map default value).
-     *
-     * @param <K> The map key type.
-     * @param <V> The map value type.
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     public static class Builder<K, V> extends ConfigNode.Builder<Map<K, V>, Builder<K, V>> {
 
@@ -378,203 +330,86 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
         protected @Nullable Function<K, Try<Void>> keyValidator;
         protected @Nullable Function<V, Try<Void>> valueValidator;
 
-        /**
-         * Creates a new builder for a map config node.
-         *
-         * @param path The configuration path for the node.
-         * @param keyType The runtime type of the map keys.
-         * @param valueType The runtime type of the map values.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         protected Builder(@NotNull String path, @NotNull Class<K> keyType, @NotNull Class<V> valueType) {
-            //noinspection unchecked
             super(path, (Class<Map<K, V>>) (Object) Map.class);
             this.keyType = keyType;
             this.valueType = valueType;
             this.defaultValue = LinkedHashMap::new;
         }
 
-        /**
-         * Sets a suggester for map keys. The suggester is used when computing tab-completion suggestions for the
-         * key part of an entry.
-         *
-         * @param keySuggester The suggester to use for keys.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> keySuggester(@NotNull NodeSuggester keySuggester) {
             this.keySuggester = keySuggester;
             return self();
         }
 
-        /**
-         * Sets a sender-aware suggester for map keys. Use this when suggestions depend on the command sender
-         * (permissions, location, etc.).
-         *
-         * @param keySuggester The sender-aware suggester.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> keySuggester(@NotNull SenderNodeSuggester keySuggester) {
             this.keySuggester = keySuggester;
             return self();
         }
 
-        /**
-         * Sets a suggester for map values. The suggester is used when computing tab-completion suggestions for the
-         * value part of an entry.
-         *
-         * @param valueSuggester The suggester to use for values.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> valueSuggester(@NotNull NodeSuggester valueSuggester) {
             this.valueSuggester = valueSuggester;
             return self();
         }
 
-        /**
-         * Sets a sender-aware suggester for map values. Use this when value suggestions depend on the
-         * command sender.
-         *
-         * @param valueSuggester The sender-aware suggester.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> valueSuggester(@NotNull SenderNodeSuggester valueSuggester) {
             this.valueSuggester = valueSuggester;
             return self();
         }
 
-        /**
-         * Sets the string parser for keys. The parser is used when parsing user-provided key strings into key
-         * instances (e.g. when parsing a map from a single-line string representation).
-         *
-         * @param keyStringParser The parser to use for keys.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> keyStringParser(@NotNull NodeStringParser<K> keyStringParser) {
             this.keyStringParser = keyStringParser;
             return self();
         }
 
-        /**
-         * Sets a sender-aware string parser for keys. Use this when parsing depends on the sender context.
-         *
-         * @param keyStringParser The sender-aware key parser.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> keyStringParser(@NotNull SenderNodeStringParser<K> keyStringParser) {
             this.keyStringParser = keyStringParser;
             return self();
         }
 
-        /**
-         * Sets the string parser for values. The parser converts the textual part after '=' in an entry into the
-         * value type.
-         *
-         * @param valueStringParser The parser to use for values.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> valueStringParser(@NotNull NodeStringParser<V> valueStringParser) {
             this.valueStringParser = valueStringParser;
             return self();
         }
 
-        /**
-         * Sets a sender-aware string parser for values.
-         *
-         * @param valueStringParser The sender-aware value parser.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> valueStringParser(@NotNull SenderNodeStringParser<V> valueStringParser) {
             this.valueStringParser = valueStringParser;
             return self();
         }
 
-        /**
-         * Sets the serializer for keys. Serializers convert keys to/from persisted forms stored in the configuration
-         * backend.
-         *
-         * @param keySerializer The key serializer.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> keySerializer(@NotNull NodeSerializer<K> keySerializer) {
             this.keySerializer = keySerializer;
             return self();
         }
 
-        /**
-         * Sets the serializer for values.
-         *
-         * @param valueSerializer The value serializer.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> valueSerializer(@NotNull NodeSerializer<V> valueSerializer) {
             this.valueSerializer = valueSerializer;
             return self();
         }
 
-        /**
-         * Sets a validator for keys. The validator should return a successful {@link Try} for valid keys or a failed
-         * {@link Try} describing the validation error for invalid keys.
-         *
-         * @param keyValidator The key validator.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> keyValidator(@NotNull Function<K, Try<Void>> keyValidator) {
             this.keyValidator = keyValidator;
             return self();
         }
 
-        /**
-         * Sets a validator for values.
-         *
-         * @param valueValidator The value validator.
-         * @return This builder for chaining.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull Builder<K, V> valueValidator(@NotNull Function<V, Try<Void>> valueValidator) {
             this.valueValidator = valueValidator;
             return self();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public @NotNull MapConfigNode<K, V> build() {
             return new MapConfigNode<>(

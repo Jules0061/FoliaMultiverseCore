@@ -65,13 +65,6 @@ final class CoreConfigNodes {
         return node;
     }
 
-    // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
-    // BEGIN CHECKSTYLE-SUPPRESSION: MemberName
-    // BEGIN CHECKSTYLE-SUPPRESSION: Abbreviation
-    // BEGIN CHECKSTYLE-SUPPRESSION: VisibilityModifier
-    // BEGIN CHECKSTYLE-SUPPRESSION: MultipleStringLiterals
-    // BEGIN CHECKSTYLE-SUPPRESSION: LineLength
-
     private final ConfigHeaderNode worldHeader = node(ConfigHeaderNode.builder("world")
             .comment("####################################################################################################")
             .comment("#                                                                                                  #")
@@ -706,10 +699,4 @@ final class CoreConfigNodes {
         }
     }
 
-    // END CHECKSTYLE-SUPPRESSION: Javadoc
-    // END CHECKSTYLE-SUPPRESSION: MemberName
-    // END CHECKSTYLE-SUPPRESSION: Abbreviation
-    // END CHECKSTYLE-SUPPRESSION: VisibilityModifier
-    // END CHECKSTYLE-SUPPRESSION: MultipleStringLiterals
-    // END CHECKSTYLE-SUPPRESSION: LineLength
 }

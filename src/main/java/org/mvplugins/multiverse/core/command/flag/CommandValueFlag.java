@@ -12,30 +12,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Represents a flag with a value.
- *
- * @param <T> The type of the value.
- */
 public class CommandValueFlag<T> extends CommandFlag {
-    /**
-     * A builder for a flag.
-     *
-     * @param key   The key for the new flag.
-     * @param type  The type of the value.
-     * @return The builder.
-     */
     public static @NotNull <T> Builder<T, ?> builder(@NotNull String key, @NotNull Class<T> type) {
         return new Builder<>(key, type);
     }
 
-    /**
-     * A builder for a flag with enum value.
-     *
-     * @param key   The key for the new flag.
-     * @param type  The type of the value, must be enum.
-     * @return The builder.
-     */
     public static @NotNull <T extends Enum<T>> EnumBuilder<T, ?> enumBuilder(@NotNull String key, @NotNull Class<T> type) {
         return new EnumBuilder<>(key, type);
     }
@@ -46,17 +27,6 @@ public class CommandValueFlag<T> extends CommandFlag {
     private final Function<String, T> context;
     private final Function<String, Collection<String>>  completion;
 
-    /**
-     * Creates a new flag.
-     *
-     * @param key                   The key for the new flag.
-     * @param aliases               The aliases that also refer to this flag.
-     * @param type                  The type of the value.
-     * @param optional              Allow for flag without value.
-     * @param defaultValueSupplier  The default value if optional is true and user does not specify a value.
-     * @param context               Function to parse string into value type.
-     * @param completion            Function to get completion for this flag.
-     */
     protected CommandValueFlag(
             @NotNull String key,
             @NotNull List<String> aliases,
@@ -74,57 +44,26 @@ public class CommandValueFlag<T> extends CommandFlag {
         this.completion = completion;
     }
 
-    /**
-     * Get the type of the value.
-     *
-     * @return The type of the value.
-     */
     public @NotNull Class<T> getType() {
         return type;
     }
 
-    /**
-     * Check if it is optional for users to specify a value.
-     *
-     * @return True if the value is optional, false otherwise.
-     */
     public boolean isOptional() {
         return optional;
     }
 
-    /**
-     * Get the default value. May be null.
-     *
-     * @return The default value.
-     */
     public @Nullable T getDefaultValue() {
         return defaultValueSupplier == null ? null : defaultValueSupplier.get();
     }
 
-    /**
-     * Get the context. May be null for {@link String} value type.
-     *
-     * @return The context.
-     */
     public @Nullable Function<String, T> getContext() {
         return context;
     }
 
-    /**
-     * Get the completion. May be null.
-     *
-     * @return The completion.
-     */
     public @Nullable Function<String, Collection<String>> getCompletion() {
         return completion;
     }
 
-    /**
-     * A builder for a flag.
-     *
-     * @param <T> The type of the value.
-     * @param <S> The type of the builder.
-     */
     public static class Builder<T, S extends Builder<T, S>> extends CommandFlag.Builder<S> {
         protected final Class<T> type;
         protected boolean optional = false;
@@ -132,79 +71,36 @@ public class CommandValueFlag<T> extends CommandFlag {
         protected Function<String, T> context = null;
         protected Function<String, Collection<String>> completion = null;
 
-        /**
-         * Create a new builder.
-         *
-         * @param key  The key for the new flag.
-         * @param type The type of the value.
-         */
         public Builder(@NotNull String key, @NotNull Class<T> type) {
             super(key);
             this.type = type;
         }
 
-        /**
-         * Set the flag as optional for users to specify a value.
-         *
-         * @return The builder.
-         */
         public @NotNull S optional() {
             this.optional = true;
             return (S) this;
         }
 
-        /**
-         * Set the default value. Used if optional is true and user does not specify a value.
-         *
-         * @param defaultValue The default value.
-         * @return The builder.
-         */
         public @NotNull S defaultValue(@NotNull T defaultValue) {
             return defaultValue(() -> defaultValue);
         }
 
-        /**
-         * Set the default value supplier. Used if optional is true and user does not specify a value.
-         * Supplier is only called when command is executed with the flag is present in input.
-         *
-         * @param defaultValueSupplier The default value supplier
-         * @return The builder
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull S defaultValue(@NotNull Supplier<? extends T> defaultValueSupplier) {
             this.defaultValueSupplier = defaultValueSupplier;
             return (S) this;
         }
 
-        /**
-         * Set the context callback for parsing string into value type.
-         *
-         * @param context The context.
-         * @return The builder.
-         */
         public @NotNull S context(@NotNull Function<String, T> context) {
             this.context = context;
             return (S) this;
         }
 
-        /**
-         * Set the completion callback for autocomplete.
-         *
-         * @param completion The completion. Input is the current input string, and output is the list of suggestions.
-         * @return The builder.
-         */
         public @NotNull S completion(@NotNull Function<String, Collection<String>>  completion) {
             this.completion = completion;
             return (S) this;
         }
 
-        /**
-         * Build the flag.
-         *
-         * @return The flag.
-         */
         @Override
         public @NotNull CommandValueFlag<T> build() {
             if (context == null && !String.class.equals(type)) {
@@ -214,12 +110,6 @@ public class CommandValueFlag<T> extends CommandFlag {
         }
     }
 
-    /**
-     * Specific builder for a flag with enum value.
-     *
-     * @param <T> The type of the value.
-     * @param <S> The type of the builder.
-     */
     public static class EnumBuilder<T extends Enum<T>, S extends EnumBuilder<T, S>> extends CommandFlag.Builder<S> {
         protected final Class<T> type;
         protected boolean optional = false;
@@ -252,46 +142,21 @@ public class CommandValueFlag<T> extends CommandFlag {
             this.completion = (input) -> types;
         }
 
-        /**
-         * Set the flag as optional for users to specify a value.
-         *
-         * @return The builder.
-         */
         public @NotNull S optional() {
             this.optional = true;
             return (S) this;
         }
 
-        /**
-         * Set the default value. Used if optional is true and user does not specify a value.
-         *
-         * @param defaultValue The default value.
-         * @return The builder.
-         */
         public @NotNull S defaultValue(@NotNull T defaultValue) {
             return defaultValue(() -> defaultValue);
         }
 
-        /**
-         * Set the default value to supply. Used if optional is true and user does not specify a value.
-         * Supplier is only called when command is executed with the flag is present in input.
-         *
-         * @param defaultValueSupplier The default value supplier.
-         * @return The builder.
-         *
-         * @since 5.7
-         */
         @ApiStatus.AvailableSince("5.7")
         public @NotNull S defaultValue(@NotNull Supplier<? extends T> defaultValueSupplier) {
             this.defaultValueSupplier = defaultValueSupplier;
             return (S) this;
         }
 
-        /**
-         * Build the flag.
-         *
-         * @return The flag.
-         */
         @Override
         public @NotNull CommandValueFlag<T> build() {
             return new CommandValueFlag<>(key, aliases, type, optional, defaultValueSupplier, context, completion);

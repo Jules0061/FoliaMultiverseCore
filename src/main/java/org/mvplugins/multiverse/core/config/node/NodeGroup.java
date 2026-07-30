@@ -13,28 +13,17 @@ import io.vavr.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * A collection of {@link CommentedNode}s, with mappings to nodes by name.
- */
 public class NodeGroup implements Collection<Node> {
     private final Collection<Node> nodes;
     private final List<String> nodeNames;
     private final Map<String, Node> nodesMap;
 
-    /**
-     * Creates a new empty node group.
-     */
     public NodeGroup() {
         this.nodes = new ArrayList<>();
         this.nodeNames = new ArrayList<>();
         this.nodesMap = new HashMap<>();
     }
 
-    /**
-     * Creates a new node group with the given nodes.
-     *
-     * @param nodes The nodes to make up the group.
-     */
     public NodeGroup(@NotNull Collection<Node> nodes) {
         this.nodes = nodes;
         this.nodesMap = new HashMap<>(nodes.size());
@@ -62,33 +51,14 @@ public class NodeGroup implements Collection<Node> {
         }
     }
 
-    /**
-     * Gets the names of all nodes in this group.
-     *
-     * @return The names of all nodes in this group.
-     */
     public @NotNull Collection<String> getNames() {
         return nodeNames;
     }
 
-    /**
-     * Gets the node with the given name.
-     *
-     * @param name The name of the node to get.
-     * @return The node with the given name, or {@link Option.None} if no node with the given name exists.
-     */
     public @NotNull Option<Node> findNode(@Nullable String name) {
         return Option.of(nodesMap.get(name));
     }
 
-    /**
-     * Gets the node with the given name.
-     *
-     * @param name The name of node to get.
-     * @param type The type of node to get.
-     * @param <T>  The type of node.
-     * @return The node with the given name, or {@link Option.None} if no node with the given name exists.
-     */
     public <T extends Node> @NotNull Option<T> findNode(@Nullable String name, @NotNull Class<T> type) {
         return Option.of(nodesMap.get(name)).map(node -> type.isAssignableFrom(node.getClass()) ? (T) node : null);
     }

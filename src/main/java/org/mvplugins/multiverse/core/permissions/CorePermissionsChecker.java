@@ -23,10 +23,6 @@ import java.util.List;
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.concatPermission;
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.hasPermission;
 
-/**
- * Handles permission checks for Multiverse features, including world access,
- * teleportation, spawn permissions, and destination checks.
- */
 @Service
 public final class CorePermissionsChecker {
 
@@ -34,13 +30,6 @@ public final class CorePermissionsChecker {
     private final DestinationsProvider destinationsProvider;
     private final WorldManager worldManager;
 
-    /**
-     * Creates a CorePermissionsChecker instance with the required dependencies.
-     *
-     * @param config The core configuration.
-     * @param destinationsProvider The provider for destinations.
-     * @param worldManager The manager for Multiverse worlds.
-     */
     @Inject
     CorePermissionsChecker(
             @NotNull CoreConfig config,
@@ -51,71 +40,27 @@ public final class CorePermissionsChecker {
         this.worldManager = worldManager;
     }
 
-    /**
-     * Checks if the sender has permission to bypass the join location restriction.
-     *
-     * @param sender The command sender.
-     * @return True if the sender has bypass permission, false otherwise.
-     *
-     * @since 5.2
-     */
     @ApiStatus.AvailableSince("5.2")
     public boolean hasJoinLocationBypassPermission(@NotNull CommandSender sender) {
         return hasPermission(sender, CorePermissions.JOINLOCATION_BYPASS);
     }
 
-    /**
-     * Checks if the sender has permission to access the specified world.
-     *
-     * @param sender The command sender.
-     * @param world The Multiverse world.
-     * @return True if the sender has access, false otherwise.
-     */
     public boolean hasWorldAccessPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_ACCESS, world.getName()));
     }
 
-    /**
-     * Checks if the sender is exempt from world access restrictions.
-     *
-     * @param sender The command sender.
-     * @param world The Multiverse world.
-     * @return True if the sender is exempt, false otherwise.
-     */
     public boolean hasWorldExemptPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.WORLD_EXEMPT, world.getName()));
     }
 
-    /**
-     * Checks if the sender can bypass the player limit for the specified world.
-     *
-     * @param sender The command sender.
-     * @param world The Multiverse world.
-     * @return True if the sender can bypass the limit, false otherwise.
-     */
     public boolean hasPlayerLimitBypassPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.PLAYERLIMIT_BYPASS, world.getName()));
     }
 
-    /**
-     * Checks if the sender can bypass the world's enforced game mode.
-     *
-     * @param sender The command sender.
-     * @param world The Multiverse world.
-     * @return True if the sender can bypass the game mode restriction, false otherwise.
-     */
     public boolean hasGameModeBypassPermission(@NotNull CommandSender sender, @NotNull MultiverseWorld world) {
         return hasPermission(sender, concatPermission(CorePermissions.GAMEMODE_BYPASS, world.getName()));
     }
 
-    /**
-     * Checks if the teleporter has permission to spawn entities in the specified world.
-     *
-     * @param teleporter The command sender performing the teleport.
-     * @param entities The list of entities being teleported.
-     * @param world The Multiverse world.
-     * @return True if the sender has permission, false otherwise.
-     */
     public boolean checkSpawnPermission(
             @NotNull CommandSender teleporter,
             @NotNull List<Entity> entities,
@@ -124,14 +69,6 @@ public final class CorePermissionsChecker {
                 .allMatch(scope -> checkSpawnPermission(teleporter, scope, world));
     }
 
-    /**
-     * Checks if the teleporter has permission to spawn an entity in the specified world.
-     *
-     * @param teleporter The command sender.
-     * @param entity The entity being teleported.
-     * @param world The Multiverse world.
-     * @return True if the sender has permission, false otherwise.
-     */
     public boolean checkSpawnPermission(
             @NotNull CommandSender teleporter,
             @NotNull Entity entity,
@@ -139,14 +76,6 @@ public final class CorePermissionsChecker {
         return checkSpawnPermission(teleporter, Scope.getApplicableScope(teleporter, entity), world);
     }
 
-    /**
-     * Checks if the teleporter has permission to teleport the teleportee to the world's spawnpoint.
-     *
-     * @param teleporter    The teleporter.
-     * @param scope         The scope of the permissions.
-     * @param world         The world.
-     * @return True if the teleporter has permission, false otherwise.
-     */
     public boolean checkSpawnPermission(
             @NotNull CommandSender teleporter,
             @NotNull Scope scope,
@@ -157,12 +86,6 @@ public final class CorePermissionsChecker {
         return hasSpawnPermission(teleporter, scope, null);
     }
 
-    /**
-     * Check if the issuer has any base spawn permission of `multiverse.core.spawn.self` or `multiverse.core.spawn.other`
-     *
-     * @param sender    The sender that ran the command
-     * @return True if the sender has any base spawn permission.
-     */
     public boolean hasAnySpawnPermission(@NotNull CommandSender sender) {
         return hasAnySpawnPermission(sender, Scope.values());
     }
@@ -171,13 +94,6 @@ public final class CorePermissionsChecker {
         return hasAnySpawnPermission(sender, new Scope[]{scope});
     }
 
-    /**
-     * Checks if the sender has permission to spawn other players in any world.
-     *
-     * @param sender The command sender.
-     * @param scopes The scopes to check.
-     * @return True if the sender has permission, false otherwise.
-     */
     public boolean hasAnySpawnPermission(@NotNull CommandSender sender, @NotNull Scope[] scopes) {
         if (config.getUseFinerTeleportPermissions()) {
             return worldManager.getLoadedWorlds().stream().anyMatch(world ->
@@ -193,14 +109,6 @@ public final class CorePermissionsChecker {
         return hasPermission(sender, concatPermission(CorePermissions.SPAWN, scope.getScope(), world.getName()));
     }
 
-    /**
-     * Checks if the sender has permission to send a destination packet for teleporting entities.
-     *
-     * @param teleporter The sender.
-     * @param teleportees The list of entities being teleported.
-     * @param packet The destination suggestion packet.
-     * @return True if the sender has permission, false otherwise.
-     */
     public boolean checkDestinationPacketPermission(
             @NotNull CommandSender teleporter,
             @NotNull List<Entity> teleportees,
@@ -209,14 +117,6 @@ public final class CorePermissionsChecker {
                 .allMatch(scope -> checkDestinationPacketPermission(teleporter, scope, packet));
     }
 
-    /**
-     * Checks if the sender has permission to send a destination packet for teleporting an entity.
-     *
-     * @param teleporter The sender.
-     * @param teleportee The entity being teleported.
-     * @param packet The destination suggestion packet.
-     * @return True if the sender has permission, false otherwise.
-     */
     public boolean checkDestinationPacketPermission(
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
@@ -235,14 +135,6 @@ public final class CorePermissionsChecker {
                 config.getUseFinerTeleportPermissions() ? packet.finerPermissionSuffix() : null);
     }
 
-    /**
-     * Checks if the teleporter has permission to teleport multiple entities to a destination.
-     *
-     * @param teleporter The sender.
-     * @param teleportees The list of entities being teleported.
-     * @param destination The teleport destination.
-     * @return True if the sender has permission, false otherwise.
-     */
     public boolean checkTeleportPermission(
             @NotNull CommandSender teleporter,
             @NotNull List<Entity> teleportees,
@@ -251,14 +143,6 @@ public final class CorePermissionsChecker {
                 .allMatch(scope -> checkTeleportPermission(teleporter, scope, destination));
     }
 
-    /**
-     * Checks if the teleporter has permission to teleport a single entity to a destination.
-     *
-     * @param teleporter The sender.
-     * @param teleportee The entity being teleported.
-     * @param destination The teleport destination.
-     * @return True if the sender has permission, false otherwise.
-     */
     public boolean checkTeleportPermission(
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
@@ -266,14 +150,6 @@ public final class CorePermissionsChecker {
         return checkTeleportPermission(teleporter, Scope.getApplicableScope(teleporter, teleportee), destination);
     }
 
-    /**
-     * Checks if the teleporter has permission to teleport the teleportee to the destination.
-     *
-     * @param teleporter    The teleporter.
-     * @param scope         The scope of the permissions.
-     * @param destination   The destination.
-     * @return True if the teleporter has permission, false otherwise.
-     */
     public boolean checkTeleportPermission(
             @NotNull CommandSender teleporter,
             @NotNull Scope scope,
@@ -284,37 +160,16 @@ public final class CorePermissionsChecker {
         return hasTeleportPermission(teleporter, scope, destination.getIdentifier(), null);
     }
 
-    /**
-     * Checks if the issuer has permission to teleport to at least one destination.
-     *
-     * @param sender    The sender to check.
-     * @return True if the issuer has permission, false otherwise.
-     */
     public boolean hasAnyTeleportPermission(@NotNull CommandSender sender) {
         return hasAnyTeleportPermission(sender, Scope.values());
     }
 
-    /**
-     * Checks if the issuer has permission to teleport to at least one destination.
-     *
-     * @param sender    The sender to check.
-     * @param scope    The scope to check.
-     * @return True if the issuer has permission, false otherwise.
-     */
     public boolean hasAnyTeleportPermission(@NotNull CommandSender sender, @NotNull Scope scope) {
         return hasAnyTeleportPermission(sender, new Scope[]{scope});
     }
 
-    /**
-     * Checks if the issuer has permission to teleport to at least one destination.
-     *
-     * @param sender    The sender to check.
-     * @param scopes    The scopes to check.
-     * @return True if the issuer has permission, false otherwise.
-     */
     public boolean hasAnyTeleportPermission(@NotNull CommandSender sender, @NotNull Scope[] scopes) {
         if (!config.getUseFinerTeleportPermissions()) {
-            // Just loop over the destination
             for (Destination destination : destinationsProvider.getDestinations()) {
                 for (Scope scope : scopes) {
                     if (hasTeleportPermission(sender, scope, destination.getIdentifier(), null)) {
@@ -325,7 +180,6 @@ public final class CorePermissionsChecker {
             return false;
         }
 
-        // Loop through all finer possibilities
         for (DestinationSuggestionPacket suggestion : destinationsProvider.suggestDestinations(sender, null)) {
             for (Scope scope : scopes) {
                 if (hasTeleportPermission(sender, scope, suggestion.destination().getIdentifier(), suggestion.finerPermissionSuffix())) {

@@ -61,7 +61,6 @@ class WhoCommand extends CoreCommand {
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
-        // Send the display
         getListDisplay(worldManager.getLoadedWorlds(),
                         parsedFlags.flagValue(flags.page, 1),
                         parsedFlags.flagValue(flags.filter, DefaultContentFilter.get()),
@@ -88,7 +87,6 @@ class WhoCommand extends CoreCommand {
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
-        // Send the display
         getListDisplay(inputtedWorld,
                         parsedFlags.flagValue(flags.page, 1),
                         parsedFlags.flagValue(flags.filter, DefaultContentFilter.get()),
@@ -111,14 +109,12 @@ class WhoCommand extends CoreCommand {
                                           ContentFilter filter, boolean ignoreEmptyWorlds) {
         Map<String, Message> outMap = new HashMap<>();
 
-        // Add all the worlds to our hashmap
         for (LoadedMultiverseWorld world : worlds) {
             @Nullable List<Player> players = world.getPlayers().getOrNull();
 
             if (players != null && !players.isEmpty()) {
                 outMap.put(world.getAliasOrName(), phrasePlayerList(players));
             } else if (!ignoreEmptyWorlds) {
-                // If the world has 0 players in it, say that it is empty
                 outMap.put(world.getAliasOrName(), Message.of(MVCorei18n.WHO_EMPTY));
             }
         }

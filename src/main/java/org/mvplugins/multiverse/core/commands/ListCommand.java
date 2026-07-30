@@ -93,13 +93,6 @@ class ListCommand extends CoreCommand {
         return worldList;
     }
 
-    /**
-     * Gets a world's name or alias.
-     *
-     * @param world The world to retrieve the name of
-     * @param useRawNames True to return the name, false to return the alias
-     * @return The name
-     */
     private String getWorldName(MultiverseWorld world, boolean useRawNames) {
         if (useRawNames) {
             return world.getName();
@@ -110,7 +103,6 @@ class ListCommand extends CoreCommand {
 
     private boolean canSeeWorld(MVCommandIssuer issuer, MultiverseWorld world) {
         return !world.isHidden()
-                // TODO: Refactor stray permission check
                 || issuer.hasPermission("multiverse.core.modify");
     }
 

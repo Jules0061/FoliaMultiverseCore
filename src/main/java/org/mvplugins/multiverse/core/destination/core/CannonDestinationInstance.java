@@ -10,28 +10,16 @@ import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
-/**
- * Destination instance implementation for the {@link CannonDestination}.
- */
 public final class CannonDestinationInstance extends DestinationInstance<CannonDestinationInstance, CannonDestination> {
     private final UnloadedWorldLocation location;
     private final double speed;
 
-    /**
-     * Constructor.
-     *
-     * @param location The location to teleport to.
-     * @param speed The speed to fire the player at.
-     */
     CannonDestinationInstance(@NotNull CannonDestination destination, @NotNull UnloadedWorldLocation location, double speed) {
         super(destination);
         this.location = location;
         this.speed = speed;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
         if (location.getWorld() == null) {
@@ -40,9 +28,6 @@ public final class CannonDestinationInstance extends DestinationInstance<CannonD
         return Option.of(location.toBukkitLocation());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<Vector> getVelocity(@NotNull Entity teleportee) {
         double pitchRadians = Math.toRadians(location.getPitch());
@@ -50,31 +35,21 @@ public final class CannonDestinationInstance extends DestinationInstance<CannonD
         double x = Math.sin(yawRadians) * speed * -1;
         double y = Math.sin(pitchRadians) * speed * -1;
         double z = Math.cos(yawRadians) * speed;
-        // Account for the angle they were pointed, and take away velocity
         x = Math.cos(pitchRadians) * x;
         z = Math.cos(pitchRadians) * z;
         return Option.of(new Vector(x, y, z));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean checkTeleportSafety() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
         return Option.of(location.getWorld()).map(World::getName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String serialise() {
         return location.getWorldName() + ":" + location.getX() + "," + location.getY()

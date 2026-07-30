@@ -30,21 +30,8 @@ import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 
-/**
- * A config node that contains a list of values.
- *
- * @param <I>   The type of the value.
- */
 public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueNode<I> {
 
-    /**
-     * Creates a new builder for a {@link ConfigNode}.
-     *
-     * @param path  The path of the node.
-     * @param type  The type of the value.
-     * @param <I>   The type of the value.
-     * @return The new builder.
-     */
     public static @NotNull <I, B  extends Builder<I, B>> Builder<I, B> listBuilder(
             @NotNull String path,
             @NotNull Class<I> type) {
@@ -151,12 +138,10 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @Override
             public List<I> deserialize(Object object, Class<List<I>> type) {
                 if (object instanceof List list) {
-                    //noinspection unchecked
                     return (List<I>) list.stream()
                             .map(item -> itemSerializer != null ? itemSerializer.deserialize(item, itemType) : item)
                             .collect(Collectors.toList());
                 }
-                //todo: Maybe assume object is the first element of the list
                 return new ArrayList<>();
             }
 
@@ -183,17 +168,11 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Class<I> getItemType() {
         return itemType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<String> suggestItem(@Nullable String input) {
         if (itemSuggester != null) {
@@ -202,9 +181,6 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         return Collections.emptyList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<String> suggestItem(@NotNull CommandSender sender, @Nullable String input) {
         if (itemSuggester != null && itemSuggester instanceof SenderNodeSuggester senderSuggester) {
@@ -213,9 +189,6 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         return suggestItem(input);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Try<I> parseItemFromString(@Nullable String input) {
         if (itemStringParser != null) {
@@ -224,9 +197,6 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         return Try.failure(new UnsupportedOperationException("No item string parser for type " + itemType));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Try<I> parseItemFromString(@NotNull CommandSender sender, @Nullable String input) {
         if (itemStringParser != null && itemStringParser instanceof SenderNodeStringParser<I> senderStringParser) {
@@ -235,17 +205,11 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         return parseItemFromString(input);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @Nullable NodeSerializer<I> getItemSerializer() {
         return itemSerializer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Try<Void> validateItem(@Nullable I value) {
         if (itemValidator != null) {
@@ -254,9 +218,6 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         return Try.success(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onSetItemValue(@Nullable I oldValue, @Nullable I newValue) {
         if (onSetItemValue != null) {
@@ -273,105 +234,49 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         protected @Nullable Function<I, Try<Void>> itemValidator;
         protected @Nullable BiConsumer<I, I> onSetItemValue;
 
-        /**
-         * Creates a new builder.
-         *
-         * @param path      The path of the node.
-         * @param itemType  The type of the item value in list.
-         */
         protected Builder(@NotNull String path, @NotNull Class<I> itemType) {
-            //noinspection unchecked
             super(path, (Class<List<I>>) (Object) List.class);
             this.itemType = itemType;
             this.defaultValue = ArrayList::new;
         }
 
-        /**
-         * Sets the suggester for an individual item in the list.
-         *
-         * @param itemSuggester The suggester.
-         * @return This builder.
-         */
         public @NotNull B itemSuggester(@NotNull NodeSuggester itemSuggester) {
             this.itemSuggester = itemSuggester;
             return self();
         }
 
-        /**
-         * Sets the suggester for an individual item in the list with sender context.
-         *
-         * @param itemSuggester The suggester.
-         * @return This builder.
-         *
-         * @since 5.1
-         */
         @ApiStatus.AvailableSince("5.1")
         public @NotNull B itemSuggester(@NotNull SenderNodeSuggester itemSuggester) {
             this.itemSuggester = itemSuggester;
             return self();
         }
 
-        /**
-         * Sets the string parser for an individual item in the list.
-         *
-         * @param itemStringParser  The string parser.
-         * @return This builder.
-         */
         public @NotNull B itemStringParser(@NotNull NodeStringParser<I> itemStringParser) {
             this.itemStringParser = itemStringParser;
             return self();
         }
 
-        /**
-         * Sets the string parser for an individual item in the list with sender context.
-         *
-         * @param itemStringParser  The string parser.
-         * @return This builder.
-         *
-         * @since 5.1
-         */
         @ApiStatus.AvailableSince("5.1")
         public @NotNull B itemStringParser(@NotNull SenderNodeStringParser<I> itemStringParser) {
             this.itemStringParser = itemStringParser;
             return self();
         }
 
-        /**
-         * Sets the serializer for an individual item in the list.
-         *
-         * @param serializer The serializer.
-         * @return This builder.
-         */
         public @NotNull B itemSerializer(@NotNull NodeSerializer<I> serializer) {
             this.itemSerializer = serializer;
             return self();
         }
 
-        /**
-         * Sets the validator for an individual item in the list.
-         *
-         * @param itemValidator The validator.
-         * @return This builder.
-         */
         public @NotNull B itemValidator(@NotNull Function<I, Try<Void>> itemValidator) {
             this.itemValidator = itemValidator;
             return self();
         }
 
-        /**
-         * Sets the onSetValue for an individual item in the list.
-         *
-         * @param onSetItemValue    The onSetValue.
-         * @return This builder.
-         */
         public @NotNull B onSetItemValue(@Nullable BiConsumer<I, I> onSetItemValue) {
             this.onSetItemValue = onSetItemValue;
             return self();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public @NotNull ListConfigNode<I> build() {
             return new ListConfigNode<>(

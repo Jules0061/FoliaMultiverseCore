@@ -6,9 +6,6 @@ import org.mvplugins.multiverse.core.locale.message.LocalizableMessage;
 import org.mvplugins.multiverse.core.locale.message.LocalizedMessage;
 import org.mvplugins.multiverse.core.locale.message.Message;
 
-/**
- * ACF's InvalidCommandArgument with added support for MV's LocalizedMessage class.
- */
 public class MVInvalidCommandArgument extends InvalidCommandArgument {
 
     @ApiStatus.AvailableSince("5.7")

@@ -75,7 +75,6 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/worlds/newworld_worlds.yml", "worlds.yml")
 
-        // Make sure the world still can be loaded after save
         assertTrue(worldConfigManager.load().isSuccess)
         assertEquals(WorldKeyOrName.parseKey(newWorldKey), worldConfigManager.getWorldConfig(key("minecraft:new.world")).orNull?.worldKeyOrName)
         assertConfigEquals("/worlds/newworld_worlds.yml", "worlds.yml")

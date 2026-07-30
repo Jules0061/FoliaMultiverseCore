@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2012.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -27,9 +20,6 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.bukkit.PortalType.CUSTOM;
 
-/**
- * A custom listener for portal related events.
- */
 @Service
 final class MVPortalListener implements CoreListener {
 
@@ -46,11 +36,6 @@ final class MVPortalListener implements CoreListener {
         this.commandManager = commandManager;
     }
 
-    /**
-     * This is called when a portal is formed.
-     *
-     * @param event The event where a portal was created or formed due to a world link
-     */
     @EventMethod
     @IgnoreIfCancelled
     void portalCreate(PortalCreateEvent event) {
@@ -75,7 +60,6 @@ final class MVPortalListener implements CoreListener {
     private PortalType getPortalType(PortalCreateEvent event) {
         return switch (event.getReason()) {
             case FIRE -> {
-                // Ensure portal by flint and steel actually creates nether
                 for (BlockState block : event.getBlocks()) {
                     if (block.getType() == Material.NETHER_PORTAL) {
                         yield PortalType.NETHER;
@@ -92,11 +76,6 @@ final class MVPortalListener implements CoreListener {
         };
     }
 
-    /**
-     * This method will prevent ender portals from being created in worlds where they are not allowed due to portalForm.
-     *
-     * @param event The player interact event.
-     */
     @EventMethod
     @IgnoreIfCancelled
     void playerInteract(PlayerInteractEvent event) {
@@ -123,11 +102,6 @@ final class MVPortalListener implements CoreListener {
                 || event.getItem().getType() != Material.ENDER_EYE;
     }
 
-    /**
-     * Handles portal search radius adjustment.
-     *
-     * @param event The Event that was fired.
-     */
     @EventMethod
     void entityPortal(EntityPortalEvent event) {
         if (event.isCancelled() || event.getTo() == null) {

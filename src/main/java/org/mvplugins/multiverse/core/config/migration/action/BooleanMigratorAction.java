@@ -4,9 +4,6 @@ import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-/**
- * Single migrator action that converts a string value to a boolean.
- */
 public final class BooleanMigratorAction implements MigratorAction {
 
     public static BooleanMigratorAction of(String path) {
@@ -25,4 +22,3 @@ public final class BooleanMigratorAction implements MigratorAction {
         Logging.config("Converted %s to boolean %s", path, config.getBoolean(path));
     }
 }
-

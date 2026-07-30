@@ -4,10 +4,6 @@ import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.inject.binder.JavaPluginBinder;
 
-/**
- * Binder for a {@link MultiverseModule}
- * @param <T>   The type of the module
- */
 public abstract class MultiverseModuleBinder<T extends MultiverseModule> extends JavaPluginBinder<T> {
 
     protected MultiverseModuleBinder(@NotNull T module) {

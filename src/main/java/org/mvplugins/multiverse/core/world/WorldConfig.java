@@ -34,9 +34,6 @@ import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
-/**
- * Represents a world configuration.
- */
 final class WorldConfig {
 
     private final WorldKeyOrName keyOrName;
@@ -73,42 +70,30 @@ final class WorldConfig {
                         .addAction(BooleanMigratorAction.of("auto-load"))
                         .addAction(MoveMigratorAction.of("bedRespawn", "bed-respawn"))
                         .addAction(BooleanMigratorAction.of("bed-respawn"))
-                        //.addAction(MoveMigratorAction.of("difficulty", "difficulty"))
                         .addAction(MoveMigratorAction.of("entryfee.amount", "entry-fee.amount"))
                         .addAction(DoubleMigratorAction.of("entry-fee.amount"))
                         .addAction(MoveMigratorAction.of("entryfee.currency", "entry-fee.currency"))
                         .addAction(DeleteMigratorAction.of("entryfee"))
-                        //.addAction(MoveMigratorAction.of("environment", "environment"))
                         .addAction(MoveMigratorAction.of("gameMode", "gamemode"))
-                        //.addAction(MoveMigratorAction.of("generator", "generator"))
                         .addAction(NullStringMigratorAction.of("generator"))
-                        //.addAction(MoveMigratorAction.of("hidden", "hidden"))
                         .addAction(BooleanMigratorAction.of("hidden"))
-                        //.addAction(MoveMigratorAction.of("hunger", "hunger"))
                         .addAction(BooleanMigratorAction.of("hunger"))
                         .addAction(MoveMigratorAction.of("keepSpawnInMemory", "keep-spawn-in-memory"))
                         .addAction(BooleanMigratorAction.of("keep-spawn-in-memory"))
                         .addAction(MoveMigratorAction.of("playerLimit", "player-limit"))
                         .addAction(IntegerMigratorAction.of("player-limit"))
                         .addAction(MoveMigratorAction.of("portalForm", "portal-form"))
-                        //.addAction(MoveMigratorAction.of("pvp", "pvp"))
                         .addAction(BooleanMigratorAction.of("pvp"))
                         .addAction(MoveMigratorAction.of("respawnWorld", "respawn-world"))
-                        //.addAction(MoveMigratorAction.of("scale", "scale"))
                         .addAction(DoubleMigratorAction.of("scale"))
-                        //.addAction(MoveMigratorAction.of("seed", "seed"))
                         .addAction(LongMigratorAction.of("seed"))
                         .addAction(MoveMigratorAction.of("spawnLocation", "spawn-location"))
-                        //.addAction(MoveMigratorAction.of("spawning.animals.spawn", "spawning.animals.spawn"))
                         .addAction(BooleanMigratorAction.of("spawning.animals.spawn"))
                         .addAction(MoveMigratorAction.of("spawning.animals.spawnrate", "spawning.animals.tick-rate"))
                         .addAction(IntegerMigratorAction.of("spawning.animals.tick-rate"))
-                        //.addAction(MoveMigratorAction.of("spawning.animals.exceptions", "spawning.animals.exceptions"))
-                        //.addAction(MoveMigratorAction.of("spawning.monsters.spawn", "spawning.monsters.spawn"))
                         .addAction(BooleanMigratorAction.of("spawning.monsters.spawn"))
                         .addAction(MoveMigratorAction.of("spawning.monsters.spawnrate", "spawning.monsters.tick-rate"))
                         .addAction(IntegerMigratorAction.of("spawning.monsters.tick-rate"))
-                        //.addAction(MoveMigratorAction.of("spawning.monsters.exceptions", "spawning.monsters.exceptions"))
                         .addAction(MoveMigratorAction.of("worldBlacklist", "world-blacklist"))
                         .addAction(new EntryFeeMigrator())
                         .addAction(new LegacyAliasMigrator())
@@ -428,9 +413,6 @@ final class WorldConfig {
         configNodes.setWorld(null);
     }
 
-    /**
-     * Migrates the entry fee settings. Assumes entry fee is disabled if currency is not set.
-     */
     private static final class EntryFeeMigrator implements MigratorAction {
         @Override
         public void migrate(ConfigurationSection config) {
@@ -445,9 +427,6 @@ final class WorldConfig {
         }
     }
 
-    /**
-     * Migrates the alias settings.
-     */
     private static final class LegacyAliasMigrator implements MigratorAction {
         @Override
         public void migrate(ConfigurationSection config) {
@@ -479,7 +458,6 @@ final class WorldConfig {
         }
 
         private enum EnglishChatColor {
-            // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
             AQUA(ChatColor.AQUA),
             BLACK(ChatColor.BLACK),
             BLUE(ChatColor.BLUE),
@@ -496,10 +474,8 @@ final class WorldConfig {
             RED(ChatColor.RED),
             YELLOW(ChatColor.YELLOW),
             WHITE(ChatColor.WHITE);
-            // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
             private final ChatColor color;
-            //private final String text;
 
             EnglishChatColor(ChatColor color) {
                 this.color = color;
@@ -507,17 +483,12 @@ final class WorldConfig {
         }
 
         private enum EnglishChatStyle {
-            // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
-            /**
-             * No style.
-             */
             NORMAL(null),
             MAGIC(ChatColor.MAGIC),
             BOLD(ChatColor.BOLD),
             STRIKETHROUGH(ChatColor.STRIKETHROUGH),
             UNDERLINE(ChatColor.UNDERLINE),
             ITALIC(ChatColor.ITALIC);
-            // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
             private final ChatColor color;
 

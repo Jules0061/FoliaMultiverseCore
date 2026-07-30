@@ -49,7 +49,6 @@ final class AnchorSetCommand extends CoreCommand {
             @Single
             @Syntax("<name>")
             @Description("")
-            //TODO: Check if anchor name is valid or exists already.
             String anchorName) {
         Location anchorLocation = player.getLocation();
         if (anchorManager.setAnchor(anchorName, anchorLocation).isSuccess()) {

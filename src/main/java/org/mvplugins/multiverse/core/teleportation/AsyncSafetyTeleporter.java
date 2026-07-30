@@ -11,9 +11,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.utils.MVScheduler;
 
-/**
- * Teleports entities safely and asynchronously. Provider for the {@link AsyncSafetyTeleporter}.
- */
 @Service
 public final class AsyncSafetyTeleporter {
     @NotNull
@@ -34,12 +31,6 @@ public final class AsyncSafetyTeleporter {
         this.pluginManager = pluginManager;
     }
 
-    /**
-     * Sets the location to teleport to.
-     *
-     * @param location The location
-     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
-     */
     public AsyncSafetyTeleporterAction to(@Nullable Location location) {
         return new AsyncSafetyTeleporterAction(
                 scheduler,
@@ -50,12 +41,6 @@ public final class AsyncSafetyTeleporter {
         );
     }
 
-    /**
-     * Sets the destination to teleport to.
-     *
-     * @param destination The destination
-     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
-     */
     public AsyncSafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
         return new AsyncSafetyTeleporterAction(
                 scheduler,

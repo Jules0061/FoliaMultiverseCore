@@ -9,22 +9,8 @@ import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 
-/**
- * Simple parser for map object.
- *
- * @param <K>   Key type.
- * @param <V>   Value type.
- */
 public class MapContentProvider<K, V> implements ContentProvider {
 
-    /**
-     * New map content parser for the given map.
-     *
-     * @param map   The map object to parse.
-     * @param <K>   Key type.
-     * @param <V>   Value type.
-     * @return New {@link MapContentProvider} instance.
-     */
     public static <K, V> MapContentProvider<K, V> forContent(Map<K, V> map) {
         return new MapContentProvider<>(map);
     }
@@ -40,9 +26,6 @@ public class MapContentProvider<K, V> implements ContentProvider {
         this.map = map;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Collection<String> parse(@NotNull MVCommandIssuer issuer) {
         return map.entrySet().stream()
@@ -63,45 +46,21 @@ public class MapContentProvider<K, V> implements ContentProvider {
         return stringValue == null ? Message.of(MVCorei18n.CONTENTDISPLAY_NULL).formatted(issuer) : stringValue;
     }
 
-    /**
-     * Sets the format that will be used to parse each map entry. Uses java string format pattern.
-     *
-     * @param format    The format to use.
-     * @return Same {@link MapContentProvider} for method chaining.
-     */
     public MapContentProvider<K, V> withFormat(String format) {
         this.format = format;
         return this;
     }
 
-    /**
-     * Sets the color for the key text.
-     *
-     * @param keyColor  The color to use.
-     * @return Same {@link MapContentProvider} for method chaining.
-     */
     public MapContentProvider<K, V> withKeyColor(ChatColor keyColor) {
         this.keyColor = keyColor;
         return this;
     }
 
-    /**
-     * Sets the color for the value text.
-     *
-     * @param valueColor    The color to use.
-     * @return Same {@link MapContentProvider} for method chaining.
-     */
     public MapContentProvider<K, V> withValueColor(ChatColor valueColor) {
         this.valueColor = valueColor;
         return this;
     }
 
-    /**
-     * Sets the separator between each key value pairing.
-     *
-     * @param separator The separator to use.
-     * @return Same {@link MapContentProvider} for method chaining.
-     */
     public MapContentProvider<K, V> withSeparator(String separator) {
         this.separator = separator;
         return this;

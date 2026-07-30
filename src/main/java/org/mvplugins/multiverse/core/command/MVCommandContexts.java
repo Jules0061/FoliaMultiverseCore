@@ -372,7 +372,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         throw new RuntimeException(location.getCause());
     }
 
-    // copied from ACF
     private Location parseLocationFromInput(String input, CommandSender sender) {
         String[] split = REPatterns.COLON.split(input, 2);
         if (split.length == 0) {

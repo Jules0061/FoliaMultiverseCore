@@ -9,9 +9,6 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
-/**
- * Pastes to {@code paste.gg}.
- */
 final class PasteGGPasteService extends PasteService {
     private final boolean isPrivate;
     private static final String PASTEGG_POST_REQUEST = "https://api.paste.gg/v1/pastes";
@@ -21,9 +18,6 @@ final class PasteGGPasteService extends PasteService {
         this.isPrivate = isPrivate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(String data) {
         Map<String, String> mapData = new HashMap<>();
@@ -31,9 +25,6 @@ final class PasteGGPasteService extends PasteService {
         return this.encodeData(mapData);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(Map<String, String> files) {
         JSONObject root = new JSONObject();
@@ -54,9 +45,6 @@ final class PasteGGPasteService extends PasteService {
         return root.toJSONString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String postData(String data) throws PasteFailedException {
         try {
@@ -67,9 +55,6 @@ final class PasteGGPasteService extends PasteService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
@@ -80,9 +65,6 @@ final class PasteGGPasteService extends PasteService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsMultiFile() {
         return true;

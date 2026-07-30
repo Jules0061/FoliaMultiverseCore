@@ -26,9 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Registers {@link DynamicListener} to bukkit's event system.
- */
 @Service
 public final class DynamicListenerRegistration {
 
@@ -45,12 +42,6 @@ public final class DynamicListenerRegistration {
         this.eventPriorityMapper = eventPriorityMapper;
     }
 
-    /**
-     * Registers a {@link DynamicListener} to bukkit's event system.
-     *
-     * @param listener  The listener to register
-     * @param plugin    The plugin associated with the listener
-     */
     public void register(@NotNull DynamicListener listener, @NotNull Plugin plugin) {
         Set<Method> listenerMethods = new HashSet<>();
         listenerMethods.addAll(List.of(listener.getClass().getMethods()));

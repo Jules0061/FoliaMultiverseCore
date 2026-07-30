@@ -5,18 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 
-/**
- * Most basic implementation of {@link SendHandler} that just sends content with no formatting.
- */
 public final class DefaultSendHandler implements SendHandler {
 
     private static DefaultSendHandler instance;
 
-    /**
-     * Gets the singleton instance of this class.
-     *
-     * @return The singleton instance of this class.
-     */
     public static DefaultSendHandler getInstance() {
         if (instance == null) {
             instance = new DefaultSendHandler();
@@ -27,9 +19,6 @@ public final class DefaultSendHandler implements SendHandler {
     private DefaultSendHandler() {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void send(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         content.forEach(issuer::sendMessage);

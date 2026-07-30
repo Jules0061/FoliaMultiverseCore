@@ -38,8 +38,6 @@ public final class EntitySpawnConfig {
 
     @ApiStatus.AvailableSince("5.7")
     public boolean shouldAllowSpawn(@NotNull EntityType entityType) {
-        // Ensure it defaults to true if SpawnCategoryMapper fails to find a spawn category for the entity type,
-        // to avoid accidentally breaking mob spawns.
         return SpawnCategoryMapper.getSpawnCategory(entityType)
                 .map(spawnCategory -> getSpawnCategoryConfig(spawnCategory).shouldAllowSpawn(entityType))
                 .getOrElse(true);

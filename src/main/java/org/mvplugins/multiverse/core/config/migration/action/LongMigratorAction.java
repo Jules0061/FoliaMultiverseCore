@@ -4,9 +4,6 @@ import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-/**
- * Single migrator action that converts a string value to a long.
- */
 public final class LongMigratorAction implements MigratorAction {
 
     public static LongMigratorAction of(String path) {
@@ -19,9 +16,6 @@ public final class LongMigratorAction implements MigratorAction {
         this.path = path;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void migrate(ConfigurationSection config) {
         config.set(path, ACFUtil.parseLong(config.getString(path)));

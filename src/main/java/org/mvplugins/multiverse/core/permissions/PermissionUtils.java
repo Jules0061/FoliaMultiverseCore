@@ -15,7 +15,6 @@ public final class PermissionUtils {
     private static boolean debugPermissions = false;
 
     private PermissionUtils() {
-        // Prevent instantiation
     }
 
     public static boolean isDebugPermissions() {
@@ -26,21 +25,11 @@ public final class PermissionUtils {
         PermissionUtils.debugPermissions = debugPermissions;
     }
 
-    /**
-     * Registers a permission along with all its wildcard parents.
-     * <br />
-     * For example, registering "mv.bypass.joinlocation" will also register "mv.*" and "mv.bypass.*" as parents.
-     *
-     * @param permission    The permission to register.
-     *
-     * @since 5.4
-     */
     @ApiStatus.AvailableSince("5.4")
     public static void registerPermissionWithWildcards(Permission permission) {
         Bukkit.getServer().getPluginManager().addPermission(permission);
         String[] split = permission.getName().split("\\.");
         StringBuilder prefix = new StringBuilder();
-        // Skip the last element since it's the actual permission
         Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).forEach(s -> {
             prefix.append(s).append(".");
             Permission perm = getOrAddPermission(prefix + "*");
@@ -57,24 +46,10 @@ public final class PermissionUtils {
         return perm;
     }
 
-    /**
-     * Joins permissions with a dot.
-     *
-     * @param permission    The permission
-     * @param child         The string(s) to join
-     * @return The newly joined permission node.
-     */
     public static String concatPermission(String permission, String... child) {
         return permission + "." + String.join(".", child);
     }
 
-    /**
-     * Check and log if the sender has the permission.
-     *
-     * @param sender        The sender
-     * @param permission    The permission
-     * @return True if the sender has the permission, else false.
-     */
     public static boolean hasPermission(CommandSender sender, String permission) {
         if (sender.hasPermission(permission)) {
             if (debugPermissions && !(sender instanceof ConsoleCommandSender)) {

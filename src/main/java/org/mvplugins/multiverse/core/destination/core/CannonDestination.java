@@ -23,9 +23,6 @@ import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * {@link Destination} implementation for cannons.
- */
 @Service
 public final class CannonDestination implements Destination<CannonDestination, CannonDestinationInstance, CannonDestination.InstanceFailureReason> {
 
@@ -36,17 +33,11 @@ public final class CannonDestination implements Destination<CannonDestination, C
         this.worldManager = worldManager;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String getIdentifier() {
         return "ca";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Attempt<CannonDestinationInstance, InstanceFailureReason> getDestinationInstance(
             @NotNull CommandSender sender,
@@ -68,7 +59,6 @@ public final class CannonDestination implements Destination<CannonDestination, C
             return Attempt.failure(InstanceFailureReason.INVALID_COORDINATES_FORMAT);
         }
 
-        //TODO: Add support for alias names
         World world = this.worldManager.getLoadedWorld(worldName).map(LoadedMultiverseWorld::getBukkitWorld).getOrNull().getOrNull();
         if (world == null) {
             return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
@@ -93,9 +83,6 @@ public final class CannonDestination implements Destination<CannonDestination, C
         return Attempt.success(new CannonDestinationInstance(this, location, dSpeed));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
@@ -115,9 +102,6 @@ public final class CannonDestination implements Destination<CannonDestination, C
             this.messageKey = message;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public MessageKey getMessageKey() {
             return messageKey.getMessageKey();

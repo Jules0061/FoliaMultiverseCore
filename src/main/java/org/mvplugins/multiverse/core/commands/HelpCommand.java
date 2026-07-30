@@ -32,7 +32,6 @@ class HelpCommand extends CoreCommand {
     @Description("{@@mv-core.usage.description}")
     void onHelpCommand(CommandHelp help) {
         if (help.getIssuer().isPlayer()) {
-            // Prevent flooding the chat
             help.setPerPage(4);
         }
         this.commandManager.showUsage(help);

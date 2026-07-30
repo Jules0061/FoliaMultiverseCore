@@ -9,16 +9,8 @@ import org.mvplugins.multiverse.core.locale.MVCorei18n;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * Display the contents in a single line.
- */
 public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
 
-    /**
-     * Makes a new {@link InlineSendHandler} instance to use.
-     *
-     * @return  New {@link InlineSendHandler} instance.
-     */
     public static InlineSendHandler create() {
         return new InlineSendHandler();
     }
@@ -29,9 +21,6 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
     InlineSendHandler() {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void sendContent(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
@@ -44,12 +33,6 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
         issuer.sendMessage(message);
     }
 
-    /**
-     * Sets the delimiter. A sequence of characters that is used to separate each of the elements in content.
-     *
-     * @param delimiter The delimiter to use.
-     * @return Same {@link InlineSendHandler} for method chaining.
-     */
     public InlineSendHandler withDelimiter(String delimiter) {
         this.delimiter = delimiter;
         return this;

@@ -17,14 +17,6 @@ public final class ServerProperties {
 
     private static ServerProperties instance;
 
-    /**
-     * A very bad static way of obtaining the level name from server.properties of older mc versions that
-     * don't have any way of getting main level name.
-     * <br />
-     * For internal use ONLY!
-     *
-     * @return The level name if it can be obtained, else none.
-     */
     @ApiStatus.Internal
     public static Option<String> getStaticLevelName() {
         return Option.of(instance).flatMap(ServerProperties::getLevelName);

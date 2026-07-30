@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core.utils;
 
 import java.io.File;
@@ -31,9 +24,6 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
-/**
- * File-utilities.
- */
 @Service
 public final class FileUtils {
 
@@ -49,20 +39,10 @@ public final class FileUtils {
         Logging.finer("Server folder: " + this.serverFolder);
     }
 
-    /**
-     * The root server folder where Multiverse-Core is installed.
-     *
-     * @return The root server folder
-     */
     public File getServerFolder() {
         return this.serverFolder;
     }
 
-    /**
-     * The bukkit.yml file
-     *
-     * @return The bukkit.yml file if exist, else null.
-     */
     public @Nullable File getBukkitConfig() {
         if (this.bukkitYml == null) {
             this.bukkitYml = findFileFromServerDirectory(config.getBukkitYmlPath());
@@ -71,11 +51,6 @@ public final class FileUtils {
         return this.bukkitYml;
     }
 
-    /**
-     * The server.properties file
-     *
-     * @return The server.properties file if exist, else null.
-     */
     public @Nullable File getServerProperties() {
         if (this.serverProperties == null) {
             this.serverProperties = findFileFromServerDirectory(config.getServerPropertiesPath());
@@ -97,13 +72,6 @@ public final class FileUtils {
         return file;
     }
 
-    /**
-     * Deletes the given folder completely.
-     *
-     * @param file  The folder to delete.
-     * @return A {@link Try} that will contain {@code null} if the folder was deleted successfully, or an exception if
-     *         the folder could not be deleted.
-     */
     public Try<Void> deleteFolder(File file) {
         return deleteFolder(file, Collections.emptyList());
     }
@@ -112,13 +80,6 @@ public final class FileUtils {
         return deleteFolder(file.toPath(), keepFiles);
     }
 
-    /**
-     * Deletes the given folder completely.
-     *
-     * @param path  The folder to delete.
-     * @return A {@link Try} that will contain {@code null} if the folder was deleted successfully, or an exception if
-     *         the folder could not be deleted.
-     */
     public Try<Void> deleteFolder(Path path, Collection<String> keepFiles) {
         try (Stream<Path> files = Files.walk(path)) {
             files.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(file -> {
@@ -153,52 +114,18 @@ public final class FileUtils {
         }
     }
 
-    /**
-     * Copies all the content of the given folder to the given target folder.
-     *
-     * @param sourceDir The folder to copy.
-     * @param targetDir The target folder to copy to.
-     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
-     *         the folder could not be copied.
-     */
     public Try<Void> copyFolder(File sourceDir, File targetDir) {
         return copyFolder(sourceDir.toPath(), targetDir.toPath(), Collections.emptyList());
     }
 
-    /**
-     * Copies most of the content of the given folder to the given target folder, except the list of excluded files
-     * specified.
-     *
-     * @param sourceDir     The folder to copy.
-     * @param targetDir     The target folder to copy to.
-     * @param excludeFiles  The list of files to exclude from copying.
-     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
-     */
     public Try<Void> copyFolder(File sourceDir, File targetDir, List<String> excludeFiles) {
         return copyFolder(sourceDir.toPath(), targetDir.toPath(), excludeFiles);
     }
 
-    /**
-     * Copies all the content of the given folder to the given target folder.
-     *
-     * @param sourceDir The folder to copy.
-     * @param targetDir The target folder to copy to.
-     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
-     *         the folder could not be copied.
-     */
     public Try<Void> copyFolder(Path sourceDir, Path targetDir) {
         return copyFolder(sourceDir, targetDir, Collections.emptyList());
     }
 
-    /**
-     * Copies most of the content of the given folder to the given target folder, except the list of excluded files
-     * specified.
-     *
-     * @param sourceDir     The folder to copy.
-     * @param targetDir     The target folder to copy to.
-     * @param excludeFiles  The list of files to exclude from copying.
-     * @return A {@link Try} that will contain {@code null} if the folder was copied successfully, or an exception if
-     */
     public Try<Void> copyFolder(Path sourceDir, Path targetDir, List<String> excludeFiles) {
         return Try.run(() -> Files.walkFileTree(sourceDir, new CopyDirFileVisitor(sourceDir, targetDir, excludeFiles)))
                 .onFailure(e -> {
@@ -233,12 +160,10 @@ public final class FileUtils {
 
         @Override
         public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) throws IOException {
-            // Pass files that are set to ignore
             if (excludeFiles.contains(file)) {
                 Logging.finest("Ignoring file: " + file);
                 return FileVisitResult.CONTINUE;
             }
-            // Copy the files
             Path targetFile = targetDir.resolve(sourceDir.relativize(file));
             Files.copy(file, targetFile, COPY_ATTRIBUTES);
             return FileVisitResult.CONTINUE;

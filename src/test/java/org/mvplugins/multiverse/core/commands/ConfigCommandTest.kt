@@ -34,7 +34,7 @@ class ConfigCommandTest : AbstractCommandTest() {
     fun `Modify non-existing config property`() {
         addPermission("multiverse.core.config")
         assertTrue(player.performCommand("mv config invalid-property test"))
-        player.nextMessage() // ignore the first line
+        player.nextMessage()
         assertCommandOutput(
             Message.of(
             MVCorei18n.CONFIG_NODE_NOTFOUND,
@@ -46,7 +46,7 @@ class ConfigCommandTest : AbstractCommandTest() {
     fun `Modify config global-debug invalid type`() {
         addPermission("multiverse.core.config")
         assertTrue(player.performCommand("mv config global-debug what"))
-        player.nextMessage() // ignore the first line
+        player.nextMessage()
         assertCommandOutput(Message.of("Unable to convert 'what' to number. (integer)"))
     }
 }

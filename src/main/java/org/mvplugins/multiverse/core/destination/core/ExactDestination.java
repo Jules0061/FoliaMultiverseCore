@@ -31,9 +31,6 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
 
-/**
- * {@link Destination} implementation for exact locations.
- */
 @Service
 public final class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance, ExactDestination.InstanceFailureReason> {
 
@@ -48,20 +45,11 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String getIdentifier() {
         return "e";
     }
 
-    /**
-     * Make a new {@link ExactDestinationInstance} from a {@link Location}.
-     *
-     * @param location  The target location
-     * @return A new {@link ExactDestinationInstance}
-     */
     public @NotNull ExactDestinationInstance fromLocation(@NotNull Location location) {
         return new ExactDestinationInstance(
                 this,
@@ -71,9 +59,6 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Attempt<ExactDestinationInstance, InstanceFailureReason> getDestinationInstance(
             @NotNull CommandSender sender,
@@ -91,7 +76,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                                         EntityPosition.ofLocation(location)
                                 )
                         ))
-                        .getOrElse(() -> Attempt.failure(InstanceFailureReason.INVALID_COORDINATES_FORMAT)); // todo: specific failure reason for this case
+                        .getOrElse(() -> Attempt.failure(InstanceFailureReason.INVALID_COORDINATES_FORMAT));
             }
             return Attempt.failure(InstanceFailureReason.INVALID_FORMAT);
         }
@@ -116,7 +101,6 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
         return Attempt.success(new ExactDestinationInstance(this, worldManager, world.getName(), position));
     }
 
-    //TODO: Extract to a world finder class
     private Option<LoadedMultiverseWorld> getLoadedMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
                 ? worldManager.getLoadedWorldByNameOrAlias(worldName)
@@ -133,9 +117,6 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
         return Option.none();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
@@ -193,9 +174,6 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
             this.messageKey = message;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public MessageKey getMessageKey() {
             return messageKey.getMessageKey();

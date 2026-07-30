@@ -5,18 +5,8 @@ import java.util.Optional;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-/**
- * Single migrator action that moves a value from one path to another.
- */
 public final class MoveMigratorAction implements MigratorAction {
 
-    /**
-     * Creates a new migrator action that moves a value from one path to another.
-     *
-     * @param fromPath  The path to move value from.
-     * @param toPath    The path to move value to.
-     * @return The new migrator action.
-     */
     public static MoveMigratorAction of(String fromPath, String toPath) {
         return new MoveMigratorAction(fromPath, toPath);
     }
@@ -29,9 +19,6 @@ public final class MoveMigratorAction implements MigratorAction {
         this.toPath = toPath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void migrate(ConfigurationSection config) {
         Optional.ofNullable(config.get(fromPath))

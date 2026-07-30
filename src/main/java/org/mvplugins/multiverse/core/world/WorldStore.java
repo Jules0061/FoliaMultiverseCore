@@ -23,34 +23,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 final class WorldStore {
 
-    /**
-     * Only loaded worlds, i.e. will be empty if all worlds are unloaded.
-     */
     private final List<LoadedMultiverseWorld> loadedList;
 
-    /**
-     * Only unloaded worlds, i.e. will be empty if all worlds are loaded.
-     */
     private final List<MultiverseWorld> unloadedList;
 
-    /**
-     * Contains single reference to all worlds, either loaded or unloaded ref depending on the world's current status.
-     */
     private final List<MultiverseWorld> worldList;
 
-    /**
-     * Maps all key and key to loaded ref.
-     */
     private final Map<String, LoadedMultiverseWorld> loadedMap;
 
-    /**
-     * Maps all key and key to unloaded ref.
-     */
     private final Map<String, MultiverseWorld> unloadedMap;
 
-    /**
-     * Maps colorless alias to world key. As alias may not be unique, this is a multimap.
-     */
     private final Multimap<String, String> aliasMap;
 
     @Inject
@@ -91,39 +73,32 @@ final class WorldStore {
         LoadedMultiverseWorld loadedRef = loadedMap.get(world.getKey().toString());
         MultiverseWorld unloadedRef = unloadedMap.get(world.getKey().toString());
 
-        // remove from list
         unloadedList.remove(unloadedRef);
         loadedList.remove(loadedRef);
         worldList.remove(unloadedRef);
         worldList.remove(loadedRef);
 
-        // remove from maps
         loadedMap.remove(world.getKey().toString());
         unloadedMap.remove(world.getName());
 
         unloadedMap.remove(world.getKey().toString());
         unloadedMap.remove(world.getName());
 
-        // remove alias
         aliasMap.remove(world.getColourlessAlias(), world.getKey().toString());
     }
 
     void removeLoadedWorld(LoadedMultiverseWorld world) {
-        // remove from list
         loadedList.remove(world);
         worldList.remove(world);
 
-        // remove from maps
         loadedMap.remove(world.getKey().toString());
         loadedMap.remove(world.getName());
 
-        // Add back unloaded
         unloadedList.add(unloadedMap.get(world.getKey().toString()));
     }
 
     void changeAlias(@Nullable String oldAlias, @Nullable String newAlias, @NotNull NamespacedKey worldKey) {
         if (Objects.equals(oldAlias, newAlias)) {
-            // nothing changed, ignore
             return;
         }
         if (!Strings.isNullOrEmpty(oldAlias)) {
@@ -264,7 +239,6 @@ final class WorldStore {
         if (Strings.isNullOrEmpty(worldNameOrAlias)) {
             return null;
         }
-        //TODO: Not sure if we should fail if there is multiple alias of the same name, but for now just return the first one
         synchronized (aliasMap) {
             return aliasMap.get(worldNameOrAlias.toLowerCase(Locale.ROOT)).stream()
                     .findFirst()

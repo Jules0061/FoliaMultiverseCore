@@ -5,9 +5,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-/**
- * Pastes to {@code pastebin.com}.
- */
 final class PastebinPasteService extends PasteService {
     private final boolean isPrivate;
     private static final String PASTEBIN_POST_REQUEST = "https://pastebin.com/api/api_post.php";
@@ -17,9 +14,6 @@ final class PastebinPasteService extends PasteService {
         this.isPrivate = isPrivate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(String data) {
         return URLEncoder.encode("api_dev_key", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("144d820f540e79a1242b32cb9ab274c6", StandardCharsets.UTF_8) +
@@ -30,17 +24,11 @@ final class PastebinPasteService extends PasteService {
                 "&" + URLEncoder.encode("api_paste_name", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("Multiverse-Core Debug Info", StandardCharsets.UTF_8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(Map<String, String> data) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String postData(String data) throws PasteFailedException {
         try {
@@ -50,9 +38,6 @@ final class PastebinPasteService extends PasteService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
@@ -62,9 +47,6 @@ final class PastebinPasteService extends PasteService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsMultiFile() {
         return false;

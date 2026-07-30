@@ -20,12 +20,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Tracks which players are in which worlds, using a thread-safe map.
- * This allows async access to online players list and the world they are in.
- *
- * @since 5.4
- */
 @ApiStatus.AvailableSince("5.4")
 @Service
 public final class ConcurrentPlayerWorldTracker implements Listener {
@@ -38,13 +32,6 @@ public final class ConcurrentPlayerWorldTracker implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    /**
-     * Get an unmodifiable collection of all online player names on the server.
-     *
-     * @return Unmodifiable collection of online player names.
-     *
-     * @since 5.4
-     */
     @ApiStatus.AvailableSince("5.4")
     @NotNull
     @UnmodifiableView
@@ -52,14 +39,6 @@ public final class ConcurrentPlayerWorldTracker implements Listener {
         return Collections.unmodifiableCollection(playerWorldMap.keySet());
     }
 
-    /**
-     * Get the world name a player is currently in.
-     *
-     * @param playerName Name of the player.
-     * @return World name the player is in, or null if the player is not online.
-     *
-     * @since 5.4
-     */
     @ApiStatus.AvailableSince("5.4")
     @NotNull
     public Option<String> getPlayerWorld(String playerName) {

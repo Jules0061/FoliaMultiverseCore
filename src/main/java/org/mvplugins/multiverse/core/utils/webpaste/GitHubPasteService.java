@@ -8,27 +8,19 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
-/**
- * Pastes to {@code gist.github.com}. Requires an access token with the {@code gist} scope.
- */
 final class GitHubPasteService extends PasteService {
     private final boolean isPrivate;
-    // this access token must have the "gist" scope
     private static final String ACCESS_TOKEN = "token github-access-token";
     private static final String GITHUB_POST_REQUEST = "https://api.github.com/gists";
 
     GitHubPasteService(boolean isPrivate) {
         super(GITHUB_POST_REQUEST, ACCESS_TOKEN);
         this.isPrivate = isPrivate;
-        //noinspection ConstantValue - this is a placeholder that should be replaced with a real access token
         if (ACCESS_TOKEN.endsWith("access-token")) {
             throw new UnsupportedOperationException();
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(String data) {
         Map<String, String> mapData = new HashMap<>();
@@ -36,9 +28,6 @@ final class GitHubPasteService extends PasteService {
         return this.encodeData(mapData);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(Map<String, String> files) {
         JSONObject root = new JSONObject();
@@ -55,9 +44,6 @@ final class GitHubPasteService extends PasteService {
         return root.toJSONString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String postData(String data) throws PasteFailedException {
         try {
@@ -68,9 +54,6 @@ final class GitHubPasteService extends PasteService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
@@ -81,9 +64,6 @@ final class GitHubPasteService extends PasteService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsMultiFile() {
         return true;

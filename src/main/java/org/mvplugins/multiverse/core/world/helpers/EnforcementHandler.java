@@ -27,11 +27,6 @@ public final class EnforcementHandler {
         this.worldManagerProvider = worldManagerProvider;
     }
 
-    /**
-     * Teleports all players to the given location.
-     *
-     * @param world The world to teleport players to.
-     */
     public void handleAllGameModeEnforcement(@NotNull LoadedMultiverseWorld world) {
         if (!config.getEnforceGameMode()) {
             return;
@@ -39,11 +34,6 @@ public final class EnforcementHandler {
         world.getPlayers().peek(players -> players.forEach(this::handleGameModeEnforcement));
     }
 
-    /**
-     * Handles game mode enforcement for the given player in the world they are currently in.
-     *
-     * @param player    The player to enforce game mode for.
-     */
     public void handleGameModeEnforcement(@NotNull Player player) {
         if (!config.getEnforceGameMode()) {
             return;
@@ -61,11 +51,6 @@ public final class EnforcementHandler {
                         player.getName()));
     }
 
-    /**
-     * Handles flight enforcement for all players in the given world.
-     *
-     * @param world The world to enforce flight in.
-     */
     public void handleAllFlightEnforcement(@NotNull LoadedMultiverseWorld world) {
         if (!config.getEnforceFlight()) {
             return;
@@ -73,18 +58,12 @@ public final class EnforcementHandler {
         world.getPlayers().peek(players -> players.forEach(this::handleFlightEnforcement));
     }
 
-    /**
-     * Handles flight enforcement for the given player in the world they are currently in.
-     *
-     * @param player    The player to enforce flight for.
-     */
     public void handleFlightEnforcement(@NotNull Player player) {
         if (!config.getEnforceFlight()) {
             return;
         }
         worldManagerProvider.get().getLoadedWorld(player.getWorld()).peek(world -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
-                // Spectators has to fly or not they will just fall to the void and die
                 player.setAllowFlight(true);
                 player.setFlying(true);
                 return;

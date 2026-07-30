@@ -13,25 +13,14 @@ import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 
-/**
- * Destination instance implementation for the {@link BedDestination}.
- */
 public final class BedDestinationInstance extends DestinationInstance<BedDestinationInstance, BedDestination> {
     private final @Nullable Player player;
 
-    /**
-     * Constructor.
-     *
-     * @param player The player whose bed to use.
-     */
     BedDestinationInstance(@NotNull BedDestination destination, @Nullable Player player) {
         super(destination);
         this.player = player;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
         if (player != null) {
@@ -43,33 +32,21 @@ public final class BedDestinationInstance extends DestinationInstance<BedDestina
         return Option.none();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<Vector> getVelocity(@NotNull Entity teleportee) {
         return Option.none();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean checkTeleportSafety() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
         return Option.of(player != null ? player.getName() : BedDestination.OWN_BED_STRING);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Message getDisplayMessage() {
         return player == null
@@ -77,9 +54,6 @@ public final class BedDestinationInstance extends DestinationInstance<BedDestina
                 : Message.of(MVCorei18n.DESTINATION_BED_DISPLAY_OTHER, Replace.PLAYER.with(player.getName()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String serialise() {
         return player != null ? player.getName() : BedDestination.OWN_BED_STRING;

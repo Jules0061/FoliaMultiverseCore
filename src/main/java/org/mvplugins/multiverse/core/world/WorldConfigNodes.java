@@ -34,9 +34,6 @@ import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
-/**
- * Represents nodes in a world configuration.
- */
 final class WorldConfigNodes {
     private static final double CONFIG_VERSION = 1.0;
 
@@ -85,9 +82,6 @@ final class WorldConfigNodes {
         nodes.add(node);
         return node;
     }
-
-    // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
-    // BEGIN CHECKSTYLE-SUPPRESSION: VisibilityModifier
 
     final ConfigNode<Boolean> adjustSpawn = node(ConfigNode.builder("adjust-spawn", Boolean.class)
             .defaultValue(false));
@@ -192,7 +186,6 @@ final class WorldConfigNodes {
             }));
 
     final ConfigNode<String> generator = node(ConfigNode.builder("generator", String.class)
-            // this should be set on world creation, if @error is shown in config, something went wrong
             .defaultValue("@error")
             .hidden());
 
@@ -307,6 +300,4 @@ final class WorldConfigNodes {
             .defaultValue(CONFIG_VERSION)
             .hidden());
 
-    // END CHECKSTYLE-SUPPRESSION: Javadoc
-    // END CHECKSTYLE-SUPPRESSION: VisibilityModifier
 }

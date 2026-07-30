@@ -8,10 +8,6 @@ import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 
-/**
- * @deprecated The --remove-players flag is being removed in favor of a more flexible system that allows for specifying
- * a destination for players to be teleported to when a world is unloaded. See {@link RemovePlayerDestinationFlags}.
- */
 @Deprecated(forRemoval = true, since = "5.7")
 @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
 @Service

@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core.listeners;
 
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
@@ -32,9 +25,6 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
-/**
- * Multiverse's Entity {@link Listener}.
- */
 @Service
 final class MVEntityListener implements CoreListener {
     private final WorldManager worldManager;
@@ -44,11 +34,6 @@ final class MVEntityListener implements CoreListener {
         this.worldManager = worldManager;
     }
 
-    /**
-     * This method is called when an entity's food level goes higher or lower.
-     *
-     * @param event The Event that was fired.
-     */
     @EventMethod
     void foodLevelChange(FoodLevelChangeEvent event) {
         if (event.isCancelled()) {
@@ -66,11 +51,6 @@ final class MVEntityListener implements CoreListener {
                 });
     }
 
-    /**
-     * This method is called when an entity's health goes up or down.
-     *
-     * @param event The Event that was fired.
-     */
     @EventMethod
     void entityRegainHealth(EntityRegainHealthEvent event) {
         if (event.isCancelled() || event.getRegainReason() != RegainReason.REGEN) {
@@ -85,18 +65,11 @@ final class MVEntityListener implements CoreListener {
                 });
     }
 
-    /**
-     * Fired before other spawn checks is done, helps in performance by cancelling early and preventing unnecessary
-     * checks for spawn reasons that are not allowed in the world.
-     *
-     * @return Event wrapper
-     */
     @EventClass("com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent")
     EventRunnable<?> preCreatureSpawn() {
         return new EventRunnable<PreCreatureSpawnEvent>() {
             @Override
             public void onEvent(PreCreatureSpawnEvent event) {
-                // Always allow custom command and plugins to spawn creatures
                 if (event.getReason() == SpawnReason.CUSTOM
                         || event.getReason() == SpawnReason.COMMAND
                         || event.getReason() == SpawnReason.BREEDING
@@ -116,18 +89,12 @@ final class MVEntityListener implements CoreListener {
         };
     }
 
-    /**
-     * Handle Spawn Category settings.
-     *
-     * @param event The event.
-     */
     @EventMethod
     void creatureSpawn(CreatureSpawnEvent event) {
         if (event.isCancelled()) {
             return;
         }
 
-        // Always allow custom command and plugins to spawn creatures
         if (event.getSpawnReason() == SpawnReason.CUSTOM
                 || event.getSpawnReason() == SpawnReason.COMMAND
                 || event.getSpawnReason() == SpawnReason.BREEDING
@@ -144,13 +111,9 @@ final class MVEntityListener implements CoreListener {
                 });
     }
 
-    /**
-     * Handle Spawn Category settings for non-creature entities.
-     */
     @EventMethod
     void entitySpawn(EntitySpawnEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
-            // Handled by CreatureSpawnEvent
             return;
         }
 

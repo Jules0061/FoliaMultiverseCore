@@ -72,7 +72,6 @@ class GameruleCommand extends CoreCommand {
         Object value = gameRuleValue.value();
         boolean success = true;
         for (LoadedMultiverseWorld world : worlds) {
-            // Set gamerules and add false to list if it fails
             World bukkitWorld = world.getBukkitWorld().getOrNull();
             if (bukkitWorld == null || !bukkitWorld.setGameRule(gamerule, value)) {
                 issuer.sendError(MVCorei18n.GAMERULE_SET_FAILED,
@@ -83,7 +82,6 @@ class GameruleCommand extends CoreCommand {
                 success = false;
             }
         }
-        // Tell user if it was successful
         if (success) {
             if (worlds.length == 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_SET_SUCCESS_SINGLE,
@@ -128,7 +126,6 @@ class GameruleCommand extends CoreCommand {
                                     Replace.WORLD.with(world.getName()));
                         }));
 
-        // Tell user if it was successful
         if (success.get()) {
             if (worlds.length == 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_SINGLE,
@@ -173,12 +170,6 @@ class GameruleCommand extends CoreCommand {
                 .send(issuer);
     }
 
-    /**
-     * Gets all the gamerules and their values for a given world.
-     *
-     * @param world The world to find gamerules for.
-     * @return A map of the gamerules and their values
-     */
     private Map<String, String> getGameRuleMap(World world) {
         Map<String, String> gameRuleMap = new HashMap<>();
         if (world == null) {

@@ -16,11 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 
-/**
- * Generic configuration handle for file based configurations.
- *
- * @param <C>   The configuration type.
- */
 public abstract class FileConfigurationHandle<C extends FileConfiguration> extends BaseConfigurationHandle<C> {
 
     protected final @NotNull Path configPath;
@@ -36,9 +31,6 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
         this.configFile = configPath.toFile();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Try<Void> load() {
         return tryLoadConfigFile().andThenTry(() -> {
@@ -69,11 +61,6 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
             });
     }
 
-    /**
-     * Create a new config file if file does not exist.
-     *
-     * @return Whether the file was created or its given error.
-     */
     protected Try<Void> createConfigFile() {
         return Try.run(() -> {
             if (configFile.exists()) {
@@ -85,17 +72,8 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
         });
     }
 
-    /**
-     * Loads the configuration object.
-     */
     protected abstract void loadConfigObject() throws IOException, InvalidConfigurationException;
 
-    /**
-     * Abstract builder for {@link FileConfigurationHandle}.
-     *
-     * @param <C>   The configuration type.
-     * @param <B>   The builder type.
-     */
     public abstract static class Builder<C extends FileConfiguration, B extends Builder<C, B>>
             extends BaseConfigurationHandle.Builder<C, B> {
 
@@ -106,11 +84,6 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
             this.configPath = configPath;
         }
 
-        /**
-         * Builds the configuration handle.
-         *
-         * @return The configuration handle.
-         */
         public abstract @NotNull FileConfigurationHandle<C> build();
     }
 }

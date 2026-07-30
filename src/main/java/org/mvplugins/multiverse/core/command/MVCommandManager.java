@@ -28,9 +28,6 @@ import org.mvplugins.multiverse.core.utils.MVScheduler;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 
-/**
- * Main class to manage permissions.
- */
 @Service
 public class MVCommandManager extends PaperCommandManager {
 
@@ -72,11 +69,6 @@ public class MVCommandManager extends PaperCommandManager {
         this.setDefaultExceptionHandler(new MVDefaultExceptionHandler());
     }
 
-    /**
-     * Registers a list of commands and handles {@link LegacyAliasCommand} based on config option.
-     * @param commands  The commands to register
-     * @param <T>       The type of the commands
-     */
     public <T extends BaseCommand> void registerAllCommands(List<T> commands) {
         List<T> noLegacy = commands.stream().filter(command -> !(command instanceof LegacyAliasCommand)).toList();
         if (!config.getShowLegacyAliases()) {
@@ -102,28 +94,15 @@ public class MVCommandManager extends PaperCommandManager {
         super.registerCommand(command, force);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public PluginLocales getLocales() {
         return this.pluginLocales;
     }
 
-    /**
-     * Gets class responsible for flag handling.
-     *
-     * @return A not-null {@link CommandFlagsManager}.
-     */
     public synchronized @NotNull CommandFlagsManager getFlagsManager() {
         return flagsManager;
     }
 
-    /**
-     * Manager for command that requires /mv confirm before execution.
-     *
-     * @return A non-null {@link CommandQueueManager}.
-     */
     public synchronized @NotNull CommandQueueManager getCommandQueueManager() {
         return commandQueueManager;
     }
@@ -132,11 +111,6 @@ public class MVCommandManager extends PaperCommandManager {
         return commandPermissions;
     }
 
-    /**
-     * Gets class responsible for parsing string args into objects.
-     *
-     * @return A not-null {@link CommandContexts}.
-     */
     @Override
     public synchronized @NotNull MVCommandContexts getCommandContexts() {
         if (this.contexts == null) {
@@ -145,11 +119,6 @@ public class MVCommandManager extends PaperCommandManager {
         return (MVCommandContexts) this.contexts;
     }
 
-    /**
-     * Gets class responsible for tab-completion handling.
-     *
-     * @return A not-null {@link CommandCompletions}.
-     */
     @Override
     public synchronized @NotNull MVCommandCompletions getCommandCompletions() {
         if (this.completions == null) {
@@ -163,11 +132,6 @@ public class MVCommandManager extends PaperCommandManager {
         return commandPermissions.hasPermission(issuer, permission);
     }
 
-    /**
-     * Standardise usage command formatting for all mv modules.
-     *
-     * @param help The target {@link CommandHelp}.
-     */
     public void showUsage(@NotNull CommandHelp help) {
         List<HelpEntry> entries = help.getHelpEntries();
         if (entries.size() == 1) {

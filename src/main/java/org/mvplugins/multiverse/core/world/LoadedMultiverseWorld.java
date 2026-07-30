@@ -20,9 +20,6 @@ import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
-/**
- * Extension of {@link MultiverseWorld} that represents a world that is currently loaded with bukkit world object.
- */
 public final class LoadedMultiverseWorld extends MultiverseWorld {
 
     private final UUID worldUid;
@@ -68,7 +65,6 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
     private Location readSpawnFromWorld(World world) {
         Location location = world.getSpawnLocation();
 
-        // Verify that location was safe
         if (blockSafety.canSpawnAtLocationSafely(location)) {
             return location;
         }
@@ -81,20 +77,15 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
             return location;
         }
 
-        // The location is not safe, so we need to find a better one.
         Logging.warning("Spawn location from world.dat file was unsafe. Adjusting...");
         Logging.warning("Original Location: " + locationManipulation.strCoordsRaw(location));
         Location newSpawn = blockSafety.findSafeSpawnLocation(location);
-        // I think we could also do this, as I think this is what Notch does.
-        // Not sure how it will work in the nether...
-        //Location newSpawn = this.spawnLocation.getWorld().getHighestBlockAt(this.spawnLocation).getLocation();
         if (newSpawn != null) {
             Logging.info("New Spawn for '%s' is located at: %s",
                     this.getName(), locationManipulation.locationToString(newSpawn));
             return newSpawn;
         }
 
-        // If it's a standard end world, let's check in a better place:
         Logging.fine("Checking for a safe location using top block...");
         Location newerSpawn;
         newerSpawn = blockSafety.getTopBlock(new Location(world, 0, 0, 0));
@@ -114,73 +105,36 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
         }
     }
 
-    /**
-     * Gets the Unique ID of this world.
-     *
-     * @return Unique ID of this world.
-     */
     public UUID getUID() {
         return worldUid;
     }
 
-    /**
-     * Gets the Bukkit world object that this world describes.
-     *
-     * @return Bukkit world object.
-     */
     public Option<World> getBukkitWorld() {
         return Option.of(Bukkit.getWorld(worldUid));
     }
 
-    /**
-     * Gets the type of this world.
-     *
-     * @return Type of this world.
-     */
     public Option<WorldType> getWorldType() {
-        //noinspection deprecation
         return getBukkitWorld().map(World::getWorldType);
     }
 
-    /**
-     * Gets whether or not structures are being generated.
-     *
-     * @return True if structures are being generated.
-     */
     public Option<Boolean> canGenerateStructures() {
         return getBukkitWorld().map(World::canGenerateStructures);
     }
 
-    /**
-     * Get a list of all players in this World.
-     *
-     * @return A list of all Players currently residing in this world
-     */
     public Option<List<Player>> getPlayers() {
         return getBukkitWorld().map(World::getPlayers);
     }
 
-    /**
-     * Get the world border configuration for this world.
-     *
-     * @return World border configuration
-     */
     public Option<WorldBorder> getWorldBorder() {
         return getBukkitWorld().map(World::getWorldBorder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     void setWorldConfig(@NotNull WorldConfig worldConfig) {
         super.setWorldConfig(worldConfig);
         setupWorldConfig(getBukkitWorld().get());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "LoadedMultiverseWorld{"

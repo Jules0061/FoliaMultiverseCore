@@ -87,12 +87,12 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
 import static org.mvplugins.multiverse.core.world.helpers.DataStore.WorldBorderStore;
 import static org.mvplugins.multiverse.core.world.helpers.DataStore.WorldConfigStore;
 
-@Service // SUPPRESS CHECKSTYLE: ClassFanOutComplexity This is the world manager, it's going to be complex.
+@Service
 public final class WorldManager {
 
     private static final List<String> CLONE_IGNORE_FILES = List.of(
-            "uid.dat", "session.lock", // All pre 26.1 format
-            "data/paper/metadata.dat"  // New papermc format for 26.1+
+            "uid.dat", "session.lock",
+            "data/paper/metadata.dat"
     );
 
     private final WorldStore worldStore;
@@ -147,11 +147,6 @@ public final class WorldManager {
         this.loadTracker = new CopyOnWriteArrayList<>();
     }
 
-    /**
-     * Loads all worlds from the worlds config.
-     *
-     * @return The result of the load.
-     */
     @ApiStatus.Internal
     public Try<Void> initAllWorlds() {
         return updateWorldsFromConfig().andThenTry(() -> {
@@ -160,11 +155,6 @@ public final class WorldManager {
         }).flatMap(ignore -> saveWorldsConfig());
     }
 
-    /**
-     * Updates the current set of worlds to match the worlds config.
-     *
-     * @return A successful Try if the worlds.yml config was loaded successfully.
-     */
     private Try<Void> updateWorldsFromConfig() {
         return worldsConfigManager.load().mapTry(result -> {
             loadNewWorldConfigs(result.newWorlds());
@@ -194,16 +184,12 @@ public final class WorldManager {
                         Logging.fine("Unloaded world %s as it was removed from config", keyOrName)));
     }
 
-    /**
-     * Load worlds that are already loaded by bukkit before Multiverse-Core is loaded.
-     */
     private void importExistingWorlds() {
         Map<String, World> bukkitWorlds = Bukkit.getWorlds()
                 .stream()
                 .collect(Collectors.toMap(World::getName, Function.identity()));
 
         serverProperties.getLevelName().peek(overworldName -> {
-            //TODO: check by namespaced key instead
             World overworld = bukkitWorlds.remove(overworldName);
             World nether = bukkitWorlds.remove(DimensionFinder.DEFAULT_NETHER_FORMAT.replaceOverworld(overworldName));
             World end = bukkitWorlds.remove(DimensionFinder.DEFAULT_END_FORMAT.replaceOverworld(overworldName));
@@ -233,9 +219,6 @@ public final class WorldManager {
                                 Logging.fine("Imported existing world %s", newMVWorld.getName())));
     }
 
-    /**
-     * Loads all worlds that are set to autoload.
-     */
     private void autoLoadWorlds() {
         getWorlds().stream()
                 .filter(world -> !isLoadedWorld(world) && world.isAutoLoad())
@@ -246,12 +229,6 @@ public final class WorldManager {
                                 Logging.fine("Autoloaded world %s", newMVWorld.getName())));
     }
 
-    /**
-     * Creates a new world.
-     *
-     * @param options The options for customizing the creation of a new world.
-     * @return The result of the creation.
-     */
     public Attempt<LoadedMultiverseWorld, CreateFailureReason> createWorld(CreateWorldOptions options) {
         return parseCreateWorldOptionsKeyOrName(options).mapAttempt(this::doCreateWorld);
     }
@@ -309,12 +286,6 @@ public final class WorldManager {
         saveWorldsConfig();
     }
 
-    /**
-     * Imports an existing world folder.
-     *
-     * @param options The options for customizing the import of an existing world folder.
-     * @return The result of the import.
-     */
     public Attempt<LoadedMultiverseWorld, ImportFailureReason> importWorld(ImportWorldOptions options) {
         return options.keyOrName()
                 .fold(WorldKeyOrName::parse, Attempt::success)
@@ -337,7 +308,6 @@ public final class WorldManager {
             KeyOrNameWithOptions<ImportWorldOptions> keyOrNameWithOptions) {
         WorldKeyOrName keyOrName = keyOrNameWithOptions.keyOrName();
         if (keyOrNameWithOptions.options().doFolderCheck()) {
-            //todo This is a duplicate of folder check in load world
             WorldNameChecker.FolderStatus folderStatus = worldNameChecker.checkFolder(keyOrName);
             if (!folderStatus.isLoadable()) {
                 return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, keyOrName);
@@ -384,8 +354,6 @@ public final class WorldManager {
                     replace("{mvEnvironment}").with(options.environment().name()));
         }
 
-        //todo: check for key mismatch?
-
         LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
                 bukkitWorld,
                 generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator()),
@@ -403,13 +371,6 @@ public final class WorldManager {
         return mvWorld;
     }
 
-    /**
-     * Creates a new loaded multiverseWorld from a bukkit world.
-     *
-     * @param world         The bukkit world to create a multiverse world from.
-     * @param generator     The generator string.
-     * @param adjustSpawn   Whether to adjust spawn.
-     */
     private LoadedMultiverseWorld newLoadedMultiverseWorld(
             @NotNull World world,
             @Nullable String generator,
@@ -418,13 +379,11 @@ public final class WorldManager {
             boolean adjustSpawn) {
         WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getKey());
 
-        // Properties from multiverse input
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
         worldConfig.setBiome(biome == null ? "" : biome);
         worldConfig.setGeneratorSettings(generatorSettings == null ? "" : generatorSettings);
 
-        // Properties from the bukkit world
         worldConfig.setLegacyWorldName(world.getName());
         worldConfig.setDifficulty(world.getDifficulty());
         worldConfig.setKeepSpawnInMemory(WorldCompatibility.getKeepSpawnInMemory(world));
@@ -447,14 +406,6 @@ public final class WorldManager {
         return loadedWorld;
     }
 
-    /**
-     * Loads an existing world in config.
-     *
-     * @param worldName The name of the world to load.
-     * @return The result of the load.
-     *
-     * @deprecated Use {@link #loadWorld(LoadWorldOptions)} instead.
-     */
     @Deprecated(since = "5.2", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @SuppressWarnings("removal")
@@ -466,28 +417,12 @@ public final class WorldManager {
                         : worldActionResult(LoadFailureReason.WORLD_NON_EXISTENT, worldName));
     }
 
-    /**
-     * Loads an existing world in config.
-     *
-     * @param world The world to load.
-     * @return The result of the load.
-     *
-     * @deprecated Use {@link #loadWorld(LoadWorldOptions)} instead.
-     */
     @Deprecated(since = "5.2", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull MultiverseWorld world) {
         return loadWorld(LoadWorldOptions.world(world));
     }
 
-    /**
-     * Loads an existing world in config.
-     *
-     * @param options The options for customizing the loading of a world.
-     * @return The result of the load.
-     *
-     * @since 5.2
-     */
     @ApiStatus.AvailableSince("5.2")
     public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull LoadWorldOptions options) {
         return validateWorldToLoad(options).mapAttempt(this::doLoadWorld);
@@ -496,7 +431,6 @@ public final class WorldManager {
     private Attempt<LoadWorldOptions, LoadFailureReason> validateWorldToLoad(@NotNull LoadWorldOptions options) {
         MultiverseWorld mvWorld = options.world();
         if (loadTracker.contains(mvWorld.getName())) {
-            // This is to prevent recursive calls by WorldLoadEvent
             Logging.fine("World already loading: " + mvWorld.getName());
             return worldActionResult(LoadFailureReason.WORLD_ALREADY_LOADING, mvWorld.getName());
         } else if (isLoadedWorld(mvWorld)) {
@@ -543,7 +477,6 @@ public final class WorldManager {
                     replace("{bukkitEnvironment}").with(bukkitWorld.getEnvironment().name()),
                     replace("{mvEnvironment}").with(mvWorld.getEnvironment().name()));
         }
-        // World already loaded, maybe by another plugin
         Logging.finer("World already loaded in bukkit: " + mvWorld.getName());
         return newLoadedMultiverseWorld(mvWorld, bukkitWorld);
     }
@@ -552,7 +485,6 @@ public final class WorldManager {
         WorldConfig worldConfig = mvWorld.getWorldConfig();
 
         if (worldConfig.getWorldKeyOrName().isName() && mvWorld.getName().equalsIgnoreCase(bukkitWorld.getName())) {
-            // do migration of namespaced key
             Logging.info("Migrating world config for '%s' to use namespaced key '%s'...",
                     mvWorld.getName(), bukkitWorld.getKey());
             worldConfig = worldsConfigManager.migrateWorldConfigKey(worldConfig, bukkitWorld.getKey());
@@ -580,16 +512,9 @@ public final class WorldManager {
         return Attempt.success(loadedWorld);
     }
 
-    /**
-     * Unloads an existing multiverse world. It will still remain as an unloaded world.
-     *
-     * @param options The options for customizing the unloading of a world.
-     * @return The result of the unload action.
-     */
     public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(@NotNull UnloadWorldOptions options) {
         LoadedMultiverseWorld world = options.world();
         if (unloadTracker.contains(world.getName())) {
-            // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
             return worldActionResult(UnloadFailureReason.WORLD_ALREADY_UNLOADING, world.getName());
         }
@@ -617,15 +542,6 @@ public final class WorldManager {
         return worldActionResult(unloadedWorld);
     }
 
-    /**
-     * Removes an existing multiverse world. It will be deleted from the worlds config and will no longer be an
-     * unloaded world. World files will not be deleted.
-     *
-     * @param worldName The name of the world to remove.
-     * @return The result of the remove.
-     *
-     * @deprecated Get the {@link MultiverseWorld} yourself and use {@link #removeWorld(RemoveWorldOptions)} instead.
-     */
     @Deprecated(since = "5.2", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @SuppressWarnings("removal")
@@ -635,45 +551,18 @@ public final class WorldManager {
                 .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, worldName));
     }
 
-    /**
-     * Removes an existing multiverse world. It will be deleted from the worlds config and will no longer be an
-     * unloaded world. World files will not be deleted.
-     *
-     * @param world The multiverse world to remove.
-     * @return The result of the remove.
-     *
-     * @deprecated Use {@link #removeWorld(RemoveWorldOptions)} instead.
-     */
     @Deprecated(since = "5.2", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull MultiverseWorld world) {
         return removeWorld(RemoveWorldOptions.world(world));
     }
 
-    /**
-     * Removes an existing multiverse world. It will be deleted from the worlds config and will no longer be an
-     * unloaded world. World files will not be deleted.
-     *
-     * @param loadedWorld The multiverse world to remove.
-     * @return The result of the remove.
-     *
-     * @deprecated Use {@link #removeWorld(RemoveWorldOptions)} instead.
-     */
     @Deprecated(since = "5.2", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
         return removeWorld(RemoveWorldOptions.world(loadedWorld));
     }
 
-    /**
-     * Removes an existing multiverse world. It will be deleted from the worlds config and will no longer be known
-     * to Multiverse. World files will not be deleted.
-     *
-     * @param options The options for customizing the removal of a world.
-     * @return The result of the remove action.
-     *
-     * @since 5.2
-     */
     @ApiStatus.AvailableSince("5.2")
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull RemoveWorldOptions options) {
         MultiverseWorld world = options.world();
@@ -694,14 +583,7 @@ public final class WorldManager {
                 .mapAttempt(this::removeWorldFromConfig);
     }
 
-    /**
-     * Removes an existing multiverse world from the world's config. It will no longer be a world known to Multiverse.
-     *
-     * @param world The multiverse world to remove.
-     * @return The result of the remove.
-     */
     private Attempt<String, RemoveFailureReason> removeWorldFromConfig(@NotNull MultiverseWorld world) {
-        // Remove world from config
         worldStore.removeWorld(world);
 
         WorldConfig worldConfig = world.getWorldConfig();
@@ -715,13 +597,6 @@ public final class WorldManager {
         return worldActionResult(world.getName());
     }
 
-    /**
-     * Deletes an existing multiverse world entirely. World will be loaded if it is not already loaded.
-     * Warning: This will delete all world files.
-     *
-     * @param options The options for customizing the deletion of a world.
-     * @return The result of the delete action.
-     */
     public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull DeleteWorldOptions options) {
         return getLoadedWorld(options.world()).fold(
                 () -> loadThenDeleteWorld(options),
@@ -736,12 +611,6 @@ public final class WorldManager {
                 );
     }
 
-    /**
-     * Deletes an existing multiverse world entirely. Warning: This will delete all world files.
-     *
-     * @param world The multiverse world to delete.
-     * @return The result of the delete action.
-     */
     private Attempt<String, DeleteFailureReason> doDeleteWorld(@NotNull LoadedMultiverseWorld world, @NotNull DeleteWorldOptions options) {
         AtomicReference<File> worldFolder = new AtomicReference<>();
         return validateWorldToDelete(world)
@@ -776,12 +645,6 @@ public final class WorldManager {
                 });
     }
 
-    /**
-     * Clones an existing multiverse world.
-     *
-     * @param options The options for customizing the cloning of a world.
-     * @return The result of the clone.
-     */
     public Attempt<LoadedMultiverseWorld, CloneFailureReason> cloneWorld(@NotNull CloneWorldOptions options) {
         return parseCloneWorldOptionsNewWorld(options)
                 .mapAttempt(this::cloneWorldCopyFolder)
@@ -796,7 +659,6 @@ public final class WorldManager {
                 .onSuccess(newWorld -> {
                     cloneWorldTransferData(options, newWorld);
                     if (options.keepWorldConfig()) {
-                        // Special case for spawn location as it's considered a hidden config
                         newWorld.setSpawnLocation(options.fromWorld().getSpawnLocation());
                     }
                     saveWorldsConfig();
@@ -870,12 +732,6 @@ public final class WorldManager {
         });
     }
 
-    /**
-     * Regenerates a world.
-     *
-     * @param options The options for customizing the regeneration of a world.
-     * @return The result of the regeneration.
-     */
     public Attempt<LoadedMultiverseWorld, RegenFailureReason> regenWorld(@NotNull RegenWorldOptions options) {
         LoadedMultiverseWorld world = options.world();
         DataTransfer<LoadedMultiverseWorld> dataTransfer = regenWorldTransferData(options, world);
@@ -899,8 +755,6 @@ public final class WorldManager {
                 .onSuccess(newWorld -> {
                     dataTransfer.pasteAllTo(newWorld);
                     if (shouldKeepSpawnLocation) {
-                        // Special case for spawn location to prevent unsafe location if world was regen using a
-                        // different seed.
                         newWorld.setSpawnLocation(spawnLocation);
                     }
                     saveWorldsConfig();
@@ -969,12 +823,6 @@ public final class WorldManager {
                         Attempt::success);
     }
 
-    /**
-     * Creates a bukkit world.
-     *
-     * @param worldCreator  The world parameters.
-     * @return The created world.
-     */
     private Attempt<World, WorldCreatorFailureReason> createBukkitWorld(WorldCreator worldCreator) {
         return Try.of(() -> {
             this.loadTracker.add(worldCreator.name());
@@ -995,12 +843,6 @@ public final class WorldManager {
                 Attempt::success);
     }
 
-    /**
-     * Unloads a bukkit world.
-     *
-     * @param world The bukkit world to unload.
-     * @return The unloaded world.
-     */
     private Try<Void> unloadBukkitWorld(World world, boolean save) {
         return Try.run(() -> {
             if (world == null) {
@@ -1027,227 +869,94 @@ public final class WorldManager {
         throw new MultiverseWorldException(Message.of(MVCorei18n.EXCEPTION_MULTIVERSEWORLD_UNLOADERROR));
     }
 
-    /**
-     * Gets a list of all potential worlds that can be loaded from the server folders.
-     * Checks based on folder contents and name.
-     *
-     * @return A list of all potential worlds.
-     *
-     * @deprecated Use {@link PotentialWorldFinder#findPotentialWorlds()} instead.
-     */
     @Deprecated(forRemoval = true, since = "5.7")
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public List<String> getPotentialWorlds() {
         return potentialWorldFinder.get().findPotentialWorlds();
     }
 
-    /**
-     * Get a world that may or may not be loaded. It will an {@link LoadedMultiverseWorld} if the world is loaded,
-     * otherwise returns an {@link MultiverseWorld} instance.
-     *
-     * @param world The bukkit world to get.
-     * @return The world if it exists.
-     */
     public Option<MultiverseWorld> getWorld(@Nullable World world) {
         return Option.of(world).map(World::getName).flatMap(this::getWorld);
     }
 
-    /**
-     * Get a world that may or may not be loaded. It will an {@link LoadedMultiverseWorld} if the world is loaded,
-     * otherwise returns an {@link MultiverseWorld} instance.
-     *
-     * @param worldName The name of the world to get.
-     * @return The world if it exists.
-     */
     public Option<MultiverseWorld> getWorld(@Nullable String worldName) {
         return worldStore.getWorld(worldName);
     }
 
-    /**
-     * Get a world that may or may not be loaded by name or alias. It will an {@link LoadedMultiverseWorld} if the world is loaded,
-     * otherwise returns an {@link MultiverseWorld} instance. World name will still be prioritized over alias.
-     *
-     * @param worldNameOrAlias The name or alias of the world to get.
-     * @return The world if it exists.
-     */
     public Option<MultiverseWorld> getWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
         return getWorld(worldNameOrAlias)
                 .orElse(() -> getWorld(worldStore.translateAlias(worldNameOrAlias)));
     }
 
-    /**
-     * <p>Get a list of all worlds that may or may not be loaded. It will an {@link LoadedMultiverseWorld} if the world
-     * is loaded, otherwise you will get an {@link MultiverseWorld} instance.</p>
-     *
-     * <p>If you want only unloaded worlds, use {@link #getUnloadedWorlds()}. If you want only loaded worlds, use
-     * {@link #getLoadedWorlds()}.</p>
-     *
-     * <p>Note that this is an unmodifiable copy of the current worlds. It will not update as worlds are added/removed.
-     * Call it everytime you need the most updated list of worlds.</p>
-     *
-     * @return A list of all worlds that may or may not be loaded.
-     */
     @Unmodifiable
     @NotNull
     public Collection<MultiverseWorld> getWorlds() {
         return worldStore.getWorlds();
     }
 
-    /**
-     * Check if a world is a world is known to multiverse, but may or may not be loaded.
-     *
-     * @param worldName The name of the world to check.
-     * @return True if the world is a world is known to multiverse, but may or may not be loaded.
-     */
     public boolean isWorld(@Nullable String worldName) {
         return worldName != null && worldStore.getWorld(worldName).isDefined();
     }
 
-    /**
-     * Get a world that is not loaded.
-     *
-     * @param worldName The name of the world to get.
-     * @return The world if it exists.
-     */
     public Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldName) {
         return worldStore.getUnloadedWorld(worldName);
     }
 
-    /**
-     * Get a world that is not loaded by name or alias. World name will still be prioritized over alias.
-     *
-     * @param worldNameOrAlias The name or alias of the world to get.
-     * @return The world if it exists.
-     */
     public Option<MultiverseWorld> getUnloadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
         return getUnloadedWorld(worldNameOrAlias)
                 .orElse(() -> getUnloadedWorld(worldStore.translateAlias(worldNameOrAlias)));
     }
 
-    /**
-     * Get a list of all worlds that are not loaded.
-     *
-     * @return A list of all worlds that are not loaded.
-     */
     @Unmodifiable
     @NotNull
     public Collection<MultiverseWorld> getUnloadedWorlds() {
         return worldStore.getUnloadedWorlds();
     }
 
-    /**
-     * Check if a world is a world that is not loaded.
-     *
-     * @param worldName The name of the world to check.
-     * @return True if the world is a world that is not loaded.
-     */
     public boolean isUnloadedWorld(@Nullable String worldName) {
         return !isLoadedWorld(worldName) && isWorld(worldName);
     }
 
-    /**
-     * Get a multiverse world that is loaded.
-     *
-     * @param world The bukkit world that should be loaded.
-     * @return The multiverse world if it exists.
-     */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable World world) {
         return Option.of(world).flatMap(notNullWorld -> getLoadedWorld(notNullWorld.getName()));
     }
 
-    /**
-     * Get a multiverse world that is loaded.
-     *
-     * @param world The world that should be loaded.
-     * @return The multiverse world if it exists.
-     */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable MultiverseWorld world) {
         return Option.of(world).flatMap(notNullWorld -> getLoadedWorld(notNullWorld.getName()));
     }
 
-    /**
-     * Get a multiverse world that is loaded.
-     *
-     * @param worldName The name of the world to get.
-     * @return The multiverse world if it exists.
-     */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldName) {
         return Option.of(worldName).flatMap(worldStore::getLoadedWorld);
     }
 
-    /**
-     * Get a multiverse world that is loaded by name or alias. World name will still be prioritized over alias.
-     *
-     * @param worldNameOrAlias The name or alias of the world to get.
-     * @return The multiverse world if it exists.
-     */
     public Option<LoadedMultiverseWorld> getLoadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
         return getLoadedWorld(worldNameOrAlias)
                 .orElse(() -> getLoadedWorld(worldStore.translateAlias(worldNameOrAlias)));
     }
 
-    /**
-     * Get a read-only list of all multiverse worlds that are loaded.
-     *
-     * <p>Note that this is an unmodifiable copy of the current worlds. It will not update as worlds are added/removed.
-     * Call it everytime you need the most updated list of worlds.</p>
-     *
-     * @return A list of all multiverse worlds that are loaded.
-     */
     @Unmodifiable
     @NotNull
     public Collection<LoadedMultiverseWorld> getLoadedWorlds() {
         return worldStore.getLoadedWorlds();
     }
 
-    /**
-     * Check if a world is a multiverse world that is loaded.
-     *
-     * @param world The bukkit world to check.
-     * @return True if the world is a multiverse world that is loaded.
-     */
     public boolean isLoadedWorld(@Nullable World world) {
         return world != null && isLoadedWorld(world.getName());
     }
 
-    /**
-     * Check if a world is a multiverse world that is loaded.
-     *
-     * @param world The world to check.
-     * @return True if the world is a multiverse world that is loaded.
-     */
     public boolean isLoadedWorld(@Nullable MultiverseWorld world) {
         return world != null && isLoadedWorld(world.getName());
     }
 
-    /**
-     * Check if a world is a multiverse world that is loaded.
-     *
-     * @param worldName The name of the world to check.
-     * @return True if the world is a multiverse world that is loaded.
-     */
     public boolean isLoadedWorld(@Nullable String worldName) {
         return worldName != null && worldStore.getLoadedWorld(worldName).isDefined();
     }
 
-    /**
-     * Gets the default world defined by `level-name` in server.properties. If server.properties is not found,
-     * the first world in the bukkit world list will be returned.
-     * <br/>
-     * This world cannot be unloaded.
-     *
-     * @return The default world.
-     */
     public Option<LoadedMultiverseWorld> getDefaultWorld() {
         return serverProperties.getLevelName().flatMap(this::getLoadedWorld)
                 .orElse(getLoadedWorld(Bukkit.getWorlds().get(0)));
     }
 
-    /**
-     * Saves the worlds.yml config to disk.
-     *
-     * @return A successful try if the file is saved to disk, else the exception object throw.
-     */
     public Try<Void> saveWorldsConfig() {
         return worldsConfigManager.save()
                 .onFailure(failure -> {
@@ -1260,13 +969,5 @@ public final class WorldManager {
         return worldStore;
     }
 
-    /**
-     * A simple pair wrapper for convenience to pass both the world key or name and the options together between methods
-     * when parsing world options.
-     *
-     * @param keyOrName The world key or name.
-     * @param options   The world options.
-     * @param <T> The world options type.
-     */
     private record KeyOrNameWithOptions<T>(WorldKeyOrName keyOrName, T options) { }
 }

@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Handle loading sub-modules of the Multiverse-Core and checking for compatibility with api versions.
- */
 public final class MultiverseModulesRegistry {
 
     private static MultiverseModulesRegistry instance;
@@ -39,7 +36,6 @@ public final class MultiverseModulesRegistry {
         }
         Logging.fine("Registering %s version api %s", module.getDescription().getName(), module.getVersionAsNumber());
         if (core.getVersionAsNumber() == -1) {
-            // Probably a development build, so we dont check for version compatibility
             return;
         }
         if (core.getVersionAsNumber() < module.getTargetCoreVersion()) {
@@ -68,20 +64,10 @@ public final class MultiverseModulesRegistry {
         return core;
     }
 
-    /**
-     * Gets the list of multiverse plugins modules running on this server.
-     *
-     * @return The list of multiverse plugins.
-     */
     public List<String> getRegisteredPlugins() {
         return Collections.unmodifiableList(registeredPlugins);
     }
 
-    /**
-     * Get the number of multiverse plugins running on this server.
-     *
-     * @return The number of multiverse plugins.
-     */
     public int getPluginCount() {
         return pluginCount;
     }

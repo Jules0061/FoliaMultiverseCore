@@ -7,9 +7,6 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
-/**
- * A {@link URLShortener} using {@code bit.ly}. Requires an access token.
- */
 final class BitlyURLShortener extends URLShortener {
     private static final String ACCESS_TOKEN = "Bearer @bitly-access-token@";
     private static final String BITLY_POST_REQUEST = "https://api-ssl.bitly.com/v4/shorten";
@@ -21,9 +18,6 @@ final class BitlyURLShortener extends URLShortener {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(String data) {
         JSONObject json = new JSONObject();
@@ -31,17 +25,11 @@ final class BitlyURLShortener extends URLShortener {
         return json.toJSONString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     String encodeData(Map<String, String> data) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String shorten(String longUrl) {
         try {

@@ -17,9 +17,6 @@ public enum RunQueuedFailedReason implements FailureReason {
         this.message = message;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageKey getMessageKey() {
         return message.getMessageKey();

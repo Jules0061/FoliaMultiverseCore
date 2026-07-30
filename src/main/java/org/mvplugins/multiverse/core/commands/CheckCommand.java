@@ -63,7 +63,6 @@ class CheckCommand extends CoreCommand {
                         .map(Message::of)
                         .getOrElse(() -> Message.of(MVCorei18n.GENERIC_NULL, "Null!"))));
 
-        // TODO: Show permission required for this particular destination
     }
 
     @Service

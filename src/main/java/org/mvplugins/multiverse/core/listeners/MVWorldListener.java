@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -22,9 +15,6 @@ import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
 import org.mvplugins.multiverse.core.world.reasons.LoadFailureReason;
 import org.mvplugins.multiverse.core.world.reasons.UnloadFailureReason;
 
-/**
- * Multiverse's World Listener.
- */
 @Service
 final class MVWorldListener implements CoreListener {
 
@@ -35,11 +25,6 @@ final class MVWorldListener implements CoreListener {
         this.worldManager = worldManager;
     }
 
-    /**
-     * This method is called when Bukkit fires off a WorldUnloadEvent.
-     *
-     * @param event The Event that was fired.
-     */
     @EventMethod
     @DefaultEventPriority(EventPriority.MONITOR)
     void worldUnload(WorldUnloadEvent event) {
@@ -57,11 +42,6 @@ final class MVWorldListener implements CoreListener {
                         }));
     }
 
-    /**
-     * This method is called when Bukkit fires off a WorldLoadEvent.
-     *
-     * @param event The Event that was fired.
-     */
     @EventMethod
     @DefaultEventPriority(EventPriority.MONITOR)
     void worldLoad(WorldLoadEvent event) {

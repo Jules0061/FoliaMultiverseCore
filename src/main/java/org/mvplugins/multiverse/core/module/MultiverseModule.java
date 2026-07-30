@@ -20,9 +20,6 @@ import org.mvplugins.multiverse.core.utils.REPatterns;
 
 import java.util.Locale;
 
-/**
- * Common plugin class for all Multiverse plugins.
- */
 @Contract
 public abstract class MultiverseModule extends JavaPlugin {
 
@@ -33,36 +30,20 @@ public abstract class MultiverseModule extends JavaPlugin {
     @Inject
     protected Provider<DynamicListenerRegistration> dynamicListenerRegistrationProvider;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onEnable() {
         super.onEnable();
         MultiverseModulesRegistry.get().registerMultiverseModule(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onDisable() {
         super.onDisable();
         MultiverseModulesRegistry.get().unregisterMultiverseModule(this);
     }
 
-    /**
-     * The minimum version that this plugin is compatible with Multiverse-Core.
-     *
-     * @return The version number.
-     */
     public abstract double getTargetCoreVersion();
 
-    /**
-     * Gets the {@link PluginServiceLocator} for this plugin.
-     *
-     * @return The {@link PluginServiceLocator}
-     */
     public PluginServiceLocator getServiceLocator() {
         return serviceLocator;
     }
@@ -75,11 +56,6 @@ public abstract class MultiverseModule extends JavaPlugin {
         return Double.parseDouble(split[0] + "." + split[1]);
     }
 
-    /**
-     * Initializes the dependency injection for this plugin.
-     *
-     * @param pluginBinder  The plugin binder
-     */
     protected void initializeDependencyInjection(MultiverseModuleBinder<? extends MultiverseModule> pluginBinder) {
         PluginServiceLocator coreServiceLocator = Option.of(MultiverseModulesRegistry.get().getCore())
                 .map(MultiverseCore::getServiceLocator)
@@ -101,11 +77,6 @@ public abstract class MultiverseModule extends JavaPlugin {
                 .peek(ignore -> serviceLocator = null);
     }
 
-    /**
-     * Function to Register all the Events needed.
-     *
-     * @deprecated Use {@link #registerDynamicListeners(Class)} with the new DynamicListener API.
-     */
     @Deprecated(since = "5.0", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     protected void registerEvents(Class<? extends Listener> listenerClass) {
@@ -126,9 +97,6 @@ public abstract class MultiverseModule extends JavaPlugin {
                 });
     }
 
-    /**
-     * Register all commands to Command Manager.
-     */
     protected void registerCommands(Class<? extends MultiverseCommand> commandClass) {
         Try.of(() -> commandManagerProvider.get())
                 .andThenTry(commandManager -> {
@@ -140,9 +108,6 @@ public abstract class MultiverseModule extends JavaPlugin {
                 });
     }
 
-    /**
-     * Register locales.
-     */
     protected void setUpLocales() {
         Try.of(() -> commandManagerProvider.get())
                 .mapTry(MVCommandManager::getLocales)

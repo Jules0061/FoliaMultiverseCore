@@ -14,18 +14,8 @@ import org.mvplugins.multiverse.core.config.node.CommentedNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.ValueNode;
 
-/**
- * Configuration handle for commented YAML files.
- */
 public class CommentedConfigurationHandle extends FileConfigurationHandle<CommentedConfiguration> {
 
-    /**
-     * Creates a new builder for a {@link CommentedConfigurationHandle}.
-     *
-     * @param configPath    The path to the config file.
-     * @param nodes         The nodes.
-     * @return The builder.
-     */
     public static @NotNull Builder builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
         return new Builder(configPath, nodes);
     }
@@ -38,9 +28,6 @@ public class CommentedConfigurationHandle extends FileConfigurationHandle<Commen
         super(configPath, logger, nodes, migrator);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void loadConfigObject() throws IOException {
         config = new CommentedConfiguration(configPath, logger);
@@ -50,9 +37,6 @@ public class CommentedConfigurationHandle extends FileConfigurationHandle<Commen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Try<Void> save() {
         return Try.run(() -> {
@@ -71,18 +55,12 @@ public class CommentedConfigurationHandle extends FileConfigurationHandle<Commen
         });
     }
 
-    /**
-     * Builder for {@link CommentedConfigurationHandle}.
-     */
     public static class Builder extends FileConfigurationHandle.Builder<CommentedConfiguration, Builder> {
 
         protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
             super(configPath, nodes);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public @NotNull CommentedConfigurationHandle build() {
             return new CommentedConfigurationHandle(configPath, logger, nodes, migrator);

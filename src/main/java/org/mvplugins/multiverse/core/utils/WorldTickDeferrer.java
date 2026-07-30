@@ -9,9 +9,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import java.lang.reflect.Field;
 
-/**
- * Defers action that cannot be done during world tick.
- */
 @Service
 public final class WorldTickDeferrer {
 
@@ -35,11 +32,6 @@ public final class WorldTickDeferrer {
                 .toOption();
     }
 
-    /**
-     * Defer action that cannot be done during world tick if needed.
-     * 
-     * @param action The action to defer
-     */
     public void deferWorldTick(Runnable action) {
         if (!isIteratingOverLevels()) {
             action.run();
@@ -49,11 +41,6 @@ public final class WorldTickDeferrer {
         scheduler.runGlobalLater(action, 1L);
     }
 
-    /**
-     * Check if the server is currently doing a world tick.
-     *
-     * @return True if the server is currently doing a world tick
-     */
     private boolean isIteratingOverLevels() {
         return isIteratingOverLevelsMethod
                 .flatMap(field -> console

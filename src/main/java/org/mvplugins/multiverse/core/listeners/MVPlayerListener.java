@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core.listeners;
 
 import java.util.Objects;
@@ -52,9 +45,6 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
-/**
- * Multiverse's Listener for players.
- */
 @Service
 final class MVPlayerListener implements CoreListener {
     private final MVScheduler scheduler;
@@ -116,11 +106,6 @@ final class MVPlayerListener implements CoreListener {
         return getCommandManager().getLocales();
     }
 
-    /**
-     * This method is called when a player respawns.
-     *
-     * @param event The Event that was fired.
-     */
     @EventMethod
     @EventPriorityKey("mvcore-player-respawn")
     @DefaultEventPriority(EventPriority.LOW)
@@ -192,7 +177,6 @@ final class MVPlayerListener implements CoreListener {
     }
 
     @EventMethod
-    // TODO: Consider if this key is needed anymore, need to remove from config.yml as well
     @EventPriorityKey("mvcore-player-spawn-location")
     void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -207,7 +191,6 @@ final class MVPlayerListener implements CoreListener {
     private void handleFirstSpawn(Player player) {
         if (!config.getFirstSpawnOverride()) {
             Logging.finer("FirstSpawnOverride is disabled");
-            // User has disabled the feature in config
             return;
         }
         Logging.fine("Moving NEW player to(firstspawnoverride): %s", config.getFirstSpawnLocation());
@@ -222,7 +205,6 @@ final class MVPlayerListener implements CoreListener {
     private void handleJoinLocation(Player player) {
         if (!config.getEnableJoinDestination()) {
             Logging.finer("JoinDestination is disabled");
-            // User has disabled the feature in config
             return;
         }
         if (config.getJoinDestination().isBlank()) {
@@ -250,10 +232,6 @@ final class MVPlayerListener implements CoreListener {
                         player.getName(), failure.get(0)));
     }
 
-    /**
-     * This method is called when a player changes worlds.
-     * @param event The Event that was fired.
-     */
     @EventMethod
     @EventPriorityKey("mvcore-player-changed-world")
     @DefaultEventPriority(EventPriority.NORMAL)
@@ -261,10 +239,6 @@ final class MVPlayerListener implements CoreListener {
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
     }
 
-    /**
-     * This method is called when a player teleports anywhere.
-     * @param event The Event that was fired.
-     */
     @EventMethod
     @EventPriorityKey("mvcore-player-teleport")
     @DefaultEventPriority(EventPriority.HIGHEST)
@@ -279,13 +253,13 @@ final class MVPlayerListener implements CoreListener {
         Logging.finer("Got teleport event for player '%s' with cause '%s'", teleportee.getName(), event.getCause());
 
         Location fromLocation = event.getFrom();
-        if (fromLocation == null || fromLocation.getWorld() == null) { // should never be null, but just in case
+        if (fromLocation == null || fromLocation.getWorld() == null) {
             Logging.finer("Teleport event for player '%s' has null from-location or world.", teleportee.getName());
             return;
         }
 
         Location toLocation = event.getTo();
-        if (toLocation == null || toLocation.getWorld() == null) { // may be null on spigot
+        if (toLocation == null || toLocation.getWorld() == null) {
             Logging.finer("Teleport event for player '%s' has null to-location or world.", teleportee.getName());
             return;
         }
@@ -321,7 +295,6 @@ final class MVPlayerListener implements CoreListener {
             return;
         }
         if (fromLocation.getWorld().equals(toLocation.getWorld())) {
-            // The player is Teleporting to the same world.
             Logging.finer("Player '%s' is teleporting to the same world.", teleportee.getName());
             this.stateSuccess(teleportee.getName(), toWorld.getName());
             return;
@@ -346,11 +319,6 @@ final class MVPlayerListener implements CoreListener {
         Logging.fine("MV-Core is allowing Player '%s' to go to '%s'.", playerName, worldName);
     }
 
-    /**
-     * This method is called to adjust the portal location to the actual portal location (and not
-     * right outside of it.
-     * @param event The Event that was fired.
-     */
     @EventMethod
     @DefaultEventPriority(EventPriority.LOWEST)
     @IgnoreIfCancelled
@@ -364,30 +332,25 @@ final class MVPlayerListener implements CoreListener {
             return;
         }
 
-        // Player was actually outside of the portal, adjust the from location
         Location newLocation = blockSafety.findPortalBlockNextTo(fromLocation);
         if (newLocation != null) {
             event.setFrom(newLocation);
         }
     }
 
-    /**
-     * This method is called when a player actually portals via a vanilla style portal.
-     * @param event The Event that was fired.
-     */
     @EventMethod
     @EventPriorityKey("mvcore-player-portal")
     @DefaultEventPriority(EventPriority.HIGH)
     @IgnoreIfCancelled
     void playerPortal(PlayerPortalEvent event) {
         Location fromLocation = event.getFrom();
-        if (fromLocation == null || fromLocation.getWorld() == null) { // should never be null, but just in case
+        if (fromLocation == null || fromLocation.getWorld() == null) {
             Logging.finer("PlayerPortalEvent's from world is null!");
             return;
         }
 
         Location toLocation = event.getTo();
-        if (toLocation == null || toLocation.getWorld() == null) { // may be null on spigot
+        if (toLocation == null || toLocation.getWorld() == null) {
             Logging.finer("PlayerPortalEvent's to world is null!");
             return;
         }
@@ -395,7 +358,6 @@ final class MVPlayerListener implements CoreListener {
             event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
         if (Objects.equals(fromLocation.getWorld(), toLocation.getWorld())) {
-            // The player is Portaling to the same world.
             Logging.finer("Player '%s' is portaling to the same world.", event.getPlayer().getName());
             return;
         }
@@ -417,13 +379,6 @@ final class MVPlayerListener implements CoreListener {
         Logging.fine("Teleport result: %s", entryResult);
     }
 
-    /**
-     * Handles the gamemode for the specified {@link Player}. Delays the enforcement if configured to do so
-     * to ensure multiverse has final say over other plugins changing gamemodes.
-     *
-     * @param player The {@link Player}.
-     * @param world  The {@link World} the player is supposed to be in.
-     */
     private void handleGameModeAndFlight(final Player player, World world) {
         if (config.getGamemodeAndFlightEnforceDelay() <= 0) {
             doGameModeAndFlightEnforcement(player, world);

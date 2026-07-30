@@ -14,11 +14,6 @@ import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 
-/**
- * Compatibility class used to handle API changes in {@link Bukkit} class.
- *
- * @since 5.6
- */
 @ApiStatus.AvailableSince("5.6")
 public final class BukkitCompatibility {
 
@@ -30,16 +25,6 @@ public final class BukkitCompatibility {
         GET_WORLD_NAMESPACED_KEY_METHOD = ReflectHelper.tryGetMethod(Bukkit.class, "getWorld", NamespacedKey.class);
     }
 
-    /**
-     * Check whether the server is using the new dimension storage system introduced in PaperMC 26.1.
-     * <br />
-     * This is based of whether getLevelDirectory method exists in the server class,which is the main API change for
-     * the new dimension storage system.
-     *
-     * @return True if the server is using the new dimension storage system, else false.
-     *
-     * @since 5.6
-     */
     @ApiStatus.AvailableSince("5.6")
     public static boolean isUsingNewDimensionStorage() {
         return GET_LEVEL_DIRECTORY_METHOD
@@ -47,17 +32,6 @@ public final class BukkitCompatibility {
                 .isSuccess();
     }
 
-    /**
-     * Gets the folder where all the worlds will be store. Before 26.1, all worlds are stored in the root directory
-     * of the server, which can be obtained by {@link Server#getWorldContainer()}.
-     * <br />
-     * After 26.1, PaperMC changed all worlds are stored in the "[level]/dimensions" folder under the world
-     * level directory, which needs to be manually parsed.
-     *
-     * @return The location where all the worlds folders should be, depending on server's mc version.
-     *
-     * @since 5.6
-     */
     @ApiStatus.AvailableSince("5.6")
     @NotNull
     public static Path getWorldFoldersDirectory() {
@@ -69,18 +43,6 @@ public final class BukkitCompatibility {
                 .getOrElse(() -> server.getWorldContainer().toPath());
     }
 
-    /**
-     * Check if the world with the given name or namespaced key (e.g. minecraft:overworld) exists,
-     * and return it if it does.
-     * <br />
-     * Note that some default world names have different namespaced key matched with them.
-     * E.g.: world -> minecraft:overworld, world_nether -> minecraft:the_nether, world_the_end -> minecraft:the_end.
-     *
-     * @param nameOrKey Either a name or namespaced key string representation.
-     * @return The world if it exists
-     *
-     * @since 5.6
-     */
     @ApiStatus.AvailableSince("5.6")
     @NotNull
     public static Option<World> getWorldByNameOrKey(@NotNull String nameOrKey) {
@@ -92,20 +54,6 @@ public final class BukkitCompatibility {
                         .toOption());
     }
 
-
-    /**
-     * Check if the world represented by the given {@link WorldKeyOrName} exists and return it if present.
-     *
-     * <p>This first attempts to resolve the world by name using {@link WorldKeyOrName#usableName()} (which
-     * delegates to the traditional Bukkit world name lookup). If that fails it will attempt to resolve a
-     * {@link NamespacedKey} using {@link WorldKeyOrName#usableKey()} (which mirrors the newer Bukkit API
-     * that accepts namespaced keys, e.g. "minecraft:overworld").
-     *
-     * @param keyOrName The key-or-name wrapper providing either a world name or a {@link NamespacedKey}.
-     * @return The world if it exists.
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     @NotNull
     public static Option<World> getWorldByNameOrKey(@NotNull WorldKeyOrName keyOrName) {

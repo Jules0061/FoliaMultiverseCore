@@ -29,10 +29,6 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.utils.FileUtils;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 
-/**
- * Parse the default world generators from the bukkit config and load any generator plugins.
- * Helps in suggesting and validating generator strings.
- */
 @Service
 public final class GeneratorProvider implements Listener {
     private final Map<String, String> defaultGenerators;
@@ -52,9 +48,6 @@ public final class GeneratorProvider implements Listener {
         loadPluginGenerators();
     }
 
-    /**
-     * Load the default world generators string from the bukkit config.
-     */
     private void loadDefaultWorldGenerators() {
         File bukkitConfigFile = fileUtils.getBukkitConfig();
         if (bukkitConfigFile == null) {
@@ -70,9 +63,6 @@ public final class GeneratorProvider implements Listener {
         }
     }
 
-    /**
-     * Find generator plugins from plugins loaded and register them.
-     */
     private void loadPluginGenerators() {
         if (!coreConfig.getAutoDetectGeneratorPlugins()) {
             return;
@@ -84,18 +74,11 @@ public final class GeneratorProvider implements Listener {
         }
     }
 
-    /**
-     * Basic test if a plugin is a generator plugin.
-     *
-     * @param plugin    The plugin to test.
-     * @return True if the plugin is a generator plugin, else false.
-     */
     private boolean testIsGeneratorPlugin(Plugin plugin) {
         String worldName = Bukkit.getWorlds().stream().findFirst().map(World::getName).orElse("world");
         try {
             return plugin.getDefaultWorldGenerator(worldName, "") != null;
         } catch (UnsupportedOperationException e) {
-            // Some plugins throw this if they don't support world generation
             return false;
         } catch (Throwable t) {
             Logging.warning("Plugin %s threw an exception when testing if it is a generator plugin! ",
@@ -106,27 +89,14 @@ public final class GeneratorProvider implements Listener {
             if (coreConfig.getGlobalDebug() >= 1) {
                 t.printStackTrace();
             }
-            // Assume it's a generator plugin since it tried to do something, most likely the id is wrong.
             return true;
         }
     }
 
-    /**
-     * Gets the default generator for a world from the bukkit.yml config.
-     *
-     * @param worldName The name of the world.
-     * @return The default generator string for the world, or null if none.
-     */
     public @Nullable String getDefaultGeneratorForWorld(String worldName) {
         return defaultGenerators.getOrDefault(worldName, null);
     }
 
-    /**
-     * Attempts to register a plugin as {@link SimpleGeneratorPlugin}.
-     *
-     * @param generatorPlugin The plugin to register.
-     * @return True if registered successfully, else false.
-     */
     public boolean registerGeneratorPlugin(@NotNull GeneratorPlugin generatorPlugin) {
         var registeredGenerator = generatorPlugins.get(generatorPlugin.getPluginName());
         if (registeredGenerator == null || registeredGenerator instanceof SimpleGeneratorPlugin) {
@@ -145,12 +115,6 @@ public final class GeneratorProvider implements Listener {
                 : generatorString;
     }
 
-    /**
-     * Unregisters a plugin.
-     *
-     * @param pluginName The plugin to unregister.
-     * @return True if the plugin was present and now unregistered, else false.
-     */
     public boolean unregisterGeneratorPlugin(@NotNull String pluginName) {
         if (generatorPlugins.containsKey(pluginName)) {
             generatorPlugins.remove(pluginName);
@@ -160,32 +124,14 @@ public final class GeneratorProvider implements Listener {
         return false;
     }
 
-    /**
-     * Whether a plugin is registered as a generator plugin.
-     *
-     * @param pluginName The name of the plugin.
-     * @return True if the plugin is registered, else false.
-     */
     public boolean isGeneratorPluginRegistered(@NotNull String pluginName) {
         return generatorPlugins.containsKey(pluginName);
     }
 
-    /**
-     * Gets a generator plugin by name.
-     *
-     * @param pluginName The name of the plugin.
-     * @return The generator plugin, or null if not registered.
-     */
     public @Nullable GeneratorPlugin getGeneratorPlugin(@NotNull String pluginName) {
         return generatorPlugins.get(pluginName);
     }
 
-    /**
-     * Auto complete generator strings, used in command tab completion.
-     *
-     * @param currentInput  The current input from the user.
-     * @return A collection of suggestions.
-     */
     public Collection<String> suggestGeneratorString(@Nullable String currentInput) {
         String[] genSpilt = currentInput == null ? new String[0] : REPatterns.COLON.split(currentInput, 2);
         String generatorName = genSpilt[0];
@@ -203,20 +149,10 @@ public final class GeneratorProvider implements Listener {
                 .toList();
     }
 
-    /**
-     * Gets all registered generator plugins.
-     *
-     * @return A collection of registered generator plugins.
-     */
     public Collection<GeneratorPlugin> getRegisteredGeneratorPlugins() {
         return generatorPlugins.values();
     }
 
-    /**
-     * Listen to plugins enabled to see if they are generator plugins.
-     *
-     * @param event The plugin enable event.
-     */
     @EventHandler
     private void onPluginEnable(PluginEnableEvent event) {
         if (!coreConfig.getAutoDetectGeneratorPlugins()) {
@@ -231,11 +167,6 @@ public final class GeneratorProvider implements Listener {
         }
     }
 
-    /**
-     * Listen to plugins disabled to see if they are generator plugins. If so, unregister them.
-     *
-     * @param event The plugin disable event.
-     */
     @EventHandler
     private void onPluginDisable(PluginDisableEvent event) {
         if (!isGeneratorPluginRegistered(event.getPlugin().getName())) {

@@ -44,18 +44,11 @@ final class DumpsService {
     void postLogs(MVCommandIssuer issuer, UploadType servicesType) {
         issuer.sendInfo(MVCorei18n.DUMPS_STARTING);
 
-        // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = createAndCallDebugInfoEvent();
         scheduler.runAsync(new DumpsLogPoster(plugin, issuer, servicesType, getLogs(), versionEvent));
     }
 
-    /**
-     * Get the contents of the latest.log file.
-     *
-     * @return A string containing the latest.log file
-     */
     private @NotNull String getLogs() {
-        // Get the Path of latest.log
         Path logsPath = fileUtils.getServerFolder().toPath().resolve("logs/latest.log");
         File logsFile = logsPath.toFile();
 
@@ -70,7 +63,6 @@ final class DumpsService {
     private @NotNull String readLogsFromFile(Path logsPath) {
         String logs = "Could not read log";
 
-        // Try reading as UTF-8 first
         try {
             logs = Files.readString(logsPath, StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -80,7 +72,6 @@ final class DumpsService {
             try {
                 logs = Files.readString(logsPath, StandardCharsets.ISO_8859_1);
             } catch (IOException ex) {
-                // It is some other strange encoding
                 Logging.severe("Could not read ./logs/latest.log as ISO-8859-1. See below for stack trace");
                 ex.printStackTrace();
             }
@@ -97,24 +88,20 @@ final class DumpsService {
     }
 
     private void addDebugInfoToEvent(MVDumpsDebugInfoEvent event) {
-        // Add the legacy file, but as markdown, so it's readable
         event.putDetailedDebugInfo("version.md", this.getDebugInfoString());
 
-        // Add server.properties if we found it
         if (fileUtils.getServerProperties() != null) {
             event.putDetailedDebugInfo(fileUtils.getServerProperties().getName(), fileUtils.getServerProperties());
         } else {
             Logging.warning("/mv dumps could not find server.properties. Not including file");
         }
 
-        // Add bukkit.yml if we found it
         if (fileUtils.getBukkitConfig() != null) {
             event.putDetailedDebugInfo(fileUtils.getBukkitConfig().getName(), fileUtils.getBukkitConfig());
         } else {
             Logging.warning("/mv dumps could not find bukkit.yml. Not including file");
         }
 
-        // Add spigot.yml
         File spigotYml = fileUtils.getServerFolder().toPath().resolve("spigot.yml").toFile();
         if (spigotYml.isFile()) {
             event.putDetailedDebugInfo(spigotYml.getName(), spigotYml);
@@ -122,7 +109,6 @@ final class DumpsService {
             Logging.warning("/mv dumps could not find spigot.yml. Not including file");
         }
 
-        // Add paper-global.yml
         File paperGlobalYml = fileUtils.getServerFolder().toPath().resolve("config/paper-global.yml").toFile();
         if (paperGlobalYml.isFile()) {
             event.putDetailedDebugInfo(paperGlobalYml.getName(), paperGlobalYml);
@@ -130,7 +116,6 @@ final class DumpsService {
             Logging.warning("/mv dumps could not find paper-global.yml. Not including file");
         }
 
-        // add paper-world-defaults.yml
         File paperWorldDefaultsYml = fileUtils.getServerFolder().toPath().resolve("config/paper-world-defaults.yml").toFile();
         if (paperWorldDefaultsYml.isFile()) {
             event.putDetailedDebugInfo(paperWorldDefaultsYml.getName(), paperWorldDefaultsYml);
@@ -138,15 +123,12 @@ final class DumpsService {
             Logging.warning("/mv dumps could not find paper-global.yml. Not including file");
         }
 
-        // add multiverse-core config.yml
         File configFile = new File(plugin.getDataFolder(), "config.yml");
         event.putDetailedDebugInfo("multiverse-core/config.yml", configFile);
 
-        // add multiverse-core worlds.yml
         File worldsFile = new File(plugin.getDataFolder(), "worlds.yml");
         event.putDetailedDebugInfo("multiverse-core/worlds.yml", worldsFile);
 
-        // add multiverse-core anchors.yml
         File anchorsFile = new File(plugin.getDataFolder(), "anchors.yml");
         event.putDetailedDebugInfo("multiverse-core/anchors.yml", anchorsFile);
     }

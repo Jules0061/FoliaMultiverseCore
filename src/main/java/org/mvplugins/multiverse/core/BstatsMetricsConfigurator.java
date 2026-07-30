@@ -19,9 +19,6 @@ import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
-/**
- * Helper class that registers and sends metrics to <a href="https://bstats.org">bstats website</a>.
- */
 @Service
 final class BstatsMetricsConfigurator {
 

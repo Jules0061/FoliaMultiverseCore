@@ -20,33 +20,21 @@ import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.world.helpers.ConcurrentPlayerWorldTracker;
 
-/**
- * {@link Destination} implementation for players.s
- */
 @Service
 public final class PlayerDestination implements Destination<PlayerDestination, PlayerDestinationInstance, PlayerDestination.InstanceFailureReason> {
 
     private final ConcurrentPlayerWorldTracker playerWorldTracker;
 
-    /**
-     * Creates a new instance of the PlayerDestination.
-     */
     @Inject
     PlayerDestination(@NotNull ConcurrentPlayerWorldTracker playerWorldTracker) {
         this.playerWorldTracker = playerWorldTracker;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String getIdentifier() {
         return "pl";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Attempt<PlayerDestinationInstance, InstanceFailureReason> getDestinationInstance(
             @NotNull CommandSender sender,
@@ -59,9 +47,6 @@ public final class PlayerDestination implements Destination<PlayerDestination, P
         return Attempt.success(new PlayerDestinationInstance(this, player));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
@@ -81,9 +66,6 @@ public final class PlayerDestination implements Destination<PlayerDestination, P
             this.messageKey = message;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public MessageKey getMessageKey() {
             return messageKey.getMessageKey();

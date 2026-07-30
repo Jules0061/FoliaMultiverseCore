@@ -47,7 +47,6 @@ class ImportCommand extends CoreCommand {
     void onImportCommand(
             MVCommandIssuer issuer,
 
-            // @Conditions("worldname:scope=new")
             @Syntax("<name>")
             @Description("{@@mv-core.import.name.description}")
             String worldName,

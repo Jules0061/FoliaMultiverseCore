@@ -5,17 +5,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Captures string replacements for {@link Message}s.
- */
 public final class MessageReplacement {
 
-    /**
-     * Creates a replacement key for the given key string.
-     *
-     * @param key The string to replace
-     * @return A new replacement key which can be used to create a replacement
-     */
     @Contract(value = "_ -> new", pure = true)
     public static MessageReplacement.Key replace(@NotNull String key) {
         return new MessageReplacement.Key(key);
@@ -36,28 +27,14 @@ public final class MessageReplacement {
                 : Either.left(String.valueOf(replacement));
     }
 
-    /**
-     * Gets the string to be replaced.
-     *
-     * @return The key
-     */
     public @NotNull String getKey() {
         return key;
     }
 
-    /**
-     * Gets the replacement value.
-     *
-     * @return The replacement
-     */
     public @NotNull Either<String, Message> getReplacement() {
         return replacement;
     }
 
-    /**
-     * A replacement key that maps to a value it can be replaced with.
-     *
-     */
     public static final class Key {
 
         private final @NotNull String key2;
@@ -66,23 +43,11 @@ public final class MessageReplacement {
             this.key2 = key;
         }
 
-        /**
-         * Creates a replacement for this key.
-         *
-         * @param replacement The replacement message
-         * @return A new message replacement
-         */
         @Contract(value = "_ -> new", pure = true)
         public MessageReplacement with(@NotNull Message replacement) {
             return new MessageReplacement(key2, replacement);
         }
 
-        /**
-         * Creates a replacement for this key.
-         *
-         * @param replacement The replacement value, if null it will be replaced with a string equal to "null"
-         * @return A new message replacement
-         */
         @Contract(value = "_ -> new", pure = true)
         public MessageReplacement with(@Nullable Object replacement) {
             if (replacement instanceof LocalizableMessage localizableMessage
@@ -96,11 +61,7 @@ public final class MessageReplacement {
         }
     }
 
-    /**
-     * Predefined replacement keys for common replacements.
-     */
     public enum Replace {
-        // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
         COUNT(replace("{count}")),
         DESTINATION(replace("{destination}")),
         ERROR(replace("{error}")),
@@ -113,7 +74,6 @@ public final class MessageReplacement {
         VALUE(replace("{value}")),
         WORLD(replace("{world}")),
         ;
-        // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
         private final Key replaceKey;
 
@@ -121,25 +81,11 @@ public final class MessageReplacement {
             this.replaceKey = replaceKey;
         }
 
-        /**
-         * Creates a replacement for this key.
-         *
-         * @param replacement The replacement message
-         * @return A new message replacement
-         */
         @Contract(value = "_ -> new", pure = true)
         public MessageReplacement with(@NotNull Message replacement) {
             return replaceKey.with(replacement);
         }
 
-        /**
-         * Creates a replacement for this key.
-         * Gets the localized message if the replacement is a {@link LocalizableMessage}.
-         * Handles throwable messages with {@link Throwable#getLocalizedMessage()}.
-         *
-         * @param replacement The replacement value, if null it will be replaced with a string equal to "null"
-         * @return A new message replacement
-         */
         @Contract(value = "_ -> new", pure = true)
         public MessageReplacement with(@Nullable Object replacement) {
             return replaceKey.with(replacement);

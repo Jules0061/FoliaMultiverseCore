@@ -17,12 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * Tool that traversals the server folders to find all potential worlds that can be imported, based on folder contents
- * and name.
- *
- * @since 5.7
- */
 @ApiStatus.AvailableSince("5.7")
 @Service
 public final class PotentialWorldFinder {
@@ -39,14 +33,6 @@ public final class PotentialWorldFinder {
         this.worldNameChecker = worldNameChecker;
     }
 
-    /**
-     * Gets a list of all potential worlds that can be loaded from the server folders.
-     * Checks based on folder contents and name.
-     *
-     * @return A list of all potential worlds.
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     @Unmodifiable
     @NotNull

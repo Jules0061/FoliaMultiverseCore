@@ -23,12 +23,9 @@ import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceType;
 final class DumpsLogPoster implements Runnable {
 
     enum UploadType {
-        // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
-        // PASTEBIN(PasteServiceType.PASTEBIN, "pastebin.com"),
         PASTESDEV(PasteServiceType.PASTESDEV, "pastes.dev"),
         MCLOGS(PasteServiceType.MCLOGS, "mclo.gs"),
         ;
-        // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
         private final PasteServiceType pasteServiceType;
         private final String serviceName;

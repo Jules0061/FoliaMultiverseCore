@@ -7,12 +7,6 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * The base class for all plugin binders. Initiates the binding of the plugin instance and initially binds it to the
- * {@link Plugin} interface.
- *
- * @param <T> The type of the plugin.
- */
 public abstract class PluginBinder<T extends Plugin> extends AbstractBinder {
 
     private final T plugin;

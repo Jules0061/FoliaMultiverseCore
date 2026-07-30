@@ -16,9 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 
-/**
- * Used to check get or find block/location-related information.
- */
 @Service
 public final class BlockSafety {
 
@@ -33,32 +30,14 @@ public final class BlockSafety {
         this.locationManipulation = locationManipulation;
     }
 
-    /**
-     * Function to check if a block is above air.
-     *
-     * @param location  The location to check.
-     * @return True if the block at that {@link Location} is above air.
-     */
     public boolean isBlockAboveAir(Location location) {
         return location.getBlock().getRelative(0, -1, 0).getType().isAir();
     }
 
-    /**
-     * Checks if an entity would be on track at the specified {@link Location}.
-     *
-     * @param location  The location to check.
-     * @return True if an entity would be on tracks at the specified {@link Location}.
-     */
     public boolean isEntityOnTrack(Location location) {
         return location.getBlock().getBlockData() instanceof Rail;
     }
 
-    /**
-     * Gets the location of the highest spawnable block (i.e. y-axis) at the specified {@link Location}.
-     *
-     * @param location  The location
-     * @return The location if found, null of all blocks are unsafe.
-     */
     public Location getTopBlock(Location location) {
         Location check = location.clone();
         int maxHeight = Option.of(location.getWorld()).map(World::getMaxHeight).getOrElse(127);
@@ -72,17 +51,11 @@ public final class BlockSafety {
         return null;
     }
 
-    /**
-     * Gets the location of the lowest spawnable block (i.e. y-axis) at the specified {@link Location}.
-     *
-     * @param location  The location
-     * @return The location if found, null of all blocks are unsafe.
-     */
     public Location getBottomBlock(Location location) {
         Location check = location.clone();
         int minHeight = Option.of(location.getWorld()).map(World::getMinHeight).getOrElse(0);
         check.setY(minHeight);
-        while (check.getY() < 127) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        while (check.getY() < 127) {
             if (canSpawnAtLocationSafely(check)) {
                 return check;
             }
@@ -91,12 +64,6 @@ public final class BlockSafety {
         return null;
     }
 
-    /**
-     * Checks if the specified {@link Minecart} can spawn safely.
-     *
-     * @param cart The {@link Minecart}.
-     * @return True if the minecart can spawn safely.
-     */
     public boolean canSpawnCartSafely(Minecart cart) {
         if (isBlockAboveAir(cart.getLocation())) {
             return true;
@@ -104,34 +71,14 @@ public final class BlockSafety {
         return isEntityOnTrack(locationManipulation.getNextBlock(cart));
     }
 
-    /**
-     * Checks if the specified {@link Vehicle} can spawn safely.
-     *
-     * @param vehicle The {@link Vehicle}.
-     * @return True if the vehicle can spawn safely.
-     */
     public boolean canSpawnVehicleSafely(Vehicle vehicle) {
         return isBlockAboveAir(vehicle.getLocation());
     }
 
-    /**
-     * This function checks whether the block at the coordinates given is safe or not by checking for Lava/Fire/Air
-     * etc. This also ensures there is enough space for a player to spawn!
-     *
-     * @param location  The {@link Location}
-     * @return Whether the player can spawn safely at the given {@link Location}
-     */
     public boolean canSpawnAtLocationSafely(@NotNull Location location) {
         return canSpawnAtBlockSafely(location.getBlock());
     }
 
-    /**
-     * This function checks whether the block at the coordinates given is safe or not by checking for Lava/Fire/Air
-     * etc. This also ensures there is enough space for a player to spawn!
-     *
-     * @param block The {@link Block}
-     * @return Whether the player can spawn safely at the given {@link Location}
-     */
     public boolean canSpawnAtBlockSafely(@NotNull Block block) {
         boolean logFinest = Logging.getDebugLevel() >= FINEST_DEBUG_LEVEL;
         if (logFinest) {
@@ -144,7 +91,6 @@ public final class BlockSafety {
             return false;
         }
         if (isUnsafeSpawnBody(block)) {
-            // Player body will be stuck in solid
             if (logFinest) {
                 Logging.finest("Unsafe location for player's body: " + block);
             }
@@ -152,7 +98,6 @@ public final class BlockSafety {
         }
         Block airBlockForHead = block.getRelative(0, 1, 0);
         if (isUnsafeSpawnBody(airBlockForHead)) {
-            // Player's head will be stuck in solid
             if (logFinest) {
                 Logging.finest("Unsafe location for player's head: " + airBlockForHead);
             }
@@ -160,7 +105,6 @@ public final class BlockSafety {
         }
         Block standingOnBlock = block.getRelative(0, -1, 0);
         if (isUnsafeSpawnPlatform(standingOnBlock)) {
-            // Player will drop down
             if (logFinest) {
                 Logging.finest("Unsafe location due to invalid platform: " + standingOnBlock);
             }
@@ -172,33 +116,15 @@ public final class BlockSafety {
         return true;
     }
 
-    /**
-     * Player's body must be in non-solid block that is non-harming.
-     *
-     * @param block The block
-     * @return True if the block is unsafe
-     */
     private boolean isUnsafeSpawnBody(@NotNull Block block) {
         Material blockMaterial = block.getType();
         return blockMaterial.isSolid() || blockMaterial == Material.FIRE;
     }
 
-    /**
-     * Player must stand on solid ground, or water that is only 1 block deep to prevent drowning.
-     *
-     * @param block The block
-     * @return True if the block is unsafe
-     */
     private boolean isUnsafeSpawnPlatform(@NotNull Block block) {
         return !block.getType().isSolid() || isDeepWater(block);
     }
 
-    /**
-     * Water that is 2 or more block deep
-     *
-     * @param block The block
-     * @return True if the block is unsafe
-     */
     private boolean isDeepWater(@NotNull Block block) {
         if (block.getType() != Material.WATER) {
             return false;
@@ -206,12 +132,6 @@ public final class BlockSafety {
         return block.getRelative(0, -1, 0).getType() == Material.WATER;
     }
 
-    /**
-     * Finds the closest possible safe location around the given location with the configured search radius.
-     *
-     * @param location  The target location to find
-     * @return The safe location if found, otherwise null.
-     */
     public @Nullable Location findSafeSpawnLocation(@NotNull Location location) {
         return findSafeSpawnLocation(
                 location,
@@ -219,14 +139,6 @@ public final class BlockSafety {
                 config.getSafeLocationVerticalSearchRadius());
     }
 
-    /**
-     * Finds the closest possible safe location around the given location.
-     *
-     * @param location          The target location to find
-     * @param horizontalRange   The radius around x,z of given location to search.
-     * @param verticalRange     The height of how far up and down to search.
-     * @return The safe location if found, otherwise null.
-     */
     public @Nullable Location findSafeSpawnLocation(@NotNull Location location, int horizontalRange, int verticalRange) {
         Block safeBlock = findSafeSpawnBlock(location.getBlock(), horizontalRange, verticalRange);
         if (safeBlock == null) {
@@ -241,12 +153,6 @@ public final class BlockSafety {
                 location.getPitch());
     }
 
-    /**
-     * Finds the closest possible location around the given block with the configured search radius.
-     *
-     * @param block The target block to find
-     * @return The safe block if found, otherwise null.
-     */
     public @Nullable Block findSafeSpawnBlock(@NotNull Block block) {
         return findSafeSpawnBlock(
                 block,
@@ -254,14 +160,6 @@ public final class BlockSafety {
                 config.getSafeLocationVerticalSearchRadius());
     }
 
-    /**
-     * Finds the closest possible location around the given block.
-     *
-     * @param block             The target block to find
-     * @param horizontalRange   The radius around x,z of given block to search.
-     * @param verticalRange     The height of how far up and down to search.
-     * @return The safe block if found, otherwise null.
-     */
     public @Nullable Block findSafeSpawnBlock(@NotNull Block block, int horizontalRange, int verticalRange) {
         Block searchResult = searchAroundXZ(block, horizontalRange);
         if (searchResult != null) {
@@ -286,13 +184,6 @@ public final class BlockSafety {
         return null;
     }
 
-    /**
-     * Search a square from n - radius to n + radius for both x and z
-     *
-     * @param block     The block to be relative to
-     * @param radius    The number of blocks +/- x and z to search
-     * @return The safe block, or null
-     */
     @Nullable
     private Block searchAroundXZ(Block block, int radius) {
         if (canSpawnAtBlockSafely(block)) {
@@ -320,14 +211,6 @@ public final class BlockSafety {
         return null;
     }
 
-    /**
-     * Search 4 relative blocks with the following offsets: (-x, -z) (-x, z) (x, -z) (x, z)
-     *
-     * @param block The block to be relative to
-     * @param x     Amount to offset for the x axis
-     * @param z     Amount to offset for the z axis
-     * @return The safe block, or null
-     */
     @Nullable
     private Block searchPlusMinusPermutation(Block block, int x, int z) {
         Block relative = block.getRelative(-x, 0, -z);
@@ -355,12 +238,6 @@ public final class BlockSafety {
         return null;
     }
 
-    /**
-     * Finds a portal-block next to the specified {@link Location}.
-     *
-     * @param location  The {@link Location}
-     * @return The next portal-block's {@link Location} if found, otherwise null.
-     */
     public @Nullable Location findPortalBlockNextTo(Location location) {
         if (location.getWorld() == null) {
             return null;
@@ -386,19 +263,15 @@ public final class BlockSafety {
     }
 
     private Location getCloserBlock(Location source, Location blockA, Location blockB) {
-        // If B wasn't given, return a.
         if (blockB == null) {
             return blockA;
         }
-        // Center our calculations
         blockA.add(.5, 0, .5);
         blockB.add(.5, 0, .5);
 
-        // Retrieve the distance to the normalized blocks
         double testA = source.distance(blockA);
         double testB = source.distance(blockB);
 
-        // Compare and return
         if (testA <= testB) {
             return blockA;
         }

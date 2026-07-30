@@ -20,9 +20,6 @@ import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * Provides destinations for teleportation.
- */
 @Service
 public final class DestinationsProvider {
     private static final String SEPARATOR = ":";
@@ -36,35 +33,15 @@ public final class DestinationsProvider {
         this.destinationMap = new HashMap<>();
     }
 
-    /**
-     * Adds a destination to the provider.
-     *
-     * @param destination The destination.
-     */
     public void registerDestination(@NotNull Destination<?, ?, ?> destination) {
         this.destinationMap.put(destination.getIdentifier(), destination);
         this.corePermissions.addDestinationPermissions(destination);
     }
 
-    /**
-     * Converts a destination string to a destination object.
-     *
-     * @param destinationString The destination string.
-     * @return The destination object, or null if invalid format.
-     */
     public @NotNull Attempt<DestinationInstance<?, ?>, FailureReason> parseDestination(@NotNull String destinationString) {
         return this.parseDestination(Bukkit.getConsoleSender(), destinationString);
     }
 
-    /**
-     * Converts a destination string to a destination object with sender context.
-     *
-     * @param sender            The target sender context.
-     * @param destinationString The destination string.
-     * @return The destination object, or null if invalid format.
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     @SuppressWarnings("unchecked,rawtypes")
     public @NotNull Attempt<DestinationInstance<?, ?>, FailureReason> parseDestination(
@@ -78,7 +55,6 @@ public final class DestinationsProvider {
         Destination destination;
 
         if (items.length < 2) {
-            // Assume world destination
             destination = this.getDestinationById("w");
             destinationParams = items[0];
         } else {
@@ -95,47 +71,20 @@ public final class DestinationsProvider {
         return destination.getDestinationInstance(sender, destinationParams);
     }
 
-    /**
-     * Gets a destination by its identifier.
-     *
-     * @param identifier The identifier.
-     * @return The destination, or null if not found.
-     */
     public @Nullable Destination<?, ?, ?> getDestinationById(@Nullable String identifier) {
         return this.destinationMap.get(identifier);
     }
 
-    /**
-     * Gets all registered destinations.
-     *
-     * @return A collection of destinations.
-     */
     public @NotNull Collection<Destination<?, ?, ?>> getDestinations() {
         return this.destinationMap.values();
     }
 
-    /**
-     * Gets suggestions for possible parsable destinations.
-     *
-     * @param sender            The target sender context.
-     * @param destinationParams The current user input.
-     * @return A collection of destination suggestions.
-     */
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(@NotNull CommandSender sender, @Nullable String destinationParams) {
         return this.getDestinations().stream()
                 .flatMap(destination -> destination.suggestDestinations(sender, destinationParams).stream())
                 .toList();
     }
 
-    /**
-     * Gets suggestions for possible parsable destinations.
-     *
-     * @param sender            The target sender context.
-     * @param destinationParams The current user input.
-     * @return A collection of destination suggestions in parsable string format.
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public @NotNull Collection<String> suggestDestinationStrings(@NotNull CommandSender sender, @Nullable String destinationParams) {
         return suggestDestinations(sender, destinationParams)
@@ -154,9 +103,6 @@ public final class DestinationsProvider {
             this.messageKey = message;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public MessageKey getMessageKey() {
             return messageKey.getMessageKey();

@@ -15,12 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * A location that store a world name instead of a world object.
- * It only gets the world from bukkit during the {@link #getWorld()} call.
- * <br />
- * This is useful to store location with world that may not be loaded yet or have been unloaded at some point.
- */
 @SerializableAs("UnloadedWorldLocation")
 public class UnloadedWorldLocation extends Location {
 
@@ -54,11 +48,6 @@ public class UnloadedWorldLocation extends Location {
         this(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
-    /**
-     * Makes a bukkit {@link Location} copy from this SpawnLocation.
-     *
-     * @return The bukkit location
-     */
     public Location toBukkitLocation() {
         return new Location(getWorld(), getX(), getY(), getZ(), getYaw(), getPitch());
     }
@@ -104,14 +93,6 @@ public class UnloadedWorldLocation extends Location {
         return data;
     }
 
-    /**
-     * Required method for deserialization
-     *
-     * @param args map to deserialize
-     * @return deserialized location
-     * @throws IllegalArgumentException if the world don't exists
-     * @see ConfigurationSerializable
-     */
     @NotNull
     public static Location deserialize(@NotNull Map<String, Object> args) {
         return new UnloadedWorldLocation(

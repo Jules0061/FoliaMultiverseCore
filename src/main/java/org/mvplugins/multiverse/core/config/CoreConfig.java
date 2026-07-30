@@ -95,12 +95,10 @@ public final class CoreConfig {
         } catch (IOException e) {
             return;
         }
-        // Remove the old config section if it is still in the old ConfigurationSerializable.
         content = content.replace("==: com.onarandombox.MultiverseCore.MultiverseCoreConfiguration", "");
         try {
             Files.writeString(configPath, content);
         } catch (IOException e) {
-            // ignore
         }
     }
 
@@ -113,23 +111,14 @@ public final class CoreConfig {
                 });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isLoaded() {
         return configHandle.isLoaded();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> save() {
         return configHandle.save();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public StringPropertyHandle getStringPropertyHandle() {
         return stringPropertyHandle;
     }
@@ -150,30 +139,18 @@ public final class CoreConfig {
         return configHandle.get(configNodes.autoImport3rdPartyWorlds);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setEnforceAccess(boolean enforceAccess) {
         return configHandle.set(configNodes.enforceAccess, enforceAccess);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getEnforceAccess() {
         return configHandle.get(configNodes.enforceAccess);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setEnforceGameMode(boolean enforceGameMode) {
         return configHandle.set(configNodes.enforceGamemode, enforceGameMode);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getEnforceGameMode() {
         return configHandle.get(configNodes.enforceGamemode);
     }
@@ -216,16 +193,10 @@ public final class CoreConfig {
         return configHandle.get(configNodes.applyEntitySpawnLimit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setAutoPurgeEntities(boolean autopurge) {
         return configHandle.set(configNodes.autoPurgeEntities, autopurge);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAutoPurgeEntities() {
         return configHandle.get(configNodes.autoPurgeEntities);
     }
@@ -246,153 +217,84 @@ public final class CoreConfig {
         return configHandle.get(configNodes.endWorldNameFormat);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions) {
         return configHandle.set(configNodes.useFinerTeleportPermissions, useFinerTeleportPermissions);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getUseFinerTeleportPermissions() {
         return configHandle.get(configNodes.useFinerTeleportPermissions);
     }
 
-    /**
-     * Sets the passenger mode
-     *
-     * @param passengerMode The passenger mode
-     * @return The set result
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public Try<Void> setPassengerMode(PassengerModes passengerMode) {
         return configHandle.set(configNodes.passengerMode, passengerMode);
     }
 
-    /**
-     * Gets the passenger mode
-     *
-     * @return The passenger mode
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public PassengerMode getPassengerMode() {
         return configHandle.get(configNodes.passengerMode);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setConcurrentTeleportLimit(int concurrentTeleportLimit) {
         return configHandle.set(configNodes.concurrentTeleportLimit, concurrentTeleportLimit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getConcurrentTeleportLimit() {
         return configHandle.get(configNodes.concurrentTeleportLimit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setTeleportIntercept(boolean teleportIntercept) {
         return configHandle.set(configNodes.teleportIntercept, teleportIntercept);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getTeleportIntercept() {
         return configHandle.get(configNodes.teleportIntercept);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setFirstSpawnOverride(boolean firstSpawnOverride) {
         return configHandle.set(configNodes.firstSpawnOverride, firstSpawnOverride);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setSafeLocationHorizontalSearchRadius(int searchRadius) {
         return configHandle.set(configNodes.safeLocationHorizontalSearchRadius, searchRadius);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getSafeLocationHorizontalSearchRadius() {
         return configHandle.get(configNodes.safeLocationHorizontalSearchRadius);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setSafeLocationVerticalSearchRadius(int searchRadius) {
         return configHandle.set(configNodes.safeLocationVerticalSearchRadius, searchRadius);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getSafeLocationVerticalSearchRadius() {
         return configHandle.get(configNodes.safeLocationVerticalSearchRadius);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getFirstSpawnOverride() {
         return configHandle.get(configNodes.firstSpawnOverride);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setFirstSpawnLocation(String firstSpawnWorld) {
         return configHandle.set(configNodes.firstSpawnLocation, firstSpawnWorld);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getFirstSpawnLocation() {
         return configHandle.get(configNodes.firstSpawnLocation);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setEnableJoinDestination(boolean enableJoinDestination) {
         return configHandle.set(configNodes.enableJoinDestination, enableJoinDestination);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getEnableJoinDestination() {
         return  configHandle.get(configNodes.enableJoinDestination);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setJoinDestination(String alwaysSpawnDestination) {
         return configHandle.set(configNodes.joinDestination, alwaysSpawnDestination);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJoinDestination() {
         return  configHandle.get(configNodes.joinDestination);
     }
@@ -405,100 +307,58 @@ public final class CoreConfig {
         return configHandle.get(configNodes.defaultRespawnInOverworld);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn) {
         return configHandle.set(configNodes.defaultRespawnWithinSameWorld, defaultRespawnToWorldSpawn);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getDefaultRespawnWithinSameWorld() {
         return configHandle.get(configNodes.defaultRespawnWithinSameWorld);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn) {
         return configHandle.set(configNodes.enforceRespawnAtWorldSpawn, enforceRespawnAtWorldSpawn);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getEnforceRespawnAtWorldSpawn() {
         return configHandle.get(configNodes.enforceRespawnAtWorldSpawn);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setUseCustomPortalSearch(boolean useDefaultPortalSearch) {
         return configHandle.set(configNodes.useCustomPortalSearch, useDefaultPortalSearch);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isUsingCustomPortalSearch() {
         return configHandle.get(configNodes.useCustomPortalSearch);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setCustomPortalSearchRadius(int searchRadius) {
         return configHandle.set(configNodes.customPortalSearchRadius, searchRadius);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getCustomPortalSearchRadius() {
         return configHandle.get(configNodes.customPortalSearchRadius);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setEnablePrefixChat(boolean prefixChat) {
         return configHandle.set(configNodes.enableChatPrefix, prefixChat);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEnablePrefixChat() {
         return configHandle.get(configNodes.enableChatPrefix);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setPrefixChatFormat(String prefixChatFormat) {
         return configHandle.set(configNodes.chatPrefixFormat, prefixChatFormat);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getPrefixChatFormat() {
         return configHandle.get(configNodes.chatPrefixFormat);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setRegisterPapiHook(boolean registerPapiHook) {
         return configHandle.set(configNodes.registerPapiHook, registerPapiHook);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isRegisterPapiHook() {
         return configHandle.get(configNodes.registerPapiHook);
     }
@@ -523,44 +383,26 @@ public final class CoreConfig {
         return configHandle.get(configNodes.invalidPapiFormatReturnsBlank);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setDefaultLocale(Locale defaultLocale) {
         return configHandle.set(configNodes.defaultLocale, defaultLocale);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Locale getDefaultLocale() {
         return configHandle.get(configNodes.defaultLocale);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setPerPlayerLocale(boolean perPlayerLocale) {
         return configHandle.set(configNodes.perPlayerLocale, perPlayerLocale);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getPerPlayerLocale() {
         return configHandle.get(configNodes.perPlayerLocale);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setResolveAliasName(boolean resolveAliasInCommands) {
         return configHandle.set(configNodes.resolveAliasName, resolveAliasInCommands);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getResolveAliasName() {
         return configHandle.get(configNodes.resolveAliasName);
     }
@@ -575,30 +417,18 @@ public final class CoreConfig {
         return configHandle.get(configNodes.simplifiedDestinationTabCompletion);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setConfirmMode(ConfirmMode confirmMode) {
         return configHandle.set(configNodes.confirmMode, confirmMode);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ConfirmMode getConfirmMode() {
         return configHandle.get(configNodes.confirmMode);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setUseConfirmOtp(boolean useConfirmOtp) {
         return configHandle.set(configNodes.useConfirmOtp, useConfirmOtp);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getUseConfirmOtp() {
         return configHandle.get(configNodes.useConfirmOtp);
     }
@@ -689,67 +519,38 @@ public final class CoreConfig {
         return configHandle.get(configNodes.autoDetectGeneratorPlugins);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setGlobalDebug(int globalDebug) {
         return configHandle.set(configNodes.globalDebug, globalDebug);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getGlobalDebug() {
         return configHandle.get(configNodes.globalDebug);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setDebugPermissions(boolean debugPermissions) {
         return configHandle.set(configNodes.debugPermissions, debugPermissions);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getDebugPermissions() {
         return configHandle.get(configNodes.debugPermissions);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setSilentStart(boolean silentStart) {
         return configHandle.set(configNodes.silentStart, silentStart);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean getSilentStart() {
         return configHandle.get(configNodes.silentStart);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Try<Void> setShowDonateMessage(boolean showDonateMessage) {
         return configHandle.set(configNodes.showDonationMessage, showDonateMessage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isShowingDonateMessage() {
         return configHandle.get(configNodes.showDonationMessage);
     }
 
-    /**
-     * Gets the underlying config file object. For internal use only.
-     *
-     * @return The config file
-     */
     @ApiStatus.Internal
     public FileConfiguration getConfig() {
         return configHandle.getConfig();

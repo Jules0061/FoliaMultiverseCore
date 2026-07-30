@@ -9,34 +9,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 
-/**
- * Provides default serializers for common types.
- */
 public final class DefaultSerializerProvider {
 
     private static final Map<Class<?>, NodeSerializer<?>> SERIALIZERS = new HashMap<>();
 
-    /**
-     * Adds a default serializer for the given type.
-     *
-     * @param type          The type.
-     * @param serializer    The serializer.
-     * @param <T>           The type.
-     */
     public static <T> void addDefaultSerializer(@NotNull Class<T> type, @NotNull NodeSerializer<T> serializer) {
         SERIALIZERS.put(type, serializer);
     }
 
-    /**
-     * Gets the default serializer for the given type.
-     *
-     * @param type  The type.
-     * @param <T>   The type.
-     * @return The default serializer for the given type, or null if no default serializer exists.
-     */
     public static <T> @Nullable NodeSerializer<T> getDefaultSerializer(Class<T> type) {
         if (type.isEnum()) {
-            // Special case for enums
             return (NodeSerializer<T>) ENUM_SERIALIZER;
         }
         return (NodeSerializer<T>) SERIALIZERS.get(type);
@@ -79,7 +61,6 @@ public final class DefaultSerializerProvider {
                 return (Boolean) object;
             }
             String input = String.valueOf(object);
-            //todo: this is a copy from string parser
             return switch (input.toLowerCase(Locale.ENGLISH)) {
                 case "t", "true", "on", "y", "yes", "1", "allow" -> true;
                 case "f", "false", "off", "n", "no", "0", "deny" -> false;
@@ -183,6 +164,5 @@ public final class DefaultSerializerProvider {
     }
 
     private DefaultSerializerProvider() {
-        // Prevent instantiation as this is a static utility class
     }
 }

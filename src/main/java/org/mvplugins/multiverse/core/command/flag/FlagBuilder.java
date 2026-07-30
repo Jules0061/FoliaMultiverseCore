@@ -8,9 +8,6 @@ import org.jvnet.hk2.annotations.Contract;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Builds and registers a flag group on initialization. Flags should be final fields that calls {@link #flag(CommandFlag)}.
- */
 @Contract
 public abstract class FlagBuilder {
 
@@ -36,25 +33,12 @@ public abstract class FlagBuilder {
         Logging.finer("Registered flag group: " + flagGroup.getName());
     }
 
-    /**
-     * Add a new flag to the flag builder.
-     *
-     * @param flag  The flag to add.
-     * @param <T>   The type of the flag.
-     * @return The flag.
-     */
     protected <T extends CommandFlag> T flag(T flag) {
         flags.add(flag);
         Logging.finer("Added flag: " + flag);
         return flag;
     }
 
-    /**
-     * Parses flags.
-     *
-     * @param flags The raw string array to parse into flags.
-     * @return The parsed flags.
-     */
     public @NotNull ParsedCommandFlags parse(@NotNull String[] flags) {
         return flagsManager.parse(name, flags);
     }

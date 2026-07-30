@@ -16,9 +16,6 @@ import org.mvplugins.multiverse.core.locale.MVCorei18n;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * A class we use to interface with Vault when it is present.
- */
 final class VaultHandler implements Listener {
 
     private Economy economy;
@@ -50,20 +47,10 @@ final class VaultHandler implements Listener {
         return economy != null;
     }
 
-    /**
-     * Checks whether Vault is in use and has an economy system enabled.
-     *
-     * @return true if vault is in use and has an economy system enabled.
-     */
     public boolean hasEconomy() {
         return economy != null;
     }
 
-    /**
-     * Returns the Vault economy system if Vault is present and has an economy system enabled.
-     *
-     * @return The vault economy system or null if not configured.
-     */
     public Economy getEconomy() {
         return economy;
     }
@@ -78,9 +65,6 @@ final class VaultHandler implements Listener {
         }
     }
 
-    /**
-     * Listens for Vault plugin events.
-     */
     private final class VaultListener implements Listener {
         @EventHandler
         private void vaultEnabled(PluginEnableEvent event) {

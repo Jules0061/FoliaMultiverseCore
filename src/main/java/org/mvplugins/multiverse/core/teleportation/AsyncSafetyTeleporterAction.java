@@ -23,9 +23,6 @@ import org.mvplugins.multiverse.core.utils.result.Attempt;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Teleports one or more entity safely to a location.
- */
 public final class AsyncSafetyTeleporterAction {
 
     @NotNull
@@ -56,71 +53,30 @@ public final class AsyncSafetyTeleporterAction {
         );
     }
 
-    /**
-     * Sets whether to check for safe location before teleport.
-     *
-     * @param checkSafety Whether to check for safe location
-     * @return The same {@link AsyncSafetyTeleporterAction} to be chained
-     */
     public AsyncSafetyTeleporterAction checkSafety(boolean checkSafety) {
         this.checkSafety = checkSafety;
         return this;
     }
 
-    /**
-     * Sets the passenger mode
-     *
-     * @param passengerMode The passenger mode
-     * @return The same {@link AsyncSafetyTeleporterAction} to be chained
-     * 
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public AsyncSafetyTeleporterAction passengerMode(@NotNull PassengerMode passengerMode) {
         this.passengerMode = passengerMode;
         return this;
     }
 
-    /**
-     * Sets the teleporter.
-     *
-     * @param issuer The issuer
-     * @return The same {@link AsyncSafetyTeleporterAction} to be chained
-     */
     public AsyncSafetyTeleporterAction by(@NotNull BukkitCommandIssuer issuer) {
         return by(issuer.getIssuer());
     }
 
-    /**
-     * Sets the teleporter.
-     *
-     * @param teleporter The teleporter
-     * @return The same {@link AsyncSafetyTeleporterAction} to be chained
-     */
     public AsyncSafetyTeleporterAction by(@NotNull CommandSender teleporter) {
         this.teleporter = teleporter;
         return this;
     }
 
-    /**
-     * Teleport multiple entities
-     *
-     * @param teleportees The entities to teleport
-     * @param <T>   The entity type
-     * @return A list of async futures that represent the teleportation result of each entity
-     */
     public <T extends Entity> AsyncAttemptsAggregate<Void, TeleportFailureReason> teleport(@NotNull List<T> teleportees) {
         return AsyncAttemptsAggregate.allOfAggregate(teleportees.stream().map(this::teleportSingle).toList());
     }
 
-    /**
-     * Teleports one parent entity. Multiple entities may be teleported depending on {@link #passengerMode(PassengerMode)}.
-     *
-     * @param teleportee The entity to teleport
-     * @return A list of async future that represents the teleportation result
-     *
-     * @since 5.1
-     */
     @ApiStatus.AvailableSince("5.1")
     public AsyncAttemptsAggregate<Void, TeleportFailureReason> teleportSingle(@NotNull Entity teleportee) {
         var localTeleporter = this.teleporter == null ? teleportee : this.teleporter;
@@ -142,15 +98,6 @@ public final class AsyncSafetyTeleporterAction {
                 });
     }
 
-    /**
-     * Teleports one entity
-     *
-     * @param teleportee The entity to teleport
-     * @return An async future that represents the teleportation result
-     *
-     * @deprecated Use {@link #teleportSingle(Entity)} instead, as teleport of single entity may result in multiple
-     *             teleports due to vehicle and passengers based on {@link #passengerMode(PassengerMode)}.
-     */
     @Deprecated(forRemoval = true, since = "5.1")
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public AsyncAttempt<Void, TeleportFailureReason> teleport(@NotNull Entity teleportee) {
@@ -168,7 +115,6 @@ public final class AsyncSafetyTeleporterAction {
         if (location == null) {
             return Attempt.failure(TeleportFailureReason.NULL_LOCATION);
         }
-        //todo: if its a UnloadedWorldLocation, check worldManager if it an unloadedWorld
         return Try.of(() -> location.getWorld().getName())
                 .map(ignore -> Attempt.<Location, TeleportFailureReason>success(location))
                 .getOrElse(Attempt.failure(TeleportFailureReason.NULL_WORLD));

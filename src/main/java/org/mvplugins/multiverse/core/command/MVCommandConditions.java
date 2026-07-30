@@ -47,13 +47,11 @@ public class MVCommandConditions {
         String scope = context.getConfigValue("scope", "loaded");
 
         switch (scope) {
-            // Worlds that are loaded
             case "loaded":
                 if (!this.worldManager.isLoadedWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist or is not loaded!");
                 }
                 break;
-            // Worlds that are unloaded
             case "unloaded":
                 if (!this.worldManager.isUnloadedWorld(worldName)) {
                     if (this.worldManager.isLoadedWorld(worldName)) {
@@ -62,13 +60,11 @@ public class MVCommandConditions {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
                 }
                 break;
-            // World that are loaded or unloaded
             case "both":
                 if (!this.worldManager.isWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' does not exist!");
                 }
                 break;
-            // World that are does not exist
             case "new":
                 if (this.worldManager.isWorld(worldName)) {
                     throw new ConditionFailedException("World with name '" + worldName + "' already exists!");
@@ -80,7 +76,6 @@ public class MVCommandConditions {
                             throw new ConditionFailedException("World name '" + worldName + "' is used for critical server operations and is blacklisted!");
                 }
                 break;
-            // Probably a typo happened here
             default:
                 throw new ConditionFailedException("Unknown scope '" + scope + "'!");
         }

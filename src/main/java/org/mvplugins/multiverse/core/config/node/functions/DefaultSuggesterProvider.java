@@ -10,32 +10,16 @@ import java.util.stream.IntStream;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Provides default suggestions for common types.
- */
 public final class DefaultSuggesterProvider {
 
     private static final Map<Class<?>, NodeSuggester> SUGGESTERS = new HashMap<>();
 
-    /**
-     * Adds a default suggester for the given type.
-     *
-     * @param clazz     The type.
-     * @param suggester The suggester.
-     */
     public static void addDefaultSuggester(Class<?> clazz, NodeSuggester suggester) {
         SUGGESTERS.put(clazz, suggester);
     }
 
-    /**
-     * Gets the default suggester for the given type.
-     *
-     * @param clazz The type.
-     * @return The default suggester for the given type, or null if no default suggester exists.
-     */
     public static @Nullable NodeSuggester getDefaultSuggester(Class<?> clazz) {
         if (clazz.isEnum()) {
-            // Special case for enums
             return enumSuggester(clazz);
         }
         return SUGGESTERS.get(clazz);
@@ -61,6 +45,5 @@ public final class DefaultSuggesterProvider {
     }
 
     private DefaultSuggesterProvider() {
-        // Prevent instantiation as this is a static utility class
     }
 }

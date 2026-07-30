@@ -95,7 +95,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerStaticCompletion("difficulties", suggestEnums(Difficulty.class));
-        registerStaticCompletion("environments", List.of("normal", "nether", "the_end")); // Don't tab complete the "custom" environment
+        registerStaticCompletion("environments", List.of("normal", "nether", "the_end"));
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules, MVCommandCompletionFilters.namespacedKey());
@@ -108,7 +108,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("mvworldmetakey", this::suggestMVWorldMetaKey, CommandCompletionFilter.contains());
         registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName, CommandCompletionFilter.contains());
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
-        registerCompletion("playersarray", this::suggestPlayersArray, CommandCompletionFilter.contains()); // getting online players cannot be async
+        registerCompletion("playersarray", this::suggestPlayersArray, CommandCompletionFilter.contains());
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
         registerStaticCompletion("spawncategories", suggestEnums(SpawnCategory.class));
         registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName, CommandCompletionFilter.contains());
@@ -175,13 +175,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         return handler.getCompletions(context);
     }
 
-    /**
-     * Shortcut to suggest enums values
-     *
-     * @param enumClass The enum class with values
-     * @return A collection of possible string values
-     * @param <T> The enum type
-     */
     public <T extends Enum<T>> Collection<String> suggestEnums(Class<T> enumClass) {
         return EnumSet.allOf(enumClass).stream()
                 .map(Enum::name)
@@ -229,7 +222,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 .recover(IllegalStateException.class, e -> new Player[]{context.getContextValue(Player.class)})
                 .map(players -> {
                     if (players.length == 0) {
-                        // Most likely console did not specify a player
                         return Collections.<String>emptyList();
                     }
                     CommandSender sender = context.getIssuer().getIssuer();
@@ -266,7 +258,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestGamerulesValues(BukkitCommandCompletionContext context) {
        return Try.of(() -> context.getContextValue(GameRule.class))
-               // Just use our suggester from configuration lib since gamerules are only boolean or int
                .mapTry(gamerule -> Option.of(DefaultSuggesterProvider.getDefaultSuggester(gamerule.getType()))
                        .map(s -> s.suggest(context.getInput())).getOrElse(Collections.emptyList()))
                .getOrElse(Collections.emptyList());

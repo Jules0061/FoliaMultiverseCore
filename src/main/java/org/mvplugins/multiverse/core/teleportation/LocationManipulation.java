@@ -1,10 +1,3 @@
-/******************************************************************************
- * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
- * Multiverse 2 is licensed under the BSD License.                            *
- * For more information please check the README.md file included              *
- * with this project.                                                         *
- ******************************************************************************/
-
 package org.mvplugins.multiverse.core.teleportation;
 
 import java.text.DecimalFormat;
@@ -22,17 +15,12 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
-/**
- * Used to manipulate locations.
- */
 @Service
 public final class LocationManipulation {
     private static final Map<String, Integer> ORIENTATION_INTS;
 
     static {
-        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
-        // "freeze" the map:
         ORIENTATION_INTS = Map.ofEntries(
                 Map.entry("n", 180),
                 Map.entry("ne", 225),
@@ -51,19 +39,8 @@ public final class LocationManipulation {
                 Map.entry("west", 90),
                 Map.entry("northwest", 135)
         );
-        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
-    /**
-     * Convert a Location into a Colon separated string to allow us to store it in text.
-     * <p>
-     * WORLD:X,Y,Z:yaw:pitch
-     * <p>
-     * The corresponding String2Loc function is {@link #stringToLocation}
-     *
-     * @param location The Location to save.
-     * @return The location as a string in this format: WORLD:x,y,z:yaw:pitch
-     */
     public String locationToString(Location location) {
         if (location == null) {
             return "";
@@ -78,12 +55,6 @@ public final class LocationManipulation {
                 location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
-    /**
-     * This method simply does some rounding, rather than forcing a call to the server to get the blockdata.
-     *
-     * @param l The location to round to the block location
-     * @return A rounded location.
-     */
     public Location getBlockLocation(Location l) {
         l.setX(l.getBlockX());
         l.setY(l.getBlockY());
@@ -91,38 +62,21 @@ public final class LocationManipulation {
         return l;
     }
 
-    /**
-     * Returns a new location from a given string. The format is as follows:
-     * <p>
-     * WORLD:X,Y,Z:yaw:pitch
-     * <p>
-     * The corresponding Location2String function is {@link #locationToString(Location)}
-     *
-     * @param locationString The location represented as a string (WORLD:X,Y,Z:yaw:pitch)
-     * @return A new location defined by the string or null if the string was invalid.
-     */
     @Nullable
     public Location stringToLocation(String locationString) {
-        //format:
-        //world:x,y,z:pitch:yaw
         if (locationString == null) {
             return null;
         }
 
-        // Split the whole string, format is:
-        // {'world', 'x,y,z'[, 'pitch', 'yaw']}
         String[] split = REPatterns.COLON.split(locationString);
-        if (split.length < 2 || split.length > 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        if (split.length < 2 || split.length > 4) {
             return null;
         }
-        // Split the xyz string, format is:
-        // {'x', 'y', 'z'}
         String[] xyzsplit = REPatterns.COMMA.split(split[1]);
         if (xyzsplit.length != 3) {
             return null;
         }
 
-        // Verify the world is valid
         String worldName = split[0];
         if (Strings.isNullOrEmpty(worldName)) {
             return null;
@@ -134,7 +88,7 @@ public final class LocationManipulation {
             if (split.length >= 3) {
                 yaw = (float) Double.parseDouble(split[2]);
             }
-            if (split.length == 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
+            if (split.length == 4) {
                 pitch = (float) Double.parseDouble(split[3]);
             }
             return new UnloadedWorldLocation(worldName, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), yaw, pitch);
@@ -143,12 +97,6 @@ public final class LocationManipulation {
         }
     }
 
-    /**
-     * Returns a colored string with the coords.
-     *
-     * @param l The {@link Location}
-     * @return The {@link String}\
-     */
     public String strCoords(Location l) {
         String result = "";
         DecimalFormat df = new DecimalFormat();
@@ -162,12 +110,6 @@ public final class LocationManipulation {
         return result;
     }
 
-    /**
-     * Converts a location to a printable readable formatted string including pitch/yaw.
-     *
-     * @param l The {@link Location}
-     * @return The {@link String}
-     */
     public String strCoordsRaw(Location l) {
         if (l == null) {
             return "null";
@@ -184,16 +126,8 @@ public final class LocationManipulation {
         return result;
     }
 
-    /**
-     * Return the NESW Direction a Location is facing.
-     *
-     * @param location The {@link Location}
-     * @return The NESW Direction
-     */
     public String getDirection(Location location) {
-        // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
         double r = (location.getYaw() % 360) + 180;
-        // Remember, these numbers are every 45 degrees with a 22.5 offset, to detect boundaries.
         String dir;
         if (r < 22.5)
             dir = "n";
@@ -213,17 +147,10 @@ public final class LocationManipulation {
             dir = "nw";
         else
             dir = "n";
-        // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
 
         return dir;
     }
 
-    /**
-     * Returns the float yaw position for the given cardinal direction.
-     *
-     * @param orientation The cardinal direction
-     * @return The yaw
-     */
     public float getYaw(String orientation) {
         if (orientation == null) {
             return 0;
@@ -234,26 +161,10 @@ public final class LocationManipulation {
         return 0;
     }
 
-    /**
-     * Returns a speed float from a given vector.
-     *
-     * @param v The {@link Vector}
-     * @return The speed
-     */
     public float getSpeed(Vector v) {
         return (float) Math.sqrt(v.getX() * v.getX() + v.getZ() * v.getZ());
     }
 
-    // X, Y, Z
-    // -W/+E,0, -N/+S
-
-    /**
-     * Returns a translated vector from the given direction.
-     *
-     * @param v The old {@link Vector}
-     * @param direction The new direction
-     * @return The translated {@link Vector}
-     */
     public Vector getTranslatedVector(Vector v, String direction) {
         if (direction == null) {
             return v;
@@ -280,12 +191,6 @@ public final class LocationManipulation {
         return v;
     }
 
-    /**
-     * Returns the next Location that a {@link Vehicle} is traveling at.
-     *
-     * @param v The {@link Vehicle}
-     * @return The {@link Location}
-     */
     public Location getNextBlock(Vehicle v) {
         Vector vector = v.getVelocity();
         Location location = v.getLocation();

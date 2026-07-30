@@ -9,22 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 
-/**
- * Filter content and text based on regex matching.
- */
 public class RegexContentFilter implements ContentFilter {
 
     private static final Pattern REGEX_SPECIAL_CHARS = Pattern.compile("[.+*?\\[^\\]$(){}=!<>|:-\\\\]");
 
-    /**
-     * Compile regex pattern to create a regex filter.
-     * <br/>
-     * When prefixed with 'r=', filter string is used as the full regex pattern.
-     * Else, set to regex that contains the filterString.
-     *
-     * @param filterString  The target string to create filter.
-     * @return A new instance of {@link RegexContentFilter} with filter applied.
-     */
     @NotNull
     public static RegexContentFilter fromString(@Nullable String filterString) {
         if (filterString == null) {
@@ -45,9 +33,6 @@ public class RegexContentFilter implements ContentFilter {
         convertToPattern();
     }
 
-    /**
-     * Try to compile and store the regex into a {@link Pattern}.
-     */
     private void convertToPattern() {
         if (Strings.isNullOrEmpty(regexString)) {
             return;
@@ -60,9 +45,6 @@ public class RegexContentFilter implements ContentFilter {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean checkMatch(String value) {
         if (!hasValidRegex()) {
@@ -80,37 +62,19 @@ public class RegexContentFilter implements ContentFilter {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean needToFilter() {
         return hasValidRegex();
     }
 
-    /**
-     * Check if the regex is valid.
-     *
-     * @return True if the regex is valid.
-     */
     public boolean hasValidRegex() {
         return regexPattern != null;
     }
 
-    /**
-     * Get the regex string.
-     *
-     * @return The regex string.
-     */
     public String getRegexString() {
         return regexString;
     }
 
-    /**
-     * Get the compiled regex pattern.
-     *
-     * @return The compiled regex pattern.
-     */
     public Pattern getRegexPattern() {
         return regexPattern;
     }

@@ -10,13 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * A map with case-insensitive String keys. All keys are stored in lower-case form.
- *
- * @param <T> the type of mapped values
- *
- * @since 5.5
- */
 @ApiStatus.AvailableSince("5.5")
 public class CaseInsensitiveStringMap<T> implements Map<String, T> {
 

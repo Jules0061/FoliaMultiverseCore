@@ -10,16 +10,8 @@ import org.mvplugins.multiverse.core.locale.message.Message;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * Display content as a list with optional pagination.
- */
 public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
 
-    /**
-     * Makes a new {@link PagedSendHandler} instance to use.
-     *
-     * @return  New {@link PagedSendHandler} instance.
-     */
     public static PagedSendHandler create() {
         return new PagedSendHandler();
     }
@@ -27,15 +19,12 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
     private boolean paginate = true;
     private boolean paginateInConsole = false;
     private boolean padEnd = true;
-    private int linesPerPage = 8; // SUPPRESS CHECKSTYLE: MagicNumberCheck
+    private int linesPerPage = 8;
     private int targetPage = 1;
 
     PagedSendHandler() {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void sendContent(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         if (!paginate || (issuer.getIssuer() instanceof ConsoleCommandSender && !paginateInConsole)) {
@@ -45,12 +34,6 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
         sendPaged(issuer, content);
     }
 
-    /**
-     * Send content list without pagination.
-     *
-     * @param issuer    The target which the content will be displayed to.
-     * @param content   The content to display.
-     */
     private void sendNormal(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
             issuer.sendMessage(MVCorei18n.CONTENTDISPLAY_FILTER, replace("{filter}").with(filter));
@@ -58,14 +41,8 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
         content.forEach(issuer::sendMessage);
     }
 
-    /**
-     * Send content list with pagination.
-     *
-     * @param issuer    The target which the content will be displayed to.
-     * @param content   The content to display.
-     */
     private void sendPaged(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
-        int totalPages = (content.size() + linesPerPage - 1) / linesPerPage; // Basically just divide round up
+        int totalPages = (content.size() + linesPerPage - 1) / linesPerPage;
         if (targetPage < 1 || targetPage > totalPages) {
             issuer.sendMessage(MVCorei18n.CONTENTDISPLAY_INVALIDPAGE, replace("{total}").with(totalPages));
             return;
@@ -96,57 +73,26 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
         pageContent.forEach(issuer::sendMessage);
     }
 
-    /**
-     * Sets whether display output should be paginated.
-     *
-     * @param paginate  State of doing pagination.
-     * @return Same {@link PagedSendHandler} for method chaining.
-     */
     public PagedSendHandler doPagination(boolean paginate) {
         this.paginate = paginate;
         return this;
     }
 
-    /**
-     * Sets whether display output should be paginated if is for console output.
-     * This option will be useless if {@link PagedSendHandler#paginate} is set to false.
-     *
-     * @param paginateInConsole State of doing pagination in console.
-     * @return Same {@link PagedSendHandler} for method chaining.
-     */
     public PagedSendHandler doPaginationInConsole(boolean paginateInConsole) {
         this.paginateInConsole = paginateInConsole;
         return this;
     }
 
-    /**
-     * Sets whether empty lines should be added if content lines shown is less that {@link PagedSendHandler#linesPerPage}.
-     *
-     * @param padEnd    State of doing end padding.
-     * @return Same {@link PagedSendHandler} for method chaining.
-     */
     public PagedSendHandler doEndPadding(boolean padEnd) {
         this.padEnd = padEnd;
         return this;
     }
 
-    /**
-     * Sets the max number of lines per page. This excludes header.
-     *
-     * @param linesPerPage  The number of lines per page.
-     * @return Same {@link PagedSendHandler} for method chaining.
-     */
     public PagedSendHandler withLinesPerPage(int linesPerPage) {
         this.linesPerPage = linesPerPage;
         return this;
     }
 
-    /**
-     * Sets the page number to display.
-     *
-     * @param targetPage    The target page number to display.
-     * @return Same {@link PagedSendHandler} for method chaining.
-     */
     public PagedSendHandler withTargetPage(int targetPage) {
         this.targetPage = targetPage;
         return this;

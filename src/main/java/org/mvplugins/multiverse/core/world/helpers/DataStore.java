@@ -14,38 +14,15 @@ import org.mvplugins.multiverse.core.utils.compatibility.GameRuleCompatibility;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
-/**
- * A data store for storing and restoring data from an object.
- *
- * @param <T>   The type of the object to store data from.
- */
 @Service
 public interface DataStore<T> {
-    /**
-     * Stores the data from the given object in this {@link DataStore} instance.
-     *
-     * @param object    The object to copy data from.
-     * @return This {@link DataStore} instance.
-     */
     DataStore<T> copyFrom(T object);
 
-    /**
-     * Copies the data from this {@link DataStore} instance to the given object.
-     *
-     * @param object    The object to paste data to.
-     * @return This {@link DataStore} instance.
-     */
     DataStore<T> pasteTo(T object);
 
-    /**
-     * A {@link DataStore} for storing and restoring game rules for a multiverse world.
-     */
     class GameRulesStore implements DataStore<LoadedMultiverseWorld> {
         private Map<GameRule<?>, Object> gameRuleMap;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public GameRulesStore copyFrom(LoadedMultiverseWorld world) {
             this.gameRuleMap = new HashMap<>();
@@ -62,9 +39,6 @@ public interface DataStore<T> {
             return this;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public GameRulesStore pasteTo(LoadedMultiverseWorld world) {
             if (gameRuleMap == null) {
@@ -91,15 +65,9 @@ public interface DataStore<T> {
         }
     }
 
-    /**
-     * A {@link DataStore} for storing and restoring world properties for a multiverse world.
-     */
     class WorldConfigStore<T extends MultiverseWorld> implements DataStore<T> {
         private Map<String, Object> configMap;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public WorldConfigStore<T> copyFrom(T world) {
             this.configMap = new HashMap<>();
@@ -111,9 +79,6 @@ public interface DataStore<T> {
             return this;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public WorldConfigStore<T> pasteTo(T world) {
             if (configMap == null) {
@@ -127,9 +92,6 @@ public interface DataStore<T> {
         }
     }
 
-    /**
-     * A {@link DataStore} for storing and restoring world border properties for a multiverse world.
-     */
     class WorldBorderStore implements DataStore<LoadedMultiverseWorld> {
         private double borderCenterX;
         private double borderCenterZ;
@@ -138,9 +100,6 @@ public interface DataStore<T> {
         private double borderSize;
         private int borderTimeRemaining;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public WorldBorderStore copyFrom(LoadedMultiverseWorld world) {
             world.getBukkitWorld()
@@ -156,9 +115,6 @@ public interface DataStore<T> {
             return this;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public WorldBorderStore pasteTo(LoadedMultiverseWorld world) {
             world.getBukkitWorld()

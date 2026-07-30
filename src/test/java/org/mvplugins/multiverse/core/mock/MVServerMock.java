@@ -22,7 +22,6 @@ public class MVServerMock extends ServerMock {
         System.out.println("Created test world folder: " + this.worldContainer.getAbsolutePath());
     }
 
-    // This is required for acf reflection to work
     @Override
     public @NotNull CommandMapMock getCommandMap() {
         return super.getCommandMap();

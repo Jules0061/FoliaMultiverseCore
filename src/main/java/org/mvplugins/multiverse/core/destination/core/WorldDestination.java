@@ -24,9 +24,6 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
-/**
- * {@link Destination} implementation for exact locations.
- */
 @Service
 public final class WorldDestination implements Destination<WorldDestination, WorldDestinationInstance, WorldDestination.InstanceFailureReason> {
 
@@ -47,30 +44,16 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull String getIdentifier() {
         return "w";
     }
 
-    /**
-     * Directly create a world destination instance for a Multiverse World without any string parsing validation needed.
-     *
-     * @param multiverseWorld   The destination's target world.
-     * @return The destination instance with the target world.
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     public @NotNull WorldDestinationInstance fromWorld(MultiverseWorld multiverseWorld) {
         return new WorldDestinationInstance(this, multiverseWorld, null, -1.0f);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Attempt<WorldDestinationInstance, InstanceFailureReason> getDestinationInstance(
             @NotNull CommandSender sender,
@@ -89,7 +72,6 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
         return Attempt.success(new WorldDestinationInstance(this, world, direction, yaw));
     }
 
-    //TODO: Extract to a world finder class
     @Nullable
     private MultiverseWorld getMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
@@ -97,9 +79,6 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
                 : worldManager.getWorld(worldName).getOrNull();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
@@ -121,9 +100,6 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
             this.messageKey = message;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public MessageKey getMessageKey() {
             return messageKey.getMessageKey();

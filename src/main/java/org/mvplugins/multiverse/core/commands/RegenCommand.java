@@ -102,7 +102,6 @@ class RegenCommand extends CoreCommand {
                 ? playerWorldTeleporter.transferAllFromWorldToDestination(world,  removeToDestination)
                 : AsyncAttemptsAggregate.emptySuccess();
 
-        // todo: using future will hide stacktrace
         future.onSuccess(() -> worldTickDeferrer
                         .deferWorldTick(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers)))
                 .onFailure(() -> issuer.sendError(MVCorei18n.GENERIC_TELEPORTPLAYERS_FAILED));
@@ -113,7 +112,6 @@ class RegenCommand extends CoreCommand {
             LoadedMultiverseWorld world,
             ParsedCommandFlags parsedFlags,
             List<Player> worldPlayers) {
-        //todo: Change biome on regen
         RegenWorldOptions regenWorldOptions = RegenWorldOptions.world(world)
                 .randomSeed(parsedFlags.hasFlag(flags.seed))
                 .seed(parsedFlags.flagValue(flags.seed))

@@ -16,24 +16,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Common string formatting methods used throughout Multiverse plugins.
- */
 public final class StringFormatter {
 
     private StringFormatter() {
-        // no instance
     }
 
-    /**
-     * Concatenates a list of strings into a single string, using a comma and a space as separators,
-     * and " and " as the separator before the last element.
-     * <br/>
-     * This method is useful for creating human-readable lists, such as "John, Mary and David".
-     *
-     * @param list the list of strings to join. If the list is empty, an empty string is returned.
-     * @return the concatenated string
-     */
     public static @NotNull String joinAnd(@Nullable List<String> list) {
         return join(list, ", ", " and ");
     }
@@ -45,15 +32,6 @@ public final class StringFormatter {
         return list.stream().map(String::valueOf).collect(Collectors.joining(separator));
     }
 
-    /**
-     * Concatenates a list of strings into a single string, using a specified separator and a different separator
-     * for the last element.
-     *
-     * @param list the list of strings to join. If the list is empty, an empty string is returned.
-     * @param separator the separator to use between elements, except for the last one. For example, a comma and a space.
-     * @param lastSeparator the separator to use before the last element. For example, " and ".
-     * @return the concatenated string
-     */
     public static @NotNull String join(@Nullable List<String> list, @NotNull String separator, @NotNull String lastSeparator) {
         if (list == null || list.isEmpty()) {
             return "";
@@ -73,30 +51,12 @@ public final class StringFormatter {
         return authors.toString();
     }
 
-    /**
-     * Appends a list of suggestions to the end of the input string, separated by commas.
-     *
-     * @param input     The current input
-     * @param addons    The autocomplete suggestions
-     * @return A collection of suggestions with the next suggestion appended
-     *
-     * @deprecated Method name has a spelling error. Use {@link #addOnToCommaSeparated(String, Collection)} instead.
-     */
     @Deprecated(forRemoval = true, since = "5.5")
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public static Collection<String> addonToCommaSeperated(@Nullable String input, @NotNull Collection<String> addons) {
         return addOnToCommaSeparated(input, addons);
     }
 
-    /**
-     * Appends a list of suggestions to the end of the input string, separated by commas.
-     *
-     * @param input     The current input
-     * @param addons    The autocomplete suggestions
-     * @return A collection of suggestions with the next suggestion appended
-     *
-     * @since 5.5
-     */
     @ApiStatus.AvailableSince("5.5")
     public static Collection<String> addOnToCommaSeparated(@Nullable String input, @NotNull Collection<String> addons) {
         if (Strings.isNullOrEmpty(input)) {
@@ -111,12 +71,6 @@ public final class StringFormatter {
                 .toList();
     }
 
-    /**
-     * Parse quotes in args into a single string. E.g. ["\"my", "string\""] -> ["my string"]
-     *
-     * @param args  The args to parse
-     * @return The parsed args
-     */
     public static @NotNull Collection<String> parseQuotesInArgs(@NotNull String[] args) {
         List<String> result = new ArrayList<>(args.length);
         StringBuilder current = new StringBuilder();
@@ -139,43 +93,24 @@ public final class StringFormatter {
             } else if (inQuotes) {
                 current.append(" ").append(arg);
             } else if (arg.startsWith("\"") && arg.endsWith("\"") && arg.length() > 1) {
-                // Fully quoted in one token
                 result.add(arg.substring(1, arg.length() - 1));
             } else {
                 result.add(arg);
             }
         }
 
-        // If we never saw the end quote, treat all those args as individual tokens again
         if (inQuotes) {
-            // Restore the original args from quoteStartIndex onward
             result.addAll(Arrays.asList(args).subList(quoteStartIndex, args.length));
         }
 
         return result;
     }
 
-    /**
-     * Add quotes to a string if it contains spaces. E.g. "my string" -> "\"my string\"".
-     * Gives back the original string if it doesn't contain spaces.
-     *
-     * @param input The string to add quotes to
-     * @return The quoted string
-     */
     @Contract("null -> null")
     public static @Nullable String quoteMultiWordString(@Nullable String input) {
         return input != null && input.contains(" ") ? "\"" + input + "\"" : input;
     }
 
-    /**
-     * Parses a CSV string of key=value pairs into a map.
-     * E.g. "key1=value1,key2=value2" -> {key1=value1, key2=value2}
-     *
-     * @param input The CSV string to parse
-     * @return The parsed map
-     *
-     * @since 5.5
-     */
     @ApiStatus.AvailableSince("5.5")
     public static @Unmodifiable Map<String, String> parseCSVMap(@Nullable String input) {
         if (Strings.isNullOrEmpty(input)) {

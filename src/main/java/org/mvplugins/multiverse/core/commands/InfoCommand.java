@@ -52,7 +52,6 @@ class InfoCommand extends CoreCommand {
         this.flags = flags;
     }
 
-    // TODO: support info for unloaded worlds
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
     @CommandCompletion("@mvworlds:scope=both|@flags:resolveUntil=arg1,groupName=" + PageFilterFlags.NAME + " @flags:groupName=" + PageFilterFlags.NAME)

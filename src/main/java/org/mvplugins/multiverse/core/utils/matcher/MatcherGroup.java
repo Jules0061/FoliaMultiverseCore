@@ -8,36 +8,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * MatcherGroup is a collection of StringMatchers that can match against a string.
- * It works with all format supported by {@link StringMatcher#fromString(String)}.
- *
- * @since 5.2
- */
 @ApiStatus.AvailableSince("5.2")
 public class MatcherGroup implements StringMatcher {
 
     private final ExactStringMatcher exactMatcher;
     private final List<StringMatcher> stringMatchers;
 
-    /**
-     * Creates a new empty MatcherGroup.
-     *
-     * @since 5.2
-     */
     @ApiStatus.AvailableSince("5.2")
     public MatcherGroup() {
         this.exactMatcher = new ExactStringMatcher();
         this.stringMatchers = new ArrayList<>();
     }
 
-    /**
-     * Creates a new MatcherGroup with multiple strings to be parsed into matchers.
-     *
-     * @param matchStrings the collection of match strings
-     *
-     * @since 5.2
-     */
     @ApiStatus.AvailableSince("5.2")
     public MatcherGroup(@NotNull Collection<String> matchStrings) {
         this();
@@ -46,13 +28,6 @@ public class MatcherGroup implements StringMatcher {
         }
     }
 
-    /**
-     * Creates a new MatcherGroup with a single exact match.
-     *
-     * @param matchString the single match string
-     *
-     * @since 5.2
-     */
     @ApiStatus.AvailableSince("5.2")
     public void addMatcher(@Nullable String matchString) {
         if (matchString == null || matchString.isEmpty()) {
@@ -69,21 +44,11 @@ public class MatcherGroup implements StringMatcher {
         return !matcherString.contains("*") && !matcherString.startsWith("r=");
     }
 
-    /**
-     * Adds an existing matcher to the group.
-     *
-     * @param matcher the StringMatcher to add
-     *
-     * @since 5.2
-     */
     @ApiStatus.AvailableSince("5.2")
     public void addMatcher(@NotNull StringMatcher matcher) {
         stringMatchers.add(matcher);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean matches(@Nullable String value) {
         if (exactMatcher.matches(value)) {

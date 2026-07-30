@@ -77,19 +77,10 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
         return true;
     }
 
-    /**
-     * Placeholder implementation, format: %multiverse-core_&lt;placeholder&gt;_[world]% world is optional.
-     *
-     * @param offlinePlayer Player to get the placeholder for
-     * @param params        Placeholder to get
-     * @return Placeholder value
-     */
     @Override
     public @Nullable String onRequest(OfflinePlayer offlinePlayer, @NotNull String params) {
-        // Split string in to an Array with underscores
         List<String> paramsArray = Lists.newArrayList(REPatterns.UNDERSCORE.split(params));
 
-        // No placeholder defined
         if (paramsArray.isEmpty()) {
             warning("No placeholder key defined");
             return null;
@@ -107,7 +98,6 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
     }
 
     private @NotNull Option<String> parseWorldName(OfflinePlayer offlinePlayer, List<String> paramsArray) {
-        // No world defined, get from player
         if (paramsArray.isEmpty()) {
             if (offlinePlayer instanceof Player player) {
                 return Option.of(player.getWorld().getName());
@@ -117,14 +107,12 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
             }
         }
 
-        // Try get from params
         String paramWorldName = paramsArray.get(paramsArray.size() - 1);
         if (worldManager.isWorld(paramWorldName)) {
             paramsArray.remove(paramsArray.size() - 1);
             return Option.of(paramWorldName);
         }
 
-        // Param not a world, fallback to player
         if (offlinePlayer instanceof Player player) {
             return Option.of(player.getWorld().getName());
         }

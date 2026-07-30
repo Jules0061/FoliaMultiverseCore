@@ -12,7 +12,7 @@ final class AdventureTextFormatter implements TextFormatter {
     public void sendFormattedMessage(@NotNull CommandSender sender, @Nullable String message) {
         String colorizedMessage = colorize(message);
         if (colorizedMessage == null) {
-            return; // Avoid sending null messages
+            return;
         }
         sender.sendMessage(colorizedMessage);
     }

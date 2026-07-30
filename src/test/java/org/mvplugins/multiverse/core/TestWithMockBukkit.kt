@@ -9,9 +9,6 @@ import org.mvplugins.multiverse.core.inject.PluginServiceLocator
 import org.mvplugins.multiverse.core.mock.MVServerMock
 import kotlin.test.*
 
-/**
- * Basic abstract test class that sets up MockBukkit and MultiverseCore.
- */
 abstract class TestWithMockBukkit {
 
     protected lateinit var server: MVServerMock

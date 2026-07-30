@@ -9,11 +9,6 @@ import org.mvplugins.multiverse.core.utils.ReflectHelper;
 
 import java.lang.reflect.Method;
 
-/**
- * Compatibility class used to handle API changes in {@link UnsafeValues} class.
- *
- * @since 5.6
- */
 @ApiStatus.AvailableSince("5.7")
 public final class UnsafeValuesCompatibility {
 
@@ -23,14 +18,6 @@ public final class UnsafeValuesCompatibility {
         GET_MAIN_LEVEL_NAME_METHOD = ReflectHelper.tryGetMethod(UnsafeValues.class, "getMainLevelName");
     }
 
-    /**
-     * Try to call the getMainLevelName method in UnsafeValues, which is used to get level-name configured in
-     * server.properties file.
-     *
-     * @return The level-name configured in server.properties file, or empty if the method is not available.
-     *
-     * @since 5.7
-     */
     @ApiStatus.AvailableSince("5.7")
     public static Option<String> getMainLevelName() {
         return GET_MAIN_LEVEL_NAME_METHOD

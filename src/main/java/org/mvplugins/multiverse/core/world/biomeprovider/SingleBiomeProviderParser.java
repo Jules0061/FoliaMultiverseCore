@@ -9,9 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A parser for {@link SingleBiomeProvider}
- */
 final class SingleBiomeProviderParser implements BiomeProviderParser {
 
     private List<String> biomes;

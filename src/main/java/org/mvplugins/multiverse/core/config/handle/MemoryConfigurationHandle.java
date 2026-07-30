@@ -12,13 +12,6 @@ import java.util.logging.Logger;
 
 public class MemoryConfigurationHandle extends ConfigurationSectionHandle<ConfigurationSection> {
 
-    /**
-     * Creates a new builder for a {@link ConfigurationSectionHandle}.
-     *
-     * @param configurationSection  The configuration section.
-     * @param nodes                 The nodes.
-     * @return The builder.
-     */
     public static MemoryConfigurationHandle.Builder<? extends ConfigurationSectionHandle.Builder<ConfigurationSection, ?>> builder(
             @NotNull ConfigurationSection configurationSection, @NotNull NodeGroup nodes) {
         return new MemoryConfigurationHandle.Builder<>(configurationSection, nodes);
@@ -38,20 +31,12 @@ public class MemoryConfigurationHandle extends ConfigurationSectionHandle<Config
                 .flatMap(ignore -> super.save());
     }
 
-    /**
-     * Builder for {@link MemoryConfigurationHandle}.
-     *
-     * @param <B>   The builder type.
-     */
     public static class Builder<B extends Builder<B>> extends ConfigurationSectionHandle.Builder<ConfigurationSection, B> {
 
         protected Builder(@NotNull ConfigurationSection configurationSection, @NotNull NodeGroup nodes) {
             super(configurationSection, nodes);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public @NotNull MemoryConfigurationHandle build() {
             return new MemoryConfigurationHandle(configurationSection, logger, nodes, migrator);

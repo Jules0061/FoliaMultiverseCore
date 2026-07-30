@@ -29,9 +29,6 @@ import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
-/**
- * List all gamerules in your current or specified world.
- */
 @Service
 class GeneratorsCommand extends CoreCommand {
 
@@ -58,10 +55,8 @@ class GeneratorsCommand extends CoreCommand {
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
-        // Get the generators loaded using the command suggestions
         List<String> generators = (List<String>) generatorProvider.suggestGeneratorString("");
 
-        // Tell the user if we cannot find any generator plugins, then abort
         if (generators.isEmpty()) {
             issuer.sendMessage(MVCorei18n.GENERATORS_EMPTY);
             return;

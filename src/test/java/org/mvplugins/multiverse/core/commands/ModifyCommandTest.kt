@@ -16,7 +16,6 @@ class ModifyCommandTest : AbstractCommandTest() {
 
     @BeforeTest
     fun setUp() {
-        // Disable confirmation to make tests easier
         val config = serviceLocator.getActiveService(CoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("CoreConfig is not available as a service") }
         config.confirmMode = ConfirmMode.DISABLE
