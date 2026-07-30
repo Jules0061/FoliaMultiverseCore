@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.utils.MVScheduler;
 import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
@@ -27,6 +28,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
     private final BlockSafety blockSafety;
     private final LocationManipulation locationManipulation;
     private final EntityPurger entityPurger;
+    private final MVScheduler scheduler;
 
     LoadedMultiverseWorld(
             @NotNull World world,
@@ -34,13 +36,15 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
             @NotNull CoreConfig config,
             @NotNull BlockSafety blockSafety,
             @NotNull LocationManipulation locationManipulation,
-            @NotNull EntityPurger entityPurger
+            @NotNull EntityPurger entityPurger,
+            @NotNull MVScheduler scheduler
     ) {
         super(worldConfig, config);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;
         this.entityPurger = entityPurger;
+        this.scheduler = scheduler;
 
         setupWorldConfig(world);
         setupSpawnLocation(world);
@@ -56,10 +60,17 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
 
     private void setupSpawnLocation(World world) {
         Location spawnLocation = worldConfig.getSpawnLocation();
-        if (spawnLocation == null || spawnLocation instanceof NullSpawnLocation) {
-            SpawnLocation newLocation = new SpawnLocation(readSpawnFromWorld(world));
-            worldConfig.setSpawnLocation(newLocation);
+        if (spawnLocation != null && !(spawnLocation instanceof NullSpawnLocation)) {
+            return;
         }
+        Location worldSpawn = world.getSpawnLocation();
+        if (scheduler.ownsRegion(worldSpawn)) {
+            worldConfig.setSpawnLocation(new SpawnLocation(readSpawnFromWorld(world)));
+            return;
+        }
+        worldConfig.setSpawnLocation(new SpawnLocation(worldSpawn));
+        scheduler.runAtLocation(worldSpawn, () ->
+                worldConfig.setSpawnLocation(new SpawnLocation(readSpawnFromWorld(world))));
     }
 
     private Location readSpawnFromWorld(World world) {
@@ -87,8 +98,12 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
         }
 
         Logging.fine("Checking for a safe location using top block...");
-        Location newerSpawn;
-        newerSpawn = blockSafety.getTopBlock(new Location(world, 0, 0, 0));
+        Location worldOrigin = new Location(world, 0, 0, 0);
+        if (!scheduler.ownsRegion(worldOrigin)) {
+            Logging.fine("World origin is owned by another region, keeping the original spawn.");
+            return location;
+        }
+        Location newerSpawn = blockSafety.getTopBlock(worldOrigin);
         if (newerSpawn != null) {
             Logging.info("New Spawn for '%s' is located at: %s",
                     this.getName(), locationManipulation.locationToString(newerSpawn));

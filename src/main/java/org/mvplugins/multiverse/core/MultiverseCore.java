@@ -21,6 +21,7 @@ import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
 import org.mvplugins.multiverse.core.module.MultiverseModule;
+import org.mvplugins.multiverse.core.utils.MVScheduler;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entity.SpawnCategoryMapper;
@@ -43,6 +44,8 @@ public class MultiverseCore extends MultiverseModule {
     private Provider<BstatsMetricsConfigurator> metricsConfiguratorProvider;
     @Inject
     private Provider<MVEconomist> economistProvider;
+    @Inject
+    private Provider<MVScheduler> schedulerProvider;
 
     public MultiverseCore() {
         super();
@@ -80,6 +83,10 @@ public class MultiverseCore extends MultiverseModule {
 
         SpawnCategoryMapper.buildSpawnCategoryMap();
 
+        schedulerProvider.get().runGlobalNow(this::initializeWorldsAndServices);
+    }
+
+    private void initializeWorldsAndServices() {
         worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
             loadEconomist();
             loadAnchors();

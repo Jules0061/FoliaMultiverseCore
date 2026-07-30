@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.utils;
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import jakarta.inject.Inject;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -41,6 +42,17 @@ public final class MVScheduler {
 
     public boolean isGlobalThread() {
         return server.isGlobalTickThread();
+    }
+
+    public boolean ownsRegion(@NotNull Location location) {
+        return !REGIONISED || server.isOwnedByCurrentRegion(location);
+    }
+
+    public void runAtLocation(@NotNull Location location, @NotNull Runnable action) {
+        if (!plugin.isEnabled()) {
+            return;
+        }
+        server.getRegionScheduler().run(plugin, location, ignore -> action.run());
     }
 
     public void runGlobal(@NotNull Runnable action) {

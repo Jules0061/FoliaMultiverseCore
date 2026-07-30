@@ -46,6 +46,7 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.utils.MVScheduler;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.GameRuleCompatibility;
@@ -110,6 +111,7 @@ public final class WorldManager {
     private final ServerProperties serverProperties;
     private final CoreConfig config;
     private final EntityPurger entityPurger;
+    private final MVScheduler scheduler;
     private final Provider<PotentialWorldFinder> potentialWorldFinder;
 
     @Inject
@@ -127,6 +129,7 @@ public final class WorldManager {
             @NotNull ServerProperties serverProperties,
             @NotNull CoreConfig config,
             @NotNull EntityPurger entityPurger,
+            @NotNull MVScheduler scheduler,
             @NotNull Provider<PotentialWorldFinder> potentialWorldFinder) {
         this.worldStore = worldStore;
         this.worldsConfigManager = worldsConfigManager;
@@ -141,6 +144,7 @@ public final class WorldManager {
         this.serverProperties = serverProperties;
         this.config = config;
         this.entityPurger = entityPurger;
+        this.scheduler = scheduler;
         this.potentialWorldFinder = potentialWorldFinder;
 
         this.unloadTracker = new CopyOnWriteArrayList<>();
@@ -398,7 +402,8 @@ public final class WorldManager {
                 config,
                 blockSafety,
                 locationManipulation,
-                entityPurger
+                entityPurger,
+                scheduler
         );
         worldStore.putLoadedWorld(loadedWorld);
         saveWorldsConfig();
@@ -504,7 +509,8 @@ public final class WorldManager {
                 config,
                 blockSafety,
                 locationManipulation,
-                entityPurger
+                entityPurger,
+                scheduler
         );
         worldStore.putLoadedWorld(loadedWorld);
         saveWorldsConfig();
