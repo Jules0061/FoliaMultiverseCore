@@ -25,10 +25,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
@@ -44,6 +42,7 @@ import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
+import org.mvplugins.multiverse.core.utils.MVScheduler;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
@@ -58,7 +57,7 @@ import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
  */
 @Service
 final class MVPlayerListener implements CoreListener {
-    private final Plugin plugin;
+    private final MVScheduler scheduler;
     private final CoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
     private final BlockSafety blockSafety;
@@ -75,7 +74,7 @@ final class MVPlayerListener implements CoreListener {
 
     @Inject
     MVPlayerListener(
-            MultiverseCore plugin,
+            MVScheduler scheduler,
             CoreConfig config,
             Provider<WorldManager> worldManagerProvider,
             BlockSafety blockSafety,
@@ -89,7 +88,7 @@ final class MVPlayerListener implements CoreListener {
             DimensionFinder dimensionFinder,
             CorePermissionsChecker corePermissionsChecker,
             AsyncSafetyTeleporter asyncSafetyTeleporter) {
-        this.plugin = plugin;
+        this.scheduler = scheduler;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
         this.blockSafety = blockSafety;
@@ -273,22 +272,21 @@ final class MVPlayerListener implements CoreListener {
         Player teleportee = event.getPlayer();
 
         if (event.isCancelled()) {
-            Logging.finer("Teleport event for player '" + teleportee.getName() + "' was already cancelled.");
+            Logging.finer("Teleport event for player '%s' was already cancelled.", teleportee.getName());
             return;
         }
 
-        Logging.finer("Got teleport event for player '"
-                + teleportee.getName() + "' with cause '" + event.getCause() + "'");
+        Logging.finer("Got teleport event for player '%s' with cause '%s'", teleportee.getName(), event.getCause());
 
         Location fromLocation = event.getFrom();
         if (fromLocation == null || fromLocation.getWorld() == null) { // should never be null, but just in case
-            Logging.finer("Teleport event for player '" + teleportee.getName() + "' has null from-location or world.");
+            Logging.finer("Teleport event for player '%s' has null from-location or world.", teleportee.getName());
             return;
         }
 
         Location toLocation = event.getTo();
         if (toLocation == null || toLocation.getWorld() == null) { // may be null on spigot
-            Logging.finer("Teleport event for player '" + teleportee.getName() + "' has null to-location or world.");
+            Logging.finer("Teleport event for player '%s' has null to-location or world.", teleportee.getName());
             return;
         }
 
@@ -317,14 +315,14 @@ final class MVPlayerListener implements CoreListener {
         MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(fromLocation.getWorld()).getOrNull();
         LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(toLocation.getWorld()).getOrNull();
         if (toWorld == null) {
-            Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
-                    + toLocation.getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
-                    + "actions will be taken by Multiverse-Core.");
+            Logging.fine("Player '%s' is teleporting to world '%s' which is not managed by Multiverse-Core. "
+                    + "No further actions will be taken by Multiverse-Core.",
+                    teleportee.getName(), toLocation.getWorld().getName());
             return;
         }
         if (fromLocation.getWorld().equals(toLocation.getWorld())) {
             // The player is Teleporting to the same world.
-            Logging.finer("Player '" + teleportee.getName() + "' is teleporting to the same world.");
+            Logging.finer("Player '%s' is teleporting to the same world.", teleportee.getName());
             this.stateSuccess(teleportee.getName(), toWorld.getName());
             return;
         }
@@ -345,8 +343,7 @@ final class MVPlayerListener implements CoreListener {
     }
 
     private void stateSuccess(String playerName, String worldName) {
-        Logging.fine("MV-Core is allowing Player '" + playerName
-                + "' to go to '" + worldName + "'.");
+        Logging.fine("MV-Core is allowing Player '%s' to go to '%s'.", playerName, worldName);
     }
 
     /**
@@ -399,16 +396,16 @@ final class MVPlayerListener implements CoreListener {
         }
         if (Objects.equals(fromLocation.getWorld(), toLocation.getWorld())) {
             // The player is Portaling to the same world.
-            Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
+            Logging.finer("Player '%s' is portaling to the same world.", event.getPlayer().getName());
             return;
         }
 
         MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(fromLocation.getWorld()).getOrNull();
         LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(toLocation.getWorld()).getOrNull();
         if (toWorld == null) {
-            Logging.fine("Player '" + event.getPlayer().getName() + "' is portaling to world '"
-                    + toLocation.getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
-                    + "actions will be taken by Multiverse-Core.");
+            Logging.fine("Player '%s' is portaling to world '%s' which is not managed by Multiverse-Core. "
+                    + "No further actions will be taken by Multiverse-Core.",
+                    event.getPlayer().getName(), toLocation.getWorld().getName());
             return;
         }
         ResultChain entryResult = worldEntryCheckerProvider.forSender(event.getPlayer()).canEnterWorld(fromWorld, toWorld)
@@ -432,8 +429,8 @@ final class MVPlayerListener implements CoreListener {
             doGameModeAndFlightEnforcement(player, world);
             return;
         }
-        server.getScheduler().runTaskLater(
-                this.plugin,
+        scheduler.runAtEntityLater(
+                player,
                 () -> doGameModeAndFlightEnforcement(player, world),
                 config.getGamemodeAndFlightEnforceDelay()
         );

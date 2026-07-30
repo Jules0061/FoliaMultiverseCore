@@ -34,9 +34,9 @@ final class PurgeEntitiesCommand extends CoreCommand {
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
-        int purgeCount = entityPurger.purgeEntities(world);
-        issuer.sendMessage(MVCorei18n.PURGEENTITIES_SUCCESS,
-                Replace.COUNT.with(purgeCount),
-                Replace.WORLD.with(world.getName()));
+        entityPurger.purgeEntities(world).thenAccept(purgeCount ->
+                issuer.sendMessage(MVCorei18n.PURGEENTITIES_SUCCESS,
+                        Replace.COUNT.with(purgeCount),
+                        Replace.WORLD.with(world.getName())));
     }
 }

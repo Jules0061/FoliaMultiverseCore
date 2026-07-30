@@ -18,6 +18,7 @@ import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
 import org.mvplugins.multiverse.core.utils.FileUtils;
+import org.mvplugins.multiverse.core.utils.MVScheduler;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -25,14 +26,17 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 final class DumpsService {
 
     private final MultiverseCore plugin;
+    private final MVScheduler scheduler;
     private final WorldManager worldManager;
     private final FileUtils fileUtils;
 
     @Inject
     DumpsService(@NotNull MultiverseCore plugin,
+                 @NotNull MVScheduler scheduler,
                  @NotNull WorldManager worldManager,
                  @NotNull FileUtils fileUtils) {
         this.plugin = plugin;
+        this.scheduler = scheduler;
         this.worldManager = worldManager;
         this.fileUtils = fileUtils;
     }
@@ -42,8 +46,7 @@ final class DumpsService {
 
         // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = createAndCallDebugInfoEvent();
-        new DumpsLogPoster(plugin, issuer, servicesType, getLogs(), versionEvent)
-                .runTaskAsynchronously(plugin);
+        scheduler.runAsync(new DumpsLogPoster(plugin, issuer, servicesType, getLogs(), versionEvent));
     }
 
     /**

@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.module;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import java.util.ArrayList;
 import java.util.Collections;

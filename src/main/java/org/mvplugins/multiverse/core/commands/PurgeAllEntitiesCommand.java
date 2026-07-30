@@ -46,17 +46,17 @@ final class PurgeAllEntitiesCommand extends CoreCommand {
             SpawnCategory[] spawnCategories
     ) {
         if (spawnCategories == null || spawnCategories.length == 0) {
-            int purgeCount = entityPurger.purgeAllEntities(world);
-            issuer.sendMessage(MVCorei18n.PURGEALLENTITIES_SUCCESS,
-                    Replace.COUNT.with(purgeCount),
-                    Replace.WORLD.with(world.getName()));
+            entityPurger.purgeAllEntities(world).thenAccept(purgeCount ->
+                    issuer.sendMessage(MVCorei18n.PURGEALLENTITIES_SUCCESS,
+                            Replace.COUNT.with(purgeCount),
+                            Replace.WORLD.with(world.getName())));
             return;
         }
 
-        int purgeCount = entityPurger.purgeEntities(world, spawnCategories);
-        issuer.sendMessage(MVCorei18n.PURGEALLENTITIES_SUCCESS_CATEGORIES,
-                Replace.COUNT.with(purgeCount),
-                Replace.WORLD.with(world.getName()),
-                replace("{categories}").with(StringFormatter.join(List.of(spawnCategories), ", ")));
+        entityPurger.purgeEntities(world, spawnCategories).thenAccept(purgeCount ->
+                issuer.sendMessage(MVCorei18n.PURGEALLENTITIES_SUCCESS_CATEGORIES,
+                        Replace.COUNT.with(purgeCount),
+                        Replace.WORLD.with(world.getName()),
+                        replace("{categories}").with(StringFormatter.join(List.of(spawnCategories), ", "))));
     }
 }

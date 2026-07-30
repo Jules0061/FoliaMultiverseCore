@@ -1,12 +1,12 @@
 package org.mvplugins.multiverse.core.world;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -18,7 +18,6 @@ import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
@@ -49,6 +48,7 @@ import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
+import org.mvplugins.multiverse.core.utils.compatibility.GameRuleCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCreatorCompatibility;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -143,8 +143,8 @@ public final class WorldManager {
         this.entityPurger = entityPurger;
         this.potentialWorldFinder = potentialWorldFinder;
 
-        this.unloadTracker = new ArrayList<>();
-        this.loadTracker = new ArrayList<>();
+        this.unloadTracker = new CopyOnWriteArrayList<>();
+        this.loadTracker = new CopyOnWriteArrayList<>();
     }
 
     /**
@@ -183,6 +183,7 @@ public final class WorldManager {
         });
     }
 
+    @SuppressWarnings("removal")
     private void removeWorldsNotInConfigs(Collection<WorldKeyOrName> removedWorlds) {
         removedWorlds.forEach(keyOrName -> getWorld(keyOrName.usableName())
                 .map(world -> removeWorld(RemoveWorldOptions.world(world)))
@@ -426,7 +427,7 @@ public final class WorldManager {
         // Properties from the bukkit world
         worldConfig.setLegacyWorldName(world.getName());
         worldConfig.setDifficulty(world.getDifficulty());
-        worldConfig.setKeepSpawnInMemory(world.getKeepSpawnInMemory());
+        worldConfig.setKeepSpawnInMemory(WorldCompatibility.getKeepSpawnInMemory(world));
         worldConfig.setScale(WorldCompatibility.getCoordinateScale(world));
 
         worldConfig.save();
@@ -456,6 +457,7 @@ public final class WorldManager {
      */
     @Deprecated(since = "5.2", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
+    @SuppressWarnings("removal")
     public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull String worldName) {
         return getWorld(worldName)
                 .map(world -> loadWorld(LoadWorldOptions.world(world)))
@@ -626,6 +628,7 @@ public final class WorldManager {
      */
     @Deprecated(since = "5.2", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
+    @SuppressWarnings("removal")
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull String worldName) {
         return getWorld(worldName)
                 .map(world -> removeWorld(RemoveWorldOptions.world(world)))
@@ -855,7 +858,7 @@ public final class WorldManager {
 
             if (!options.keepGameRule()) {
                 Arrays.stream(bukkitWorld.getGameRules())
-                        .map(gameRuleName -> GameRule.getByName(gameRuleName))
+                        .map(gameRuleName -> GameRuleCompatibility.<Object>getByName(gameRuleName))
                         .filter(Objects::nonNull)
                         .forEach(gameRule -> {
                             Object gameRuleDefault = bukkitWorld.getGameRuleDefault(gameRule);

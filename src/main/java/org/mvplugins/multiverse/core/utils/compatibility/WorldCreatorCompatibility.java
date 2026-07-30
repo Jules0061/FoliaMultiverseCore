@@ -11,7 +11,6 @@ import org.mvplugins.multiverse.core.utils.position.EntityPosition;
 import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 import java.lang.reflect.Method;
-import java.util.Locale;
 
 /**
  * Compatibility class used to handle {@link WorldCreator} API changes across different server versions.

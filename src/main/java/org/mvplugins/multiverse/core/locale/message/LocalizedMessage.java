@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.locale.message;
 
-import java.util.Objects;
-
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.Locales;

@@ -10,6 +10,7 @@ package org.mvplugins.multiverse.core.listeners;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,9 +28,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.dynamiclistener.EventRunnable;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventClass;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
-
-import java.util.Arrays;
+import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
 /**
  * Multiverse's Entity {@link Listener}.
@@ -164,17 +165,27 @@ final class MVEntityListener implements CoreListener {
 
     @EventMethod
     void chunkLoad(ChunkLoadEvent event) {
-        worldManager.getLoadedWorld(event.getWorld())
-                .peek(world -> {
-                    long count = Arrays.stream(event.getChunk().getEntities())
-                            .filter(entity -> !(entity instanceof Player))
-                            .filter(entity -> !world.getEntitySpawnConfig().shouldAllowSpawn(entity))
-                            .peek(Entity::remove)
-                            .count();
-                    if (count > 0) {
-                        Logging.finest("Removed %d entities from chunk %d, %d in world %s due to spawn category settings.",
-                                count, event.getChunk().getX(), event.getChunk().getZ(), event.getWorld().getName());
-                    }
-                });
+        LoadedMultiverseWorld world = worldManager.getLoadedWorld(event.getWorld()).getOrNull();
+        if (world == null) {
+            return;
+        }
+        Chunk chunk = event.getChunk();
+        Entity[] entities = chunk.getEntities();
+        if (entities.length == 0) {
+            return;
+        }
+        EntitySpawnConfig spawnConfig = world.getEntitySpawnConfig();
+        int count = 0;
+        for (Entity entity : entities) {
+            if (entity instanceof Player || spawnConfig.shouldAllowSpawn(entity)) {
+                continue;
+            }
+            entity.remove();
+            count++;
+        }
+        if (count > 0) {
+            Logging.finest("Removed %d entities from chunk %d, %d in world %s due to spawn category settings.",
+                    count, chunk.getX(), chunk.getZ(), event.getWorld().getName());
+        }
     }
 }

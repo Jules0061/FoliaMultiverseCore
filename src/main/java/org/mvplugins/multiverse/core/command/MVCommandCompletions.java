@@ -40,6 +40,7 @@ import org.mvplugins.multiverse.core.command.context.issueraware.IssuerAwareValu
 import org.mvplugins.multiverse.core.command.context.issueraware.MultiverseWorldValue;
 import org.mvplugins.multiverse.core.command.context.issueraware.PlayerArrayValue;
 import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.utils.compatibility.GameRuleCompatibility;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
@@ -260,7 +261,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestGamerules() {
-        return Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList());
+        return GameRuleCompatibility.values().map(GameRuleCompatibility::getName).collect(Collectors.toList());
     }
 
     private Collection<String> suggestGamerulesValues(BukkitCommandCompletionContext context) {

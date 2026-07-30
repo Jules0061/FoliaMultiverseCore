@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -26,7 +24,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.context.GameRuleValue;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
@@ -36,6 +33,7 @@ import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.utils.compatibility.GameRuleCompatibility;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
@@ -78,7 +76,7 @@ class GameruleCommand extends CoreCommand {
             World bukkitWorld = world.getBukkitWorld().getOrNull();
             if (bukkitWorld == null || !bukkitWorld.setGameRule(gamerule, value)) {
                 issuer.sendError(MVCorei18n.GAMERULE_SET_FAILED,
-                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.GAMERULE.with(GameRuleCompatibility.getName(gamerule)),
                         Replace.VALUE.with(value.toString()),
                         Replace.WORLD.with(world.getName()),
                         replace("{type}").with(gamerule.getType().getName()));
@@ -89,12 +87,12 @@ class GameruleCommand extends CoreCommand {
         if (success) {
             if (worlds.length == 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_SET_SUCCESS_SINGLE,
-                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.GAMERULE.with(GameRuleCompatibility.getName(gamerule)),
                         Replace.VALUE.with(value.toString()),
                         Replace.WORLD.with(worlds[0].getName()));
             } else if (worlds.length > 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_SET_SUCCESS_MULTIPLE,
-                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.GAMERULE.with(GameRuleCompatibility.getName(gamerule)),
                         Replace.VALUE.with(value.toString()),
                         Replace.COUNT.with(String.valueOf(worlds.length)));
             }
@@ -126,7 +124,7 @@ class GameruleCommand extends CoreCommand {
                         .onEmpty(() -> {
                             success.set(false);
                             issuer.sendError(MVCorei18n.GAMERULE_RESET_FAILED,
-                                    Replace.GAMERULE.with(gamerule.getName()),
+                                    Replace.GAMERULE.with(GameRuleCompatibility.getName(gamerule)),
                                     Replace.WORLD.with(world.getName()));
                         }));
 
@@ -134,11 +132,11 @@ class GameruleCommand extends CoreCommand {
         if (success.get()) {
             if (worlds.length == 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_SINGLE,
-                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.GAMERULE.with(GameRuleCompatibility.getName(gamerule)),
                         Replace.WORLD.with(worlds[0].getName()));
             } else if (worlds.length > 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_MULTIPLE,
-                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.GAMERULE.with(GameRuleCompatibility.getName(gamerule)),
                         Replace.COUNT.with(String.valueOf(worlds.length)));
             }
         }
@@ -188,16 +186,16 @@ class GameruleCommand extends CoreCommand {
         }
 
         for (String gamerule : world.getGameRules()) {
-            GameRule<?> gameruleEnum = GameRule.getByName(gamerule);
+            GameRule<?> gameruleEnum = GameRuleCompatibility.getByName(gamerule);
             if (gameruleEnum == null) {
                 continue;
             }
             Object gameruleValue = world.getGameRuleValue(gameruleEnum);
             if (gameruleValue == null) {
-                gameRuleMap.put(gameruleEnum.getName(), "null");
+                gameRuleMap.put(GameRuleCompatibility.getName(gameruleEnum), "null");
                 continue;
             }
-            gameRuleMap.put(gameruleEnum.getName(), gameruleValue.toString());
+            gameRuleMap.put(GameRuleCompatibility.getName(gameruleEnum), gameruleValue.toString());
         }
         return gameRuleMap;
     }

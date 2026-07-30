@@ -175,7 +175,13 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
 
     /**
      * {@inheritDoc}
+     *
+     * @deprecated Use {@link #serialize(Object)} and {@link #deserialize(Object)} instead.
      */
+    @Override
+    @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
+    @SuppressWarnings("removal")
     public @Nullable NodeSerializer<T> getSerializer() {
         return serializer;
     }

@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.locale.message;
 
 import io.vavr.control.Either;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

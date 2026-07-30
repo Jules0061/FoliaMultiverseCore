@@ -32,7 +32,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
     protected final @Nullable Logger logger;
     protected final @NotNull NodeGroup nodes;
     protected final @Nullable ConfigMigrator migrator;
-    protected final @NotNull Map<ValueNode, Object> nodeValueMap;
+    protected volatile @NotNull Map<ValueNode, Object> nodeValueMap;
 
     protected C config;
 
@@ -73,19 +73,21 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      * Sets up the nodes.
      */
     protected void setUpNodes() {
-        nodeValueMap.clear();
         if (nodes.isEmpty()) {
+            nodeValueMap = new HashMap<>();
             return;
         }
 
+        Map<ValueNode, Object> newValueMap = new HashMap<>(nodes.size());
         nodes.forEach(node -> {
             if (node instanceof ValueNode valueNode) {
                 var value = deserializeNodeFromConfig(valueNode);
-                nodeValueMap.put(valueNode, value);
+                newValueMap.put(valueNode, value);
             }
         });
+        nodeValueMap = newValueMap;
 
-        nodeValueMap.forEach((valueNode, value) -> {
+        newValueMap.forEach((valueNode, value) -> {
             valueNode.onLoad(value);
             valueNode.onLoadAndChange(Bukkit.getConsoleSender(), null, value);
         });
@@ -177,7 +179,9 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
     public <T> Try<Void> set(@NotNull CommandSender sender, @NotNull ValueNode<T> node, T value) {
         return node.validate(value).map(ignore -> {
             T oldValue = get(node);
-            nodeValueMap.put(node, value);
+            Map<ValueNode, Object> newValueMap = new HashMap<>(nodeValueMap);
+            newValueMap.put(node, value);
+            nodeValueMap = newValueMap;
             node.onLoadAndChange(sender, oldValue, value);
             node.onChange(sender, oldValue, value);
             return null;

@@ -9,7 +9,6 @@ package org.mvplugins.multiverse.core.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;

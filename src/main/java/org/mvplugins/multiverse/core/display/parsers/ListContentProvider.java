@@ -2,9 +2,7 @@ package org.mvplugins.multiverse.core.display.parsers;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.locale.message.Message;

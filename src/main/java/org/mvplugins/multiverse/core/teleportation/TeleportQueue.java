@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core.teleportation;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
@@ -15,7 +15,7 @@ public final class TeleportQueue {
     private final Map<String, String> teleportQueueMap;
 
     TeleportQueue() {
-        teleportQueueMap = new HashMap<>();
+        teleportQueueMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -45,11 +45,6 @@ public final class TeleportQueue {
      * @return The player that teleported the other one (the teleporter).
      */
     public Option<String> popFromQueue(String playerName) {
-        if (teleportQueueMap.containsKey(playerName)) {
-            String teleportee = teleportQueueMap.get(playerName);
-            teleportQueueMap.remove(playerName);
-            return Option.of(teleportee);
-        }
-        return Option.none();
+        return Option.of(teleportQueueMap.remove(playerName));
     }
 }

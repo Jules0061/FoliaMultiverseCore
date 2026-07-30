@@ -26,6 +26,7 @@ import org.mvplugins.multiverse.core.config.node.ListConfigNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
+import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
@@ -207,8 +208,8 @@ final class WorldConfigNodes {
             .onLoadAndChange((sender, oldValue, newValue) -> {
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
                 loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
-                    bukkitWorld.setKeepSpawnInMemory(newValue);
-                    if (bukkitWorld.getKeepSpawnInMemory() != newValue) {
+                    WorldCompatibility.setKeepSpawnInMemory(bukkitWorld, newValue);
+                    if (WorldCompatibility.getKeepSpawnInMemory(bukkitWorld) != newValue) {
                         sender.sendMessage(ChatColor.RED + "Keep spawn in memory feature has been removed by " +
                                 "Minecraft in 1.21.9+ and will no longer have any effect when set to true.");
                     }

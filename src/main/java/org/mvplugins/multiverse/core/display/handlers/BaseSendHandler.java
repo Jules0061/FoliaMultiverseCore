@@ -3,9 +3,6 @@ package org.mvplugins.multiverse.core.display.handlers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.BukkitCommandIssuer;
-import com.google.common.base.Strings;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

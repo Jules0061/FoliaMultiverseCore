@@ -33,6 +33,7 @@ import org.mvplugins.multiverse.core.command.context.PlayerLocation;
 import org.mvplugins.multiverse.core.command.context.issueraware.MultiverseWorldValue;
 import org.mvplugins.multiverse.core.command.context.issueraware.PlayerArrayValue;
 import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.utils.compatibility.GameRuleCompatibility;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
@@ -131,7 +132,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("No game rule specified.");
         }
 
-        GameRule<?> gameRule = GameRule.getByName(gameRuleName);
+        GameRule<?> gameRule = GameRuleCompatibility.getByName(gameRuleName);
         if (gameRule == null) {
             throw new InvalidCommandArgument("The game rule " + gameRuleName + " is not valid.");
         }
@@ -156,7 +157,7 @@ public class MVCommandContexts extends PaperCommandContexts {
 
         Object resolvedValue = resolver.getContext(context);
         if (resolvedValue == null) {
-            throw new InvalidCommandArgument("The game rule value " + valueString + " is not valid for game rule " + gameRule.getName() + ".");
+            throw new InvalidCommandArgument("The game rule value " + valueString + " is not valid for game rule " + GameRuleCompatibility.getName(gameRule) + ".");
         }
 
         return new GameRuleValue(resolvedValue);

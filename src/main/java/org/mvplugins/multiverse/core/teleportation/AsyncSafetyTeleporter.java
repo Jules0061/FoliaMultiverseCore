@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.utils.MVScheduler;
 
 /**
  * Teleports entities safely and asynchronously. Provider for the {@link AsyncSafetyTeleporter}.
@@ -17,18 +17,18 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 @Service
 public final class AsyncSafetyTeleporter {
     @NotNull
-    private final MultiverseCore multiverseCore;
+    private final MVScheduler scheduler;
     private final BlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
 
     @Inject
     AsyncSafetyTeleporter(
-            @NotNull MultiverseCore multiverseCore,
+            @NotNull MVScheduler scheduler,
             @NotNull BlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager) {
-        this.multiverseCore = multiverseCore;
+        this.scheduler = scheduler;
         this.blockSafety = blockSafety;
         this.teleportQueue = teleportQueue;
         this.pluginManager = pluginManager;
@@ -42,7 +42,7 @@ public final class AsyncSafetyTeleporter {
      */
     public AsyncSafetyTeleporterAction to(@Nullable Location location) {
         return new AsyncSafetyTeleporterAction(
-                multiverseCore,
+                scheduler,
                 blockSafety,
                 teleportQueue,
                 pluginManager,
@@ -58,7 +58,7 @@ public final class AsyncSafetyTeleporter {
      */
     public AsyncSafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
         return new AsyncSafetyTeleporterAction(
-                multiverseCore,
+                scheduler,
                 blockSafety,
                 teleportQueue,
                 pluginManager,

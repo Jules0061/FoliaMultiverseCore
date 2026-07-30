@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.world.generators;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.stream.Stream;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
-import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.World;

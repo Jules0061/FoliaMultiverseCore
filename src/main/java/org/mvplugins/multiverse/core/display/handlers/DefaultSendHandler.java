@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.display.handlers;
 
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 

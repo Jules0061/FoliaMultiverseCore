@@ -22,6 +22,8 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 @Service
 public final class BlockSafety {
 
+    private static final int FINEST_DEBUG_LEVEL = 3;
+
     private final CoreConfig config;
     private final LocationManipulation locationManipulation;
 
@@ -131,29 +133,42 @@ public final class BlockSafety {
      * @return Whether the player can spawn safely at the given {@link Location}
      */
     public boolean canSpawnAtBlockSafely(@NotNull Block block) {
-        Logging.finest("Checking spawn safety for location: %s, %s, %s", block.getX(), block.getY(), block.getZ());
+        boolean logFinest = Logging.getDebugLevel() >= FINEST_DEBUG_LEVEL;
+        if (logFinest) {
+            Logging.finest("Checking spawn safety for location: %s, %s, %s", block.getX(), block.getY(), block.getZ());
+        }
         if (!block.getWorld().getWorldBorder().isInside(block.getLocation())) {
-            Logging.finest("Location is outside world border.");
+            if (logFinest) {
+                Logging.finest("Location is outside world border.");
+            }
             return false;
         }
         if (isUnsafeSpawnBody(block)) {
             // Player body will be stuck in solid
-            Logging.finest("Unsafe location for player's body: " + block);
+            if (logFinest) {
+                Logging.finest("Unsafe location for player's body: " + block);
+            }
             return false;
         }
         Block airBlockForHead = block.getRelative(0, 1, 0);
         if (isUnsafeSpawnBody(airBlockForHead)) {
             // Player's head will be stuck in solid
-            Logging.finest("Unsafe location for player's head: " + airBlockForHead);
+            if (logFinest) {
+                Logging.finest("Unsafe location for player's head: " + airBlockForHead);
+            }
             return false;
         }
         Block standingOnBlock = block.getRelative(0, -1, 0);
         if (isUnsafeSpawnPlatform(standingOnBlock)) {
             // Player will drop down
-            Logging.finest("Unsafe location due to invalid platform: " + standingOnBlock);
+            if (logFinest) {
+                Logging.finest("Unsafe location due to invalid platform: " + standingOnBlock);
+            }
             return false;
         }
-        Logging.finest("Location is safe.");
+        if (logFinest) {
+            Logging.finest("Location is safe.");
+        }
         return true;
     }
 

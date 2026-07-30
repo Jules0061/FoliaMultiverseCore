@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldBorderCompatibility;
+import org.mvplugins.multiverse.core.utils.compatibility.GameRuleCompatibility;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
@@ -50,7 +51,7 @@ public interface DataStore<T> {
             this.gameRuleMap = new HashMap<>();
             world.getBukkitWorld().peek(bukkitWorld -> {
                 for (String gameRule : bukkitWorld.getGameRules()) {
-                    GameRule<?> gameRuleEnum = GameRule.getByName(gameRule);
+                    GameRule<?> gameRuleEnum = GameRuleCompatibility.getByName(gameRule);
                     if (gameRuleEnum == null) {
                         continue;
                     }
@@ -71,12 +72,13 @@ public interface DataStore<T> {
             }
             world.getBukkitWorld().peek(bukkitWorld -> {
                 for (String gameRule : bukkitWorld.getGameRules()) {
-                    GameRule<?> gameRuleEnum = GameRule.getByName(gameRule);
+                    GameRule<?> gameRuleEnum = GameRuleCompatibility.getByName(gameRule);
                     if (gameRuleEnum == null) {
                         continue;
                     }
                     setGameRuleValue(bukkitWorld, gameRuleEnum, gameRuleMap.get(gameRuleEnum)).onFailure(e -> {
-                        Logging.warning("Failed to set game rule " + gameRuleEnum.getName() + " to " + gameRuleMap.get(gameRuleEnum));
+                        Logging.warning("Failed to set game rule " + GameRuleCompatibility.getName(gameRuleEnum)
+                                + " to " + gameRuleMap.get(gameRuleEnum));
                         e.printStackTrace();
                     });
                 }

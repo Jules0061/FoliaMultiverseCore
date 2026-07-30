@@ -2,11 +2,9 @@ package org.mvplugins.multiverse.core.world.biomeprovider;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;

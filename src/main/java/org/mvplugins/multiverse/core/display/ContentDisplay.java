@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;

@@ -2,12 +2,10 @@ package org.mvplugins.multiverse.core.display.handlers;
 
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.locale.message.Message;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 

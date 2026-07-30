@@ -24,6 +24,7 @@ import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
+import org.mvplugins.multiverse.core.utils.MVScheduler;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 
@@ -40,6 +41,7 @@ public class MVCommandManager extends PaperCommandManager {
     private final MVCommandPermissions commandPermissions;
     private final CoreConfig config;
     private final PluginLocales pluginLocales;
+    private final MVScheduler scheduler;
 
     @Inject
     MVCommandManager(
@@ -51,9 +53,11 @@ public class MVCommandManager extends PaperCommandManager {
             @NotNull WorldManager worldManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull MVCommandPermissions commandPermissions,
-            @NotNull CoreConfig config
+            @NotNull CoreConfig config,
+            @NotNull MVScheduler scheduler
             ) {
         super(plugin);
+        this.scheduler = scheduler;
         this.flagsManager = flagsManager;
         this.commandQueueManager = commandQueueManager;
         this.commandContextsProvider = commandContextsProvider;
@@ -188,7 +192,7 @@ public class MVCommandManager extends PaperCommandManager {
 
     @Override
     public RootCommand createRootCommand(String cmd) {
-        return new MVRootCommand(this, cmd);
+        return new MVRootCommand(this, cmd, scheduler);
     }
 
     @Override

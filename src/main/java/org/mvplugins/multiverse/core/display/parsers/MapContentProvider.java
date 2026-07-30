@@ -2,10 +2,7 @@ package org.mvplugins.multiverse.core.display.parsers;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
-import co.aikar.commands.BukkitCommandIssuer;
-import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;

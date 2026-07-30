@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.NamespacedKey;
@@ -13,11 +14,11 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.utils.CaseInsensitiveStringMap;
 import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 final class WorldStore {
@@ -54,13 +55,13 @@ final class WorldStore {
 
     @Inject
     private WorldStore() {
-        this.loadedList = new ArrayList<>();
-        this.unloadedList = new ArrayList<>();
-        this.worldList = new ArrayList<>();
+        this.loadedList = new CopyOnWriteArrayList<>();
+        this.unloadedList = new CopyOnWriteArrayList<>();
+        this.worldList = new CopyOnWriteArrayList<>();
 
         this.loadedMap = new CaseInsensitiveStringMap<>();
         this.unloadedMap = new CaseInsensitiveStringMap<>();
-        this.aliasMap = HashMultimap.create();
+        this.aliasMap = Multimaps.synchronizedMultimap(HashMultimap.create());
     }
 
     void putUnloadedWorld(MultiverseWorld world) {
@@ -264,8 +265,10 @@ final class WorldStore {
             return null;
         }
         //TODO: Not sure if we should fail if there is multiple alias of the same name, but for now just return the first one
-        return aliasMap.get(worldNameOrAlias.toLowerCase(Locale.ROOT)).stream()
-                .findFirst()
-                .orElse(worldNameOrAlias);
+        synchronized (aliasMap) {
+            return aliasMap.get(worldNameOrAlias.toLowerCase(Locale.ROOT)).stream()
+                    .findFirst()
+                    .orElse(worldNameOrAlias);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.config.node;
 
-import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;

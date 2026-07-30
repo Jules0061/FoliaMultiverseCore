@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A map with case-insensitive String keys. All keys are stored in lower-case form.
@@ -23,7 +23,7 @@ public class CaseInsensitiveStringMap<T> implements Map<String, T> {
     private final Map<String, T> map;
 
     public CaseInsensitiveStringMap() {
-        map = new HashMap<>();
+        map = new ConcurrentHashMap<>();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.utils.compatibility;
 
-import io.papermc.lib.PaperLib;
 import io.vavr.control.Try;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
@@ -84,6 +83,18 @@ public final class WorldCompatibility {
             return world.hasBonusChest();
         }
         return false;
+    }
+
+    @ApiStatus.AvailableSince("5.8")
+    @SuppressWarnings("removal")
+    public static boolean getKeepSpawnInMemory(World world) {
+        return world.getKeepSpawnInMemory();
+    }
+
+    @ApiStatus.AvailableSince("5.8")
+    @SuppressWarnings("removal")
+    public static void setKeepSpawnInMemory(World world, boolean keepLoaded) {
+        world.setKeepSpawnInMemory(keepLoaded);
     }
 
     private WorldCompatibility() {

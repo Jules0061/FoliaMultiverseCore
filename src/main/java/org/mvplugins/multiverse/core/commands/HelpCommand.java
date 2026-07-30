@@ -13,7 +13,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.config.CoreConfig;
 
 @Service
 class HelpCommand extends CoreCommand {

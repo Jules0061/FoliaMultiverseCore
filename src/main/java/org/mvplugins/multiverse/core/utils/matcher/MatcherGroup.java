@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.utils.matcher;
 
-import com.dumptruckman.minecraft.util.Logging;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

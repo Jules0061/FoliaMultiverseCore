@@ -1,10 +1,8 @@
 package org.mvplugins.multiverse.core.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
-import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Contract;
 
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.MultiverseCommand;
 
 /**
