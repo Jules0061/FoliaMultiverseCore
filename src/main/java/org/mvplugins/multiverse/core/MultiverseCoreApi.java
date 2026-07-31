@@ -27,6 +27,7 @@ import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 public final class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
+    private static volatile boolean fullyLoaded = false;
     private static final List<Consumer<MultiverseCoreApi>> WHEN_LOADED_CALLBACKS = new ArrayList<>();
 
     static void init(@NotNull MultiverseCore multiverseCore) {
@@ -35,6 +36,13 @@ public final class MultiverseCoreApi {
         }
         instance = new MultiverseCoreApi(multiverseCore.getServiceLocator());
         Bukkit.getServicesManager().register(MultiverseCoreApi.class, instance, multiverseCore, ServicePriority.Normal);
+    }
+
+    static void notifyLoaded() {
+        if (instance == null || fullyLoaded) {
+            return;
+        }
+        fullyLoaded = true;
 
         List<Consumer<MultiverseCoreApi>> callbacks = List.copyOf(WHEN_LOADED_CALLBACKS);
         WHEN_LOADED_CALLBACKS.clear();
@@ -51,6 +59,7 @@ public final class MultiverseCoreApi {
     }
 
     static void shutdown() {
+        fullyLoaded = false;
         if (instance == null) {
             return;
         }
@@ -60,7 +69,7 @@ public final class MultiverseCoreApi {
 
     @ApiStatus.AvailableSince("5.1")
     public static void whenLoaded(@NotNull Consumer<MultiverseCoreApi> consumer) {
-        if (instance != null) {
+        if (fullyLoaded && instance != null) {
             consumer.accept(instance);
         } else {
             WHEN_LOADED_CALLBACKS.add(consumer);

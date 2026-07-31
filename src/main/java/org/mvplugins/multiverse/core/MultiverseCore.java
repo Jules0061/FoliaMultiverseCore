@@ -82,6 +82,7 @@ public class MultiverseCore extends MultiverseModule {
         Logging.setShowingConfig(shouldShowConfig());
 
         SpawnCategoryMapper.buildSpawnCategoryMap();
+        loadApiService();
 
         schedulerProvider.get().runGlobalNow(this::initializeWorldsAndServices);
     }
@@ -96,7 +97,7 @@ public class MultiverseCore extends MultiverseModule {
             registerDestinations();
             setupMetrics();
             loadPlaceholderApiIntegration();
-            loadApiService();
+            MultiverseCoreApi.notifyLoaded();
             saveAllConfigs();
             logEnableMessage();
         }).onFailure(e -> {
